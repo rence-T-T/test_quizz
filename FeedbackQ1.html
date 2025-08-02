@@ -4,8 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control Systems: Concepts & Definitions - Quiz Hub</title>
-    <link rel="stylesheet" href="base.css">
     <style>
+        /* Base styles */
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-color: #f093fb;
+            --accent-color: #4facfe;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --text-muted: #868e96;
+            --bg-light: #f8f9fa;
+            --border-radius: 12px;
+            --border-radius-large: 20px;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 25px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
         /* Quiz-specific styles */
         .quiz-header {
             background: rgba(255,255,255,0.1);
@@ -193,6 +310,9 @@
         .results-container {
             text-align: center;
             padding: 40px 20px;
+            background: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
         }
 
         .score-display {
@@ -228,6 +348,63 @@
         .text-primary { color: var(--primary-color); }
         .text-muted { color: var(--text-muted); }
 
+        /* Identification Question Styles */
+        .identification-container {
+            margin-bottom: 20px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-number {
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-field.correct {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .input-field.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Responsive design */
         @media (max-width: 768px) {
             .matching-container {
                 grid-template-columns: 1fr;
@@ -307,8 +484,103 @@
         </div>
     </div>
 
-    <script src="base.js"></script>
     <script>
+        // Utility functions
+        class Utils {
+            static shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+        }
+
+        // Quiz Timer
+        class Quiz {
+            static timer = {
+                interval: null,
+                startTime: null,
+                timeLimit: 0,
+                
+                start(minutes, onTick, onComplete) {
+                    this.timeLimit = minutes * 60;
+                    this.startTime = Date.now();
+                    
+                    this.interval = setInterval(() => {
+                        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                        const remaining = Math.max(0, this.timeLimit - elapsed);
+                        
+                        if (onTick) onTick(remaining);
+                        
+                        if (remaining <= 0) {
+                            this.stop();
+                            if (onComplete) onComplete();
+                        }
+                    }, 1000);
+                },
+                
+                stop() {
+                    if (this.interval) {
+                        clearInterval(this.interval);
+                        this.interval = null;
+                    }
+                },
+                
+                getElapsed() {
+                    if (!this.startTime) return 0;
+                    return Math.floor((Date.now() - this.startTime) / 1000);
+                }
+            };
+            
+            static formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Storage
+        class Storage {
+            static saveQuizResult(quizId, result) {
+                // Since localStorage is not available, we'll just log the result
+                console.log('Quiz result:', result);
+            }
+        }
+
+        // UI utilities
+        class UI {
+            static showNotification(message, type = 'info', duration = 3000) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 1000;
+                    transition: all 0.3s ease;
+                    color: white;
+                    background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, duration);
+            }
+        }
+
+        // Navigation
+        class Navigation {
+            static goHome() {
+                window.location.href = 'index.html';
+            }
+        }
+
         // Control Systems Quiz Data
         const quizData = {
             id: 'control-systems',
@@ -407,6 +679,13 @@
                         { id: '41', text: 'The primary objective of the system is error self-nulling' },
                         { id: '42', text: 'Describes whether the system will be able to follow the input command; a system is said to be unstable if its output is out of control or increases without bound' }
                     ]
+                },
+                {
+                    id: 2,
+                    type: 'identification',
+                    question: 'List the 7 Processes of the Systems in any order:',
+                    correctAnswers: ['Modeling', 'Identification', 'Representation', 'Analysis', 'Synthesis', 'Implementation', 'Optimization'],
+                    userAnswers: Array(7).fill('')
                 }
             ]
         };
@@ -447,7 +726,19 @@
                 const question = this.data.questions[this.currentQuestion];
                 const container = document.getElementById('quizContainer');
 
-                container.innerHTML = `
+                if (question.type === 'matching') {
+                    container.innerHTML = this.renderMatchingQuestion(question);
+                    this.setupMatchingInteraction();
+                } else if (question.type === 'identification') {
+                    container.innerHTML = this.renderIdentificationQuestion(question);
+                    this.setupIdentificationInteraction();
+                }
+
+                this.updateProgress();
+            }
+
+            renderMatchingQuestion(question) {
+                return `
                     <div class="question-container">
                         <div class="question-header">
                             <div class="question-counter">Control Systems Matching Challenge</div>
@@ -483,17 +774,54 @@
                                     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()" id="answerKeyBtn">
-                                Show Answer Key
-                            </button>
-                            <button class="btn btn-success" onclick="quiz.finishQuiz()" id="finishBtn" style="display: none;">
-                                Finish Quiz
+                            <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answer Key</button>
+                            <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
+                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
                             </button>
                         </div>
                     </div>
                 `;
+            }
 
-                this.setupMatchingInteraction();
+            renderIdentificationQuestion(question) {
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                            <div class="question-type">Identification</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="identification-container">
+                            <div class="input-grid">
+                                ${question.userAnswers.map((answer, index) => `
+                                    <div class="input-item">
+                                        <div class="input-number">${index + 1}</div>
+                                        <input type="text" class="input-field" id="answer${index}" 
+                                               value="${answer}" placeholder="Enter process name...">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="progress-info">
+                                <div class="progress-text">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                            </div>
+                            <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answers</button>
+                            <button class="btn btn-primary" onclick="quiz.checkIdentificationAnswers()">Check Answers</button>
+                            <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn" style="display: none;">
+                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
+                `;
             }
 
             setupMatchingInteraction() {
@@ -503,7 +831,23 @@
 
                 leftItems.forEach(item => {
                     item.addEventListener('click', () => {
-                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) return;
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            // Allow changing answers - remove color coding and allow re-matching
+                            item.classList.remove('correct', 'incorrect');
+                            const matchedRightId = this.matches[item.dataset.id];
+                            if (matchedRightId) {
+                                const rightItem = document.querySelector(`[data-id="${matchedRightId}"]`);
+                                if (rightItem) {
+                                    rightItem.classList.remove('correct', 'incorrect');
+                                }
+                                // Update correct matches count
+                                if (matchedRightId === item.dataset.correct) {
+                                    this.correctMatches--;
+                                }
+                                delete this.matches[item.dataset.id];
+                                this.updateProgress();
+                            }
+                        }
                         
                         leftItems.forEach(i => i.classList.remove('selected'));
                         item.classList.add('selected');
@@ -513,7 +857,12 @@
 
                 rightItems.forEach(item => {
                     item.addEventListener('click', () => {
-                        if (!selectedLeft || item.classList.contains('correct') || item.classList.contains('incorrect')) return;
+                        if (!selectedLeft) return;
+                        
+                        // Allow changing if already matched
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            item.classList.remove('correct', 'incorrect');
+                        }
                         
                         const leftId = selectedLeft.dataset.id;
                         const rightId = item.dataset.id;
@@ -525,6 +874,10 @@
                             if (prevRightItem) {
                                 prevRightItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
                             }
+                            // Update correct matches count if previous was correct
+                            if (this.matches[leftId] === correctAnswer) {
+                                this.correctMatches--;
+                            }
                         }
                         
                         // Remove any existing match for this right item
@@ -534,6 +887,11 @@
                                 const leftItem = document.querySelector(`[data-id="${key}"]`);
                                 if (leftItem) {
                                     leftItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
+                                    // Update correct matches count if previous was correct
+                                    const prevCorrect = leftItem.dataset.correct;
+                                    if (rightId === prevCorrect) {
+                                        this.correctMatches--;
+                                    }
                                 }
                                 break;
                             }
@@ -562,18 +920,112 @@
                 });
             }
 
-            updateProgress() {
-                const matchedCount = Object.keys(this.matches).length;
-                document.getElementById('matchedCount').textContent = matchedCount;
+            setupIdentificationInteraction() {
+                const inputs = document.querySelectorAll('.input-field');
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        this.data.questions[this.currentQuestion].userAnswers[index] = e.target.value.trim();
+                    });
+                });
+            }
+
+            checkIdentificationAnswers() {
+                const question = this.data.questions[this.currentQuestion];
+                const inputs = document.querySelectorAll('.input-field');
+                let correctCount = 0;
+
+                inputs.forEach((input, index) => {
+                    const userAnswer = input.value.trim();
+                    const isCorrect = question.correctAnswers.some(correct => 
+                        correct.toLowerCase() === userAnswer.toLowerCase()
+                    );
+
+                    input.classList.remove('correct', 'incorrect');
+                    if (userAnswer) {
+                        if (isCorrect) {
+                            input.classList.add('correct');
+                            correctCount++;
+                        } else {
+                            input.classList.add('incorrect');
+                        }
+                    }
+                });
+
+                // Show next button
+                document.getElementById('nextBtn').style.display = 'inline-block';
                 
-                const progress = (matchedCount / 42) * 100;
-                document.getElementById('progressFill').style.width = `${progress}%`;
+                // Show notification
+                UI.showNotification(`You got ${correctCount} out of 7 correct!`, 
+                    correctCount >= 5 ? 'success' : 'error', 3000);
+
+                // Save answers for final scoring
+                this.answers[this.currentQuestion] = {
+                    questionId: question.id,
+                    type: 'identification',
+                    userAnswers: [...question.userAnswers],
+                    correctCount: correctCount,
+                    score: correctCount / 7
+                };
+            }
+
+            updateProgress() {
+                if (this.data.questions[this.currentQuestion].type === 'matching') {
+                    const matchedCount = Object.keys(this.matches).length;
+                    document.getElementById('matchedCount').textContent = matchedCount;
+                    
+                    const progress = (matchedCount / 42) * 100;
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                } else {
+                    // For identification and other question types
+                    const progress = ((this.currentQuestion + 1) / this.data.questions.length) * 100;
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                }
             }
 
             checkCompletion() {
-                const totalMatched = Object.keys(this.matches).length;
-                if (totalMatched === 42) {
-                    document.getElementById('finishBtn').style.display = 'inline-block';
+                // Auto-advance when all matches are made correctly
+                if (this.correctMatches === 42) {
+                    UI.showNotification('Perfect! All concepts matched correctly!', 'success', 2000);
+                    setTimeout(() => {
+                        this.nextQuestion();
+                    }, 2000);
+                }
+            }
+
+            resetCurrentQuestion() {
+                if (this.data.questions[this.currentQuestion].type === 'matching') {
+                    // Reset matching question
+                    this.matches = {};
+                    this.correctMatches = 0;
+                    const allItems = document.querySelectorAll('.matching-item');
+                    allItems.forEach(item => {
+                        item.classList.remove('selected', 'correct', 'incorrect', 'matched');
+                    });
+                    this.updateProgress();
+                } else if (this.data.questions[this.currentQuestion].type === 'identification') {
+                    // Reset identification question
+                    const question = this.data.questions[this.currentQuestion];
+                    question.userAnswers = Array(7).fill('');
+                    const inputs = document.querySelectorAll('.input-field');
+                    inputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('correct', 'incorrect');
+                    });
+                    document.getElementById('nextBtn').style.display = 'none';
+                }
+            }
+
+            nextQuestion() {
+                if (this.currentQuestion < this.data.questions.length - 1) {
+                    this.currentQuestion++;
+                    // Reset state for new question
+                    if (this.data.questions[this.currentQuestion].type === 'matching') {
+                        this.matches = {};
+                        this.correctMatches = 0;
+                    }
+                    this.renderQuestion();
+                } else {
+                    this.finishQuiz();
                 }
             }
 
@@ -607,25 +1059,48 @@
                     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
                 `;
                 
-                // Generate answer key content
-                let answerKeyHTML = `
-                    <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key</h2>
-                    <div style="display: grid; gap: 15px;">
-                `;
-                
-                question.leftItems.forEach((item, index) => {
-                    const correctDefinition = question.rightItems.find(right => right.id === item.correct);
-                    answerKeyHTML += `
-                        <div style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; background: #f8f9fa;">
-                            <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
-                                ${item.text}
-                            </div>
-                            <div style="color: var(--text-dark); font-size: 0.9rem;">
-                                ${correctDefinition.text}
-                            </div>
-                        </div>
+                let answerKeyHTML = '';
+
+                if (question.type === 'matching') {
+                    // Generate matching answer key content
+                    answerKeyHTML = `
+                        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key - Matching</h2>
+                        <div style="display: grid; gap: 15px;">
                     `;
-                });
+                    
+                    question.leftItems.forEach((item, index) => {
+                        const correctDefinition = question.rightItems.find(right => right.id === item.correct);
+                        answerKeyHTML += `
+                            <div style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; background: #f8f9fa;">
+                                <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
+                                    ${item.text}
+                                </div>
+                                <div style="color: var(--text-dark); font-size: 0.9rem;">
+                                    ${correctDefinition.text}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else if (question.type === 'identification') {
+                    // Generate identification answer key content
+                    answerKeyHTML = `
+                        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key - System Processes</h2>
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <strong>The 7 Processes of the Systems:</strong>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    `;
+                    
+                    question.correctAnswers.forEach((answer, index) => {
+                        answerKeyHTML += `
+                            <div style="border: 1px solid #28a745; border-radius: 10px; padding: 15px; background: rgba(40, 167, 69, 0.1); text-align: center;">
+                                <div style="font-weight: bold; color: #28a745;">
+                                    ${index + 1}. ${answer}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
                 
                 answerKeyHTML += `
                     </div>
@@ -649,32 +1124,38 @@
                 });
             }
 
-            checkAnswers() {
-                // This method is no longer needed but keeping for compatibility
-                console.log('Answers are checked automatically now');
-            }
-
             finishQuiz() {
                 Quiz.timer.stop();
                 const timeElapsed = Quiz.timer.getElapsed();
                 
-                // Create answer array for compatibility
-                this.answers = [{
-                    questionId: 1,
-                    type: 'matching',
-                    matches: this.matches,
-                    correct: this.correctMatches === 42,
-                    score: this.correctMatches / 42
-                }];
+                // Calculate final score from all questions
+                let totalScore = 0;
+                let totalPossible = 0;
+                
+                this.answers.forEach(answer => {
+                    if (answer) {
+                        totalScore += answer.score;
+                        totalPossible += 1;
+                    }
+                });
+                
+                // Add current matching question if not already saved
+                if (this.currentQuestion === 0 && this.data.questions[0].type === 'matching') {
+                    const matchingScore = this.correctMatches / 42;
+                    totalScore += matchingScore;
+                    totalPossible += 1;
+                }
+                
+                const finalScore = totalPossible > 0 ? Math.round((totalScore / totalPossible) * 100) : 0;
                 
                 const summary = {
-                    total: 42,
-                    correct: this.correctMatches,
-                    incorrect: 42 - this.correctMatches,
-                    score: Math.round((this.correctMatches / 42) * 100),
+                    total: this.data.questions.length,
+                    correct: Math.round(totalScore),
+                    incorrect: totalPossible - Math.round(totalScore),
+                    score: finalScore,
                     timeElapsed,
-                    percentage: Math.round((this.correctMatches / 42) * 100),
-                    passed: this.correctMatches >= 30 // 70% of 42
+                    percentage: finalScore,
+                    passed: finalScore >= 70
                 };
                 
                 // Save results
@@ -688,7 +1169,7 @@
                 const resultsContainer = document.getElementById('resultsContainer');
                 
                 resultsContainer.innerHTML = `
-                    <div class="card results-container">
+                    <div class="results-container">
                         <h2>Quiz Complete!</h2>
                         <div class="score-display">${summary.score}%</div>
                         <p class="text-${summary.passed ? 'success' : 'danger'}" style="font-size: 1.2rem; margin-bottom: 30px;">
@@ -697,11 +1178,11 @@
                         
                         <div class="results-stats">
                             <div class="stat-card">
-                                <span class="stat-value text-success">${summary.correct}</span>
+                                <span class="stat-value text-success">${this.correctMatches}</span>
                                 <span>Correct Matches</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-danger">${summary.incorrect}</span>
+                                <span class="stat-value text-danger">${42 - this.correctMatches}</span>
                                 <span>Incorrect Matches</span>
                             </div>
                             <div class="stat-card">

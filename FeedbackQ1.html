@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Systems: Concepts & Definitions - Quiz Hub</title>
+    <link rel="stylesheet" href="base.css">
+    <style>
+        /* Quiz-specific styles */
+        .quiz-header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .quiz-details {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: var(--border-radius-large);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .question-counter {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .question-type {
+            background: #f8f9fa;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Matching Question Styles */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        .matching-column {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .column-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--text-dark);
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            padding: 10px 0;
+            z-index: 10;
+        }
+
+        .matching-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .matching-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .matching-item.selected {
+            border-color: #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .matching-item.correct {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+            cursor: default;
+        }
+
+        .matching-item.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+            cursor: default;
+        }
+
+        .matching-item.matched {
+            opacity: 0.7;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .progress-info {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .text-success { color: #28a745; }
+        .text-danger { color: #dc3545; }
+        .text-primary { color: var(--primary-color); }
+        .text-muted { color: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                max-height: none;
+            }
+
+            .matching-column {
+                max-height: 400px;
+            }
+
+            .quiz-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quiz-details {
+                justify-content: center;
+            }
+
+            .quiz-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">🎯 Quiz Hub</a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link active">Control Systems Quiz</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Header -->
+        <div class="quiz-header">
+            <div class="quiz-info">
+                <div>
+                    <h1>Control Systems: Concepts & Definitions</h1>
+                    <p>Match each control systems term with its correct definition</p>
+                </div>
+                <div class="quiz-details">
+                    <div class="detail-item">
+                        <span class="detail-value">42</span>
+                        <span>Concepts</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value">30</span>
+                        <span>Minutes</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value timer" id="timer">30:00</span>
+                        <span>Remaining</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div id="quizContainer">
+            <!-- Question will be loaded here -->
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" style="display: none;">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script src="base.js"></script>
+    <script>
+        // Control Systems Quiz Data
+        const quizData = {
+            id: 'control-systems',
+            title: 'Control Systems: Concepts & Definitions',
+            timeLimit: 30, // minutes
+            questions: [
+                {
+                    id: 1,
+                    type: 'matching',
+                    question: 'Match each control systems concept with its correct definition:',
+                    leftItems: [
+                        { id: 'a1', text: 'System', correct: '1' },
+                        { id: 'a2', text: 'System Theory', correct: '2' },
+                        { id: 'a3', text: 'Control Engineering', correct: '3' },
+                        { id: 'a4', text: 'Control System', correct: '4' },
+                        { id: 'a5', text: 'Modeling', correct: '5' },
+                        { id: 'a6', text: 'Identification', correct: '6' },
+                        { id: 'a7', text: 'Representation', correct: '7' },
+                        { id: 'a8', text: 'Analysis', correct: '8' },
+                        { id: 'a9', text: 'Synthesis', correct: '9' },
+                        { id: 'a10', text: 'Implementation', correct: '10' },
+                        { id: 'a11', text: 'Optimization', correct: '11' },
+                        { id: 'a12', text: 'Input', correct: '12' },
+                        { id: 'a13', text: 'Output', correct: '13' },
+                        { id: 'a14', text: 'Manual Control', correct: '14' },
+                        { id: 'a15', text: 'Automatic Control', correct: '15' },
+                        { id: 'a16', text: 'Servo/Tracking Control', correct: '16' },
+                        { id: 'a17', text: 'Regulator Control', correct: '17' },
+                        { id: 'a18', text: 'Open-Loop Control', correct: '18' },
+                        { id: 'a19', text: 'Closed Loop Control', correct: '19' },
+                        { id: 'a20', text: 'Command Signal', correct: '20' },
+                        { id: 'a21', text: 'Reference Input', correct: '21' },
+                        { id: 'a22', text: 'Summing Junction', correct: '22' },
+                        { id: 'a23', text: 'Actuating Error Signal', correct: '23' },
+                        { id: 'a24', text: 'Control Logic Elements', correct: '24' },
+                        { id: 'a25', text: 'Actuator Elements', correct: '25' },
+                        { id: 'a26', text: 'Feedback Elements', correct: '26' },
+                        { id: 'a27', text: 'Disturbance Inputs', correct: '27' },
+                        { id: 'a28', text: 'Controlled Variable', correct: '28' },
+                        { id: 'a29', text: 'Set-Point', correct: '29' },
+                        { id: 'a30', text: 'Resetting Control Problem', correct: '30' },
+                        { id: 'a31', text: 'Feedforward Control', correct: '31' },
+                        { id: 'a32', text: 'Feedback Control', correct: '32' },
+                        { id: 'a33', text: 'Block Diagram', correct: '33' },
+                        { id: 'a34', text: 'Transient Response', correct: '34' },
+                        { id: 'a35', text: 'Steady-State Error', correct: '35' },
+                        { id: 'a36', text: 'Power Amplifications', correct: '36' },
+                        { id: 'a37', text: 'Remote Control', correct: '37' },
+                        { id: 'a38', text: 'Convenience of Input Form', correct: '38' },
+                        { id: 'a39', text: 'Compensation for Disturbances', correct: '39' },
+                        { id: 'a40', text: 'Feedback Idea', correct: '40' },
+                        { id: 'a41', text: 'Error Self-Nulling', correct: '41' },
+                        { id: 'a42', text: 'Stability', correct: '42' }
+                    ],
+                    rightItems: [
+                        { id: '1', text: 'A collection of components which interact with each other and with the environment from which the system is separated by a notational boundary' },
+                        { id: '2', text: 'The study of interactions and behavior of such assemblage or things when subjected to certain conditions called inputs' },
+                        { id: '3', text: 'The engineering discipline that applies control theory to design systems with predictable behaviors' },
+                        { id: '4', text: 'Exists for the purpose of regulating or controlling the flow of energy, money, information or other quantities in a desired fashion' },
+                        { id: '5', text: 'Simplifying versions of reality which is similar to the original systems. It is abstracting relevant attributes from physical systems' },
+                        { id: '6', text: 'Process of determining the characteristic parameters or structure of a system from its input-output behavior' },
+                        { id: '7', text: 'Process of describing a system in a useful and convenient way' },
+                        { id: '8', text: 'The process of studying the properties and the input-output relations of a system from the knowledge of its component system, their interconnection and properties' },
+                        { id: '9', text: 'Process of indicating the structure to exhibit a specified input and output behavior' },
+                        { id: '10', text: 'Process of converting synthesis into a physical behavior device' },
+                        { id: '11', text: 'Process of improving or simplifying which involves some action to attain a goal' },
+                        { id: '12', text: 'The input is the stimulus, excitation or command applied to a control system' },
+                        { id: '13', text: 'The output is the actual response obtained from a control system' },
+                        { id: '14', text: 'A system that involves a person controlling a machine' },
+                        { id: '15', text: 'When a device is designed to perform without the need of human inputs for correction' },
+                        { id: '16', text: 'An automatic control system designed to follow a changing reference' },
+                        { id: '17', text: 'An automatic control system designed to maintain an output fixed (regardless of the disturbances present)' },
+                        { id: '18', text: 'The system does NOT measure the actual output and there is no correction to make that output conform to the desired output' },
+                        { id: '19', text: 'The system includes a sensor to measure the output and uses feedback of the sensed value to influence the control input variable' },
+                        { id: '20', text: 'The desired value of the controlled variable y' },
+                        { id: '21', text: 'The actual physical input to the control system' },
+                        { id: '22', text: 'A symbol for the error detector which compares the reference input r with the feedback signal b and generates a signal ê = (r - b)' },
+                        { id: '23', text: 'Defines the actuating error signal, and not the system error signal' },
+                        { id: '24', text: 'Produces the control signal u which has the knowledge about the desired control action' },
+                        { id: '25', text: 'Consists of devices that develop enough torque, pressure, heat, etc. (manipulated variable m), to influence the objects under control' },
+                        { id: '26', text: 'Often a sensor for measuring y, but since its functions sometimes include more than simple measurement' },
+                        { id: '27', text: 'The variables over which the designer has no control, and perhaps little information is available on their magnitude, functional form, or time of occurrence' },
+                        { id: '28', text: 'Influenced by both the manipulated variable m and disturbance w' },
+                        { id: '29', text: 'Corresponds to the desired value of the controlled output when the command input for a regulator becomes a constant' },
+                        { id: '30', text: 'The need for the control of manipulated variables arises from the requirements of both the set-point changes and the disturbance rejection' },
+                        { id: '31', text: 'Compensates for disturbances before they affect the controlled variable' },
+                        { id: '32', text: 'A very simple technique that compensates for any disturbance affecting the controlled variable' },
+                        { id: '33', text: 'Represents the structure of a control system' },
+                        { id: '34', text: 'One of two major measures of performance (along with steady-state error)' },
+                        { id: '35', text: 'Another important performance specification since passenger safety and convenience would be sacrificed if the elevator did not level properly' },
+                        { id: '36', text: 'A control system can produce the needed power amplification, or power gain' },
+                        { id: '37', text: 'Useful in remote or dangerous locations' },
+                        { id: '38', text: 'Can be used to provide convenience by changing the form of the input' },
+                        { id: '39', text: 'The ability to compensate for disturbances' },
+                        { id: '40', text: 'There exists a closed loop: error -> manipulated variable -> controlled variable -> error' },
+                        { id: '41', text: 'The primary objective of the system is error self-nulling' },
+                        { id: '42', text: 'Describes whether the system will be able to follow the input command; a system is said to be unstable if its output is out of control or increases without bound' }
+                    ]
+                }
+            ]
+        };
+
+        class ControlSystemsQuiz {
+            constructor(data) {
+                this.data = data;
+                this.currentQuestion = 0;
+                this.answers = [];
+                this.startTime = Date.now();
+                this.matches = {};
+                this.correctMatches = 0;
+                
+                this.init();
+            }
+
+            init() {
+                // Randomize the right items (definitions) to make it more challenging
+                this.data.questions[0].rightItems = Utils.shuffleArray(this.data.questions[0].rightItems);
+                
+                this.startTimer();
+                this.renderQuestion();
+            }
+
+            startTimer() {
+                Quiz.timer.start(this.data.timeLimit, 
+                    (remaining) => {
+                        document.getElementById('timer').textContent = Quiz.formatTime(remaining);
+                    },
+                    () => {
+                        this.finishQuiz();
+                    }
+                );
+            }
+
+            renderQuestion() {
+                const question = this.data.questions[this.currentQuestion];
+                const container = document.getElementById('quizContainer');
+
+                container.innerHTML = `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Control Systems Matching Challenge</div>
+                            <div class="question-type">Match All 42 Concepts</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="matching-container">
+                            <div class="matching-column">
+                                <div class="column-title">Concepts</div>
+                                ${question.leftItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}" data-correct="${item.correct}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="matching-column">
+                                <div class="column-title">Definitions</div>
+                                ${question.rightItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="progress-info">
+                                <div class="progress-text">Matched: <span id="matchedCount">0</span> / 42</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="quiz.checkAnswers()" id="checkBtn">
+                                Check All Answers
+                            </button>
+                            <button class="btn btn-success" onclick="quiz.finishQuiz()" id="finishBtn" style="display: none;">
+                                Finish Quiz
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                this.setupMatchingInteraction();
+            }
+
+            setupMatchingInteraction() {
+                const leftItems = document.querySelectorAll('.matching-column:first-child .matching-item');
+                const rightItems = document.querySelectorAll('.matching-column:last-child .matching-item');
+                let selectedLeft = null;
+
+                leftItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) return;
+                        
+                        leftItems.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedLeft = item;
+                    });
+                });
+
+                rightItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (!selectedLeft || item.classList.contains('correct') || item.classList.contains('incorrect')) return;
+                        
+                        const leftId = selectedLeft.dataset.id;
+                        const rightId = item.dataset.id;
+                        
+                        // Remove any existing match for this left item
+                        if (this.matches[leftId]) {
+                            const prevRightItem = document.querySelector(`[data-id="${this.matches[leftId]}"]`);
+                            if (prevRightItem) {
+                                prevRightItem.classList.remove('matched', 'selected');
+                            }
+                        }
+                        
+                        // Remove any existing match for this right item
+                        for (let [key, value] of Object.entries(this.matches)) {
+                            if (value === rightId) {
+                                delete this.matches[key];
+                                const leftItem = document.querySelector(`[data-id="${key}"]`);
+                                if (leftItem) {
+                                    leftItem.classList.remove('matched', 'selected');
+                                }
+                                break;
+                            }
+                        }
+                        
+                        this.matches[leftId] = rightId;
+                        
+                        selectedLeft.classList.remove('selected');
+                        selectedLeft.classList.add('matched');
+                        item.classList.add('matched');
+                        
+                        selectedLeft = null;
+                        
+                        this.updateProgress();
+                    });
+                });
+            }
+
+            updateProgress() {
+                const matchedCount = Object.keys(this.matches).length;
+                document.getElementById('matchedCount').textContent = matchedCount;
+                
+                const progress = (matchedCount / 42) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            checkAnswers() {
+                const question = this.data.questions[this.currentQuestion];
+                this.correctMatches = 0;
+                
+                // Check each match
+                question.leftItems.forEach(item => {
+                    const leftElement = document.querySelector(`[data-id="${item.id}"]`);
+                    const rightId = this.matches[item.id];
+                    const rightElement = document.querySelector(`[data-id="${rightId}"]`);
+                    
+                    if (rightId === item.correct) {
+                        // Correct match
+                        leftElement.classList.remove('selected', 'matched');
+                        leftElement.classList.add('correct');
+                        if (rightElement) {
+                            rightElement.classList.remove('selected', 'matched');
+                            rightElement.classList.add('correct');
+                        }
+                        this.correctMatches++;
+                    } else if (rightId) {
+                        // Incorrect match
+                        leftElement.classList.remove('selected', 'matched');
+                        leftElement.classList.add('incorrect');
+                        if (rightElement) {
+                            rightElement.classList.remove('selected', 'matched');
+                            rightElement.classList.add('incorrect');
+                        }
+                    }
+                });
+                
+                // Show results
+                document.getElementById('checkBtn').style.display = 'none';
+                document.getElementById('finishBtn').style.display = 'inline-block';
+                
+                // Show notification
+                const score = Math.round((this.correctMatches / 42) * 100);
+                UI.showNotification(`You got ${this.correctMatches} out of 42 correct (${score}%)`, 
+                    score >= 70 ? 'success' : 'error', 5000);
+            }
+
+            finishQuiz() {
+                Quiz.timer.stop();
+                const timeElapsed = Quiz.timer.getElapsed();
+                
+                // Create answer array for compatibility
+                this.answers = [{
+                    questionId: 1,
+                    type: 'matching',
+                    matches: this.matches,
+                    correct: this.correctMatches === 42,
+                    score: this.correctMatches / 42
+                }];
+                
+                const summary = {
+                    total: 42,
+                    correct: this.correctMatches,
+                    incorrect: 42 - this.correctMatches,
+                    score: Math.round((this.correctMatches / 42) * 100),
+                    timeElapsed,
+                    percentage: Math.round((this.correctMatches / 42) * 100),
+                    passed: this.correctMatches >= 30 // 70% of 42
+                };
+                
+                // Save results
+                Storage.saveQuizResult(this.data.id, summary);
+                
+                this.showResults(summary);
+            }
+
+            showResults(summary) {
+                document.getElementById('quizContainer').style.display = 'none';
+                const resultsContainer = document.getElementById('resultsContainer');
+                
+                resultsContainer.innerHTML = `
+                    <div class="card results-container">
+                        <h2>Quiz Complete!</h2>
+                        <div class="score-display">${summary.score}%</div>
+                        <p class="text-${summary.passed ? 'success' : 'danger'}" style="font-size: 1.2rem; margin-bottom: 30px;">
+                            ${summary.passed ? '🎉 Excellent! You have a strong understanding of control systems!' : '📚 Keep studying! Control systems concepts take practice to master.'}
+                        </p>
+                        
+                        <div class="results-stats">
+                            <div class="stat-card">
+                                <span class="stat-value text-success">${summary.correct}</span>
+                                <span>Correct Matches</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-danger">${summary.incorrect}</span>
+                                <span>Incorrect Matches</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-primary">42</span>
+                                <span>Total Concepts</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-muted">${Quiz.formatTime(summary.timeElapsed)}</span>
+                                <span>Time Taken</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+                            <button class="btn btn-secondary" onclick="Navigation.goHome()">Back to Home</button>
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.style.display = 'block';
+            }
+        }
+
+        // Initialize quiz when page loads
+        let quiz;
+        document.addEventListener('DOMContentLoaded', () => {
+            quiz = new ControlSystemsQuiz(quizData);
+        });
+    </script>
+</body>
+</html>

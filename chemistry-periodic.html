@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry: Periodic Table Elements - Quiz Hub</title>
+    <link rel="stylesheet" href="base.css">
+    <style>
+        /* Chemistry quiz specific styles - inherits from biology quiz */
+        .quiz-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .fill-blank-container {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .fill-blank-text {
+            font-size: 1.1rem;
+            line-height: 2;
+            margin-bottom: 20px;
+        }
+
+        .blank-input {
+            display: inline-block;
+            min-width: 100px;
+            padding: 5px 10px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            margin: 0 5px;
+            text-align: center;
+            font-weight: bold;
+            background: white;
+        }
+
+        .blank-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .blank-input.correct {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .blank-input.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .element-card {
+            background: white;
+            border: 3px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 80px;
+        }
+
+        .element-card:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .element-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .element-symbol {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        .element-name {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .element-number {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .periodic-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .chemistry-specific {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-content">
+                <a href="index.html" class="nav-brand">🎯 Quiz Hub</a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link active">Chemistry Quiz</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Header -->
+        <div class="quiz-header chemistry-specific">
+            <div class="quiz-info">
+                <div>
+                    <h1>⚛️ Chemistry: Periodic Table Elements</h1>
+                    <p>Master the periodic table with element properties and atomic structure</p>
+                </div>
+                <div class="quiz-details">
+                    <div class="detail-item">
+                        <span class="detail-value" id="totalQuestions">8</span>
+                        <span>Questions</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value">20</span>
+                        <span>Minutes</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value timer" id="timer">20:00</span>
+                        <span>Remaining</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div id="quizContainer">
+            <!-- Questions will be loaded here -->
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" style="display: none;">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script src="base.js"></script>
+    <script>
+        // Chemistry Quiz Data
+        const quizData = {
+            id: 'chemistry-periodic',
+            title: 'Chemistry: Periodic Table Elements',
+            timeLimit: 20, // minutes
+            questions: [
+                {
+                    id: 1,
+                    type: 'matching',
+                    question: 'Match each element symbol with its name:',
+                    leftItems: [
+                        { id: 'a', text: 'Au', correct: '3' },
+                        { id: 'b', text: 'Fe', correct: '1' },
+                        { id: 'c', text: 'Ag', correct: '4' },
+                        { id: 'd', text: 'Pb', correct: '2' }
+                    ],
+                    rightItems: [
+                        { id: '1', text: 'Iron' },
+                        { id: '2', text: 'Lead' },
+                        { id: '3', text: 'Gold' },
+                        { id: '4', text: 'Silver' }
+                    ]
+                },
+                {
+                    id: 2,
+                    type: 'fill-blank',
+                    question: 'Complete the following statements about atomic structure:',
+                    text: 'An atom consists of a central <blank>nucleus</blank> containing protons and <blank>neutrons</blank>, surrounded by <blank>electrons</blank> in energy levels. The number of <blank>protons</blank> determines the atomic number.',
+                    blanks: [
+                        { id: 1, correct: 'nucleus', position: 0 },
+                        { id: 2, correct: 'neutrons', position: 1 },
+                        { id: 3, correct: 'electrons', position: 2 },
+                        { id: 4, correct: 'protons', position: 3 }
+                    ]
+                },
+                {
+                    id: 3,
+                    type: 'multiple-choice',
+                    question: 'Which group of elements is known for being highly reactive and having one electron in their outer shell?',
+                    options: [
+                        { id: 'a', text: 'Noble gases', correct: false },
+                        { id: 'b', text: 'Alkali metals', correct: true },
+                        { id: 'c', text: 'Transition metals', correct: false },
+                        { id: 'd', text: 'Halogens', correct: false }
+                    ]
+                },
+                {
+                    id: 4,
+                    type: 'matching',
+                    question: 'Match each group with its characteristic properties:',
+                    leftItems: [
+                        { id: 'a', text: 'Noble Gases', correct: '2' },
+                        { id: 'b', text: 'Halogens', correct: '3' },
+                        { id: 'c', text: 'Alkali Metals', correct: '1' }
+                    ],
+                    rightItems: [
+                        { id: '1', text: 'Highly reactive, soft metals, 1 valence electron' },
+                        { id: '2', text: 'Inert, stable, complete outer electron shells' },
+                        { id: '3', text: 'Highly reactive nonmetals, 7 valence electrons' }
+                    ]
+                },
+                {
+                    id: 5,
+                    type: 'fill-blank',
+                    question: 'Fill in the blanks about chemical bonding:',
+                    text: 'In ionic bonding, electrons are <blank>transferred</blank> from metal to nonmetal atoms. In covalent bonding, electrons are <blank>shared</blank> between atoms. <blank>Metallic</blank> bonding involves a "sea" of delocalized electrons.',
+                    blanks: [
+                        { id: 1, correct: 'transferred', position: 0 },
+                        { id: 2, correct: 'shared', position: 1 },
+                        { id: 3, correct: 'metallic', position: 2 }
+                    ]
+                },
+                {
+                    id: 6,
+                    type: 'multiple-choice',
+                    question: 'What is the maximum number of electrons that can occupy the third energy level (n=3)?',
+                    options: [
+                        { id: 'a', text: '8 electrons', correct: false },
+                        { id: 'b', text: '18 electrons', correct: true },
+                        { id: 'c', text: '32 electrons', correct: false },
+                        { id: 'd', text: '2 electrons', correct: false }
+                    ]
+                },
+                {
+                    id: 7,
+                    type: 'matching',
+                    question: 'Match each scientist with their contribution to atomic theory:',
+                    leftItems: [
+                        { id: 'a', text: 'Rutherford', correct: '2' },
+                        { id: 'b', text: 'Bohr', correct: '3' },
+                        { id: 'c', text: 'Dalton', correct: '1' }
+                    ],
+                    rightItems: [
+                        { id: '1', text: 'Proposed atoms are indivisible particles' },
+                        { id: '2', text: 'Discovered the atomic nucleus' },
+                        { id: '3', text: 'Developed electron energy level model' }
+                    ]
+                },
+                {
+                    id: 8,
+                    type: 'multiple-choice',
+                    question: 'Which of the following correctly describes isotopes?',
+                    options: [
+                        { id: 'a', text: 'Atoms with the same number of neutrons but different protons', correct: false },
+                        { id: 'b', text: 'Atoms with the same number of protons but different neutrons', correct: true },
+                        { id: 'c', text: 'Atoms with the same number of electrons but different protons', correct: false },
+                        { id: 'd', text: 'Atoms with different chemical properties', correct: false }
+                    ]
+                }
+            ]
+        };
+
+        class ChemistryQuiz {
+            constructor(data) {
+                this.data = data;
+                this.currentQuestion = 0;
+                this.answers = [];
+                this.startTime = Date.now();
+                this.timeRemaining = data.timeLimit * 60 * 1000;
+                
+                this.init();
+            }
+
+            init() {
+                // Randomize questions
+                this.data.questions = Utils.shuffleArray(this.data.questions);
+                
+                // Randomize matching items and options
+                this.data.questions.forEach(question => {
+                    if (question.type === 'matching') {
+                        question.rightItems = Utils.shuffleArray(question.rightItems);
+                    } else if (question.type === 'multiple-choice') {
+                        question.options = Utils.shuffleArray(question.options);
+                    }
+                });
+
+                document.getElementById('totalQuestions').textContent = this.data.questions.length;
+                this.startTimer();
+                this.renderQuestion();
+            }
+
+            startTimer() {
+                Quiz.timer.start(this.data.timeLimit, 
+                    (remaining) => {
+                        document.getElementById('timer').textContent = Quiz.formatTime(remaining);
+                    },
+                    () => {
+                        this.finishQuiz();
+                    }
+                );
+            }
+
+            renderQuestion() {
+                const question = this.data.questions[this.currentQuestion];
+                const container = document.getElementById('quizContainer');
+
+                if (question.type === 'matching') {
+                    container.innerHTML = this.renderMatchingQuestion(question);
+                    this.setupMatchingInteraction();
+                } else if (question.type === 'multiple-choice') {
+                    container.innerHTML = this.renderMultipleChoiceQuestion(question);
+                    this.setupMultipleChoiceInteraction();
+                } else if (question.type === 'fill-blank') {
+                    container.innerHTML = this.renderFillBlankQuestion(question);
+                    this.setupFillBlankInteraction();
+                }
+
+                this.updateProgress();
+            }
+
+            renderFillBlankQuestion(question) {
+                let processedText = question.text;
+                let blankIndex = 0;
+                
+                // Replace <blank>answer</blank> with input fields
+                processedText = processedText.replace(/<blank>([^<]+)<\/blank>/g, (match, answer) => {
+                    return `<input type="text" class="blank-input" data-blank-id="${blankIndex++}" data-correct="${answer}" placeholder="____">`;
+                });
+
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                            <div class="question-type">Fill in the Blanks</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="fill-blank-container">
+                            <div class="fill-blank-text">${processedText}</div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <button class="btn btn-primary" onclick="quiz.nextQuestion()" id="nextBtn">
+                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderMatchingQuestion(question) {
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                            <div class="question-type">Matching</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="matching-container">
+                            <div class="matching-column">
+                                <div class="column-title">Items</div>
+                                ${question.leftItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}" data-correct="${item.correct}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="matching-column">
+                                <div class="column-title">Definitions</div>
+                                ${question.rightItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <button class="btn btn-primary" onclick="quiz.nextQuestion()" id="nextBtn" disabled>
+                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderMultipleChoiceQuestion(question) {
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                            <div class="question-type">Multiple Choice</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="options-container">
+                            ${question.options.map((option, index) => `
+                                <div class="option" data-id="${option.id}" data-correct="${option.correct}">
+                                    <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                                    <div>${option.text}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <button class="btn btn-primary" onclick="quiz.nextQuestion()" id="nextBtn" disabled>
+                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupFillBlankInteraction() {
+                const inputs = document.querySelectorAll('.blank-input');
+                let allFilled = false;
+
+                const checkAllFilled = () => {
+                    allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+                    document.getElementById('nextBtn').disabled = !allFilled;
+                };
+
+                inputs.forEach(input => {
+                    input.addEventListener('input', checkAllFilled);
+                    input.addEventListener('blur', () => {
+                        // Optional: Show immediate feedback
+                        const correct = input.dataset.correct.toLowerCase();
+                        const userAnswer = input.value.trim().toLowerCase();
+                        
+                        if (userAnswer && Math.abs(userAnswer.length - correct.length) < 3) {
+                            // Simple similarity check - could be enhanced
+                            if (correct.includes(userAnswer) || userAnswer.includes(correct)) {
+                                input.classList.add('correct');
+                                input.classList.remove('incorrect');
+                            } else {
+                                input.classList.add('incorrect');
+                                input.classList.remove('correct');
+                            }
+                        }
+                    });
+                });
+            }
+
+            setupMatchingInteraction() {
+                const leftItems = document.querySelectorAll('.matching-column:first-child .matching-item');
+                const rightItems = document.querySelectorAll('.matching-column:last-child .matching-item');
+                let selectedLeft = null;
+                let matches = {};
+
+                leftItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (item.classList.contains('matched')) return;
+                        
+                        leftItems.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedLeft = item;
+                    });
+                });
+
+                rightItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (!selectedLeft || item.classList.contains('matched')) return;
+                        
+                        const leftId = selectedLeft.dataset.id;
+                        const rightId = item.dataset.id;
+                        
+                        matches[leftId] = rightId;
+                        
+                        selectedLeft.classList.remove('selected');
+                        selectedLeft.classList.add('matched');
+                        item.classList.add('matched');
+                        
+                        selectedLeft = null;
+                        
+                        if (Object.keys(matches).length === leftItems.length) {
+                            this.saveMatchingAnswer(matches);
+                            document.getElementById('nextBtn').disabled = false;
+                        }
+                    });
+                });
+            }
+
+            setupMultipleChoiceInteraction() {
+                const options = document.querySelectorAll('.option');
+                
+                options.forEach(option => {
+                    option.addEventListener('click', () => {
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        
+                        this.saveMultipleChoiceAnswer(option.dataset.id, option.dataset.correct === 'true');
+                        document.getElementById('nextBtn').disabled = false;
+                    });
+                });
+            }
+
+            saveMatchingAnswer(matches) {
+                const question = this.data.questions[this.currentQuestion];
+                let correct = 0;
+                
+                question.leftItems.forEach(item => {
+                    if (matches[item.id] === item.correct) {
+                        correct++;
+                    }
+                });
+                
+                this.answers.push({
+                    questionId: question.id,
+                    type: 'matching',
+                    matches: matches,
+                    correct: correct === question.leftItems.length,
+                    score: correct / question.leftItems.length
+                });
+            }
+
+            saveMultipleChoiceAnswer(selectedId, isCorrect) {
+                const question = this.data.questions[this.currentQuestion];
+                
+                this.answers.push({
+                    questionId: question.id,
+                    type: 'multiple-choice',
+                    selected: selectedId,
+                    correct: isCorrect,
+                    score: isCorrect ? 1 : 0
+                });
+            }
+
+            saveFillBlankAnswer() {
+                const question = this.data.questions[this.currentQuestion];
+                const inputs = document.querySelectorAll('.blank-input');
+                const answers = {};
+                let correct = 0;
+
+                inputs.forEach(input => {
+                    const blankId = input.dataset.blankId;
+                    const correctAnswer = input.dataset.correct.toLowerCase();
+                    const userAnswer = input.value.trim().toLowerCase();
+                    
+                    answers[blankId] = input.value.trim();
+                    
+                    // Simple matching - could be enhanced with fuzzy matching
+                    if (correctAnswer === userAnswer || correctAnswer.includes(userAnswer)) {
+                        correct++;
+                    }
+                });
+
+                this.answers.push({
+                    questionId: question.id,
+                    type: 'fill-blank',
+                    answers: answers,
+                    correct: correct === inputs.length,
+                    score: correct / inputs.length
+                });
+            }
+
+            nextQuestion() {
+                // Save fill-blank answers if current question is fill-blank type
+                const currentQ = this.data.questions[this.currentQuestion];
+                if (currentQ.type === 'fill-blank') {
+                    this.saveFillBlankAnswer();
+                }
+
+                if (this.currentQuestion < this.data.questions.length - 1) {
+                    this.currentQuestion++;
+                    this.renderQuestion();
+                } else {
+                    this.finishQuiz();
+                }
+            }
+
+            updateProgress() {
+                const progress = ((this.currentQuestion + 1) / this.data.questions.length) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            finishQuiz() {
+                Quiz.timer.stop();
+                const timeElapsed = Quiz.timer.getElapsed();
+                const summary = Quiz.generateSummary(this.answers, timeElapsed);
+                
+                // Save results
+                Storage.saveQuizResult(this.data.id, summary);
+                Storage.clearProgress(this.data.id);
+                
+                this.showResults(summary);
+            }
+
+            showResults(summary) {
+                document.getElementById('quizContainer').style.display = 'none';
+                const resultsContainer = document.getElementById('resultsContainer');
+                
+                resultsContainer.innerHTML = `
+                    <div class="card results-container">
+                        <h2>🧪 Chemistry Quiz Complete!</h2>
+                        <div class="score-display">${summary.score}%</div>
+                        <p class="text-${summary.passed ? 'success' : 'danger'}" style="font-size: 1.2rem; margin-bottom: 30px;">
+                            ${summary.passed ? '⚛️ Excellent! You have mastered these chemistry concepts!' : '📚 Keep studying the periodic table and try again!'}
+                        </p>
+                        
+                        <div class="results-stats">
+                            <div class="stat-card">
+                                <span class="stat-value text-success">${summary.correct}</span>
+                                <span>Correct</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-danger">${summary.incorrect}</span>
+                                <span>Incorrect</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-primary">${summary.total}</span>
+                                <span>Total</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-muted">${Quiz.formatTime(summary.timeElapsed)}</span>
+                                <span>Time Taken</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="window.location.reload()">Retake Quiz</button>
+                            <button class="btn btn-secondary" onclick="Navigation.goHome()">Back to Home</button>
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.style.display = 'block';
+            }
+        }
+
+        // Initialize quiz when page loads
+        let quiz;
+        document.addEventListener('DOMContentLoaded', () => {
+            quiz = new ChemistryQuiz(quizData);
+        });
+    </script>
+</body>
+</html>

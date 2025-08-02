@@ -204,21 +204,41 @@
             line-height: 1.6;
         }
 
-        /* Matching Question Styles */
-        .matching-container {
+        /* Block Diagram Image */
+        .block-diagram-container {
+            text-align: center;
+            margin: 25px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 2px solid #e9ecef;
+        }
+
+        .block-diagram-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Hybrid Question Styles */
+        .hybrid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .matching-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            margin-bottom: 20px;
-            max-height: 600px;
-            overflow: hidden;
         }
 
         .matching-column {
             background: #f8f9fa;
             border-radius: var(--border-radius);
             padding: 20px;
-            max-height: 600px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -270,8 +290,84 @@
             cursor: default;
         }
 
-        .matching-item.matched {
-            opacity: 0.7;
+        .identification-section {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .identification-title {
+            font-weight: bold;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .input-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-number {
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-field.correct {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .input-field.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Matching Question Styles */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        /* Identification Question Styles */
+        .identification-container {
+            margin-bottom: 20px;
         }
 
         .quiz-controls {
@@ -358,65 +454,10 @@
         .text-primary { color: var(--primary-color); }
         .text-muted { color: var(--text-muted); }
 
-        /* Identification Question Styles */
-        .identification-container {
-            margin-bottom: 20px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .input-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-number {
-            background: var(--primary-color);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .input-field {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .input-field:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .input-field.correct {
-            border-color: #28a745;
-            background: rgba(40, 167, 69, 0.1);
-        }
-
-        .input-field.incorrect {
-            border-color: #dc3545;
-            background: rgba(220, 53, 69, 0.1);
-        }
-
         /* Responsive design */
         @media (max-width: 768px) {
-            .matching-container {
+            .matching-container,
+            .matching-section {
                 grid-template-columns: 1fr;
                 gap: 20px;
                 max-height: none;
@@ -449,6 +490,14 @@
             .results-stats {
                 grid-template-columns: 1fr 1fr;
             }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hybrid-container {
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -478,7 +527,7 @@
                         <span>Concepts</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-value">5</span>
+                        <span class="detail-value">6</span>
                         <span>Questions</span>
                     </div>
                 </div>
@@ -666,6 +715,66 @@
                     question: 'List the 6 Classifications of Controls:',
                     correctAnswers: ['Manual', 'Automatic', 'Servo', 'Regulator', 'Open-Loop', 'Closed-Loop'],
                     userAnswers: Array(6).fill('')
+                },
+                {
+                    id: 6,
+                    type: 'hybrid',
+                    question: 'Study the block diagram below and complete both sections:',
+                    image: 'BlockDiagram.png',
+                    leftItems: [
+                        { id: 'num1', text: '1', correct: 'yr' },
+                        { id: 'num2', text: '2', correct: 'A' },
+                        { id: 'num3', text: '3', correct: 'r' },
+                        { id: 'num4', text: '4', correct: 'any' },
+                        { id: 'num5', text: '5', correct: 'e' },
+                        { id: 'num6', text: '6', correct: 'b' },
+                        { id: 'num7', text: '7', correct: 'D' },
+                        { id: 'num8', text: '8', correct: 'u' },
+                        { id: 'num9', text: '9', correct: 'H' },
+                        { id: 'num10', text: '10', correct: 'GA' },
+                        { id: 'num11', text: '11', correct: 'm' },
+                        { id: 'num12', text: '12', correct: 'any' },
+                        { id: 'num13', text: '13', correct: 'w' },
+                        { id: 'num14', text: '14', correct: 'GP' },
+                        { id: 'num15', text: '15', correct: 'y' },
+                        { id: 'num16', text: '16', correct: 'any' }
+                    ],
+                    rightItems: [
+                        { id: 'yr', text: 'y<sub>r</sub>' },
+                        { id: 'A', text: 'A' },
+                        { id: 'r', text: 'r' },
+                        { id: 'any', text: 'any' },
+                        { id: 'e', text: 'ê' },
+                        { id: 'b', text: 'b' },
+                        { id: 'D', text: 'D' },
+                        { id: 'u', text: 'u' },
+                        { id: 'H', text: 'H' },
+                        { id: 'GA', text: 'G<sub>A</sub>' },
+                        { id: 'm', text: 'm' },
+                        { id: 'w', text: 'w' },
+                        { id: 'GP', text: 'G<sub>P</sub>' },
+                        { id: 'y', text: 'y' }
+                    ],
+                    identificationAnswers: [
+                        'Command input',
+                        'Reference input elements',
+                        'Reference input',
+                        'Controller',
+                        'Actuating error signal',
+                        'Feedback signal',
+                        'Control logic elements',
+                        'Control signal',
+                        'Feedback elements',
+                        'Actuator elements',
+                        'Manipulated variable',
+                        'Plant',
+                        'Disturbance input',
+                        'Controlled system elements',
+                        'Controlled variable',
+                        'Summing point'
+                    ],
+                    userAnswers: Array(16).fill(''),
+                    matches: {}
                 }
             ]
         };
@@ -685,6 +794,14 @@
                 // Randomize the right items (definitions) to make it more challenging
                 this.data.questions[0].rightItems = Utils.shuffleArray(this.data.questions[0].rightItems);
                 
+                // Randomize symbols for the hybrid question (except 'any' items)
+                if (this.data.questions[5]) {
+                    const hybridQuestion = this.data.questions[5];
+                    const symbolsToShuffle = hybridQuestion.rightItems.filter(item => item.id !== 'any');
+                    const anyItems = hybridQuestion.rightItems.filter(item => item.id === 'any');
+                    hybridQuestion.rightItems = [...Utils.shuffleArray(symbolsToShuffle), ...anyItems];
+                }
+                
                 this.correctMatches = 0;
                 this.renderQuestion();
             }
@@ -699,6 +816,9 @@
                 } else if (question.type === 'identification') {
                     container.innerHTML = this.renderIdentificationQuestion(question);
                     this.setupIdentificationInteraction();
+                } else if (question.type === 'hybrid') {
+                    container.innerHTML = this.renderHybridQuestion(question);
+                    this.setupHybridInteraction();
                 }
 
                 this.updateProgress();
@@ -800,6 +920,83 @@
                                 <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
                                     ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderHybridQuestion(question) {
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                            <div class="question-type">Block Diagram Analysis</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="block-diagram-container">
+                            <img src="${question.image}" alt="Control System Block Diagram" class="block-diagram-image">
+                        </div>
+                        
+                        <div class="hybrid-container">
+                            <!-- Matching Section -->
+                            <div class="matching-section">
+                                <div class="matching-column">
+                                    <div class="column-title">Numbers (from diagram)</div>
+                                    ${question.leftItems.map(item => `
+                                        <div class="matching-item" data-id="${item.id}" data-correct="${item.correct}">
+                                            ${item.text}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <div class="matching-column">
+                                    <div class="column-title">Symbols</div>
+                                    ${question.rightItems.map(item => `
+                                        <div class="matching-item" data-id="${item.id}">
+                                            ${item.text}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Identification Section -->
+                            <div class="identification-section">
+                                <div class="identification-title">Complete the component names (in order 1-16):</div>
+                                <div class="input-grid">
+                                    ${question.userAnswers.map((answer, index) => `
+                                        <div class="input-item">
+                                            <div class="input-number">${index + 1}</div>
+                                            <input type="text" class="input-field" id="hybridAnswer${index}" 
+                                                   value="${answer}" placeholder="Enter component name...">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="quiz.previousQuestion()">← Previous</button>
+                            </div>
+                            
+                            <div class="progress-info">
+                                <div class="progress-text">
+                                    Symbols: <span id="symbolMatches">0</span>/16 | 
+                                    Names: <span id="nameCount">0</span>/16
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answers</button>
+                                <button class="btn btn-primary" onclick="quiz.checkHybridAnswers()">Check Names</button>
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">Finish Quiz</button>
                             </div>
                         </div>
                     </div>
@@ -911,6 +1108,117 @@
                 });
             }
 
+            setupHybridInteraction() {
+                // Setup matching interaction
+                const leftItems = document.querySelectorAll('.matching-section .matching-column:first-child .matching-item');
+                const rightItems = document.querySelectorAll('.matching-section .matching-column:last-child .matching-item');
+                let selectedLeft = null;
+
+                leftItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            // Allow changing answers
+                            item.classList.remove('correct', 'incorrect');
+                            const matchedRightId = this.matches[item.dataset.id];
+                            if (matchedRightId) {
+                                const rightItem = document.querySelector(`[data-id="${matchedRightId}"]`);
+                                if (rightItem) {
+                                    rightItem.classList.remove('correct', 'incorrect');
+                                }
+                                delete this.matches[item.dataset.id];
+                                this.updateHybridProgress();
+                            }
+                        }
+                        
+                        leftItems.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedLeft = item;
+                    });
+                });
+
+                rightItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (!selectedLeft) return;
+                        
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            item.classList.remove('correct', 'incorrect');
+                        }
+                        
+                        const leftId = selectedLeft.dataset.id;
+                        const rightId = item.dataset.id;
+                        const correctAnswer = selectedLeft.dataset.correct;
+                        
+                        // Remove any existing matches
+                        if (this.matches[leftId]) {
+                            const prevRightItem = document.querySelector(`[data-id="${this.matches[leftId]}"]`);
+                            if (prevRightItem) {
+                                prevRightItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
+                            }
+                        }
+                        
+                        for (let [key, value] of Object.entries(this.matches)) {
+                            if (value === rightId) {
+                                delete this.matches[key];
+                                const leftItem = document.querySelector(`[data-id="${key}"]`);
+                                if (leftItem) {
+                                    leftItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
+                                }
+                                break;
+                            }
+                        }
+                        
+                        this.matches[leftId] = rightId;
+                        
+                        selectedLeft.classList.remove('selected');
+                        item.classList.remove('selected');
+                        
+                        // Check if correct (handle 'any' case)
+                        if (rightId === correctAnswer || (correctAnswer === 'any' && rightId === 'any')) {
+                            selectedLeft.classList.add('correct');
+                            item.classList.add('correct');
+                        } else {
+                            selectedLeft.classList.add('incorrect');
+                            item.classList.add('incorrect');
+                        }
+                        
+                        selectedLeft = null;
+                        this.updateHybridProgress();
+                    });
+                });
+
+                // Setup identification inputs
+                const inputs = document.querySelectorAll('#quizContainer input[id^="hybridAnswer"]');
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        this.data.questions[this.currentQuestion].userAnswers[index] = e.target.value.trim();
+                        this.updateHybridProgress();
+                    });
+                });
+            }
+
+            updateHybridProgress() {
+                const question = this.data.questions[this.currentQuestion];
+                
+                // Count correct symbol matches
+                let correctSymbolMatches = 0;
+                for (let [leftId, rightId] of Object.entries(this.matches)) {
+                    const leftItem = question.leftItems.find(item => item.id === leftId);
+                    if (leftItem && (rightId === leftItem.correct || (leftItem.correct === 'any' && rightId === 'any'))) {
+                        correctSymbolMatches++;
+                    }
+                }
+                
+                // Count filled name inputs
+                const filledNames = question.userAnswers.filter(answer => answer.trim() !== '').length;
+                
+                document.getElementById('symbolMatches').textContent = correctSymbolMatches;
+                document.getElementById('nameCount').textContent = filledNames;
+                
+                const totalProgress = correctSymbolMatches + filledNames;
+                const progress = (totalProgress / 32) * 100; // 16 symbols + 16 names
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
             checkIdentificationAnswers() {
                 const question = this.data.questions[this.currentQuestion];
                 const inputs = document.querySelectorAll('.input-field');
@@ -933,11 +1241,9 @@
                     }
                 });
 
-                // Show notification
                 UI.showNotification(`You got ${correctCount} out of ${question.correctAnswers.length} correct!`, 
                     correctCount >= Math.ceil(question.correctAnswers.length * 0.7) ? 'success' : 'error', 3000);
 
-                // Save answers for final scoring
                 this.answers[this.currentQuestion] = {
                     questionId: question.id,
                     type: 'identification',
@@ -947,6 +1253,30 @@
                 };
             }
 
+            checkHybridAnswers() {
+                const question = this.data.questions[this.currentQuestion];
+                const inputs = document.querySelectorAll('#quizContainer input[id^="hybridAnswer"]');
+                let correctCount = 0;
+
+                inputs.forEach((input, index) => {
+                    const userAnswer = input.value.trim();
+                    const correctAnswer = question.identificationAnswers[index];
+                    
+                    input.classList.remove('correct', 'incorrect');
+                    if (userAnswer) {
+                        if (correctAnswer.toLowerCase() === userAnswer.toLowerCase()) {
+                            input.classList.add('correct');
+                            correctCount++;
+                        } else {
+                            input.classList.add('incorrect');
+                        }
+                    }
+                });
+
+                UI.showNotification(`You got ${correctCount} out of 16 component names correct!`, 
+                    correctCount >= 12 ? 'success' : 'error', 3000);
+            }
+
             updateProgress() {
                 if (this.data.questions[this.currentQuestion].type === 'matching') {
                     const matchedCount = Object.keys(this.matches).length;
@@ -954,15 +1284,15 @@
                     
                     const progress = (matchedCount / 42) * 100;
                     document.getElementById('progressFill').style.width = `${progress}%`;
+                } else if (this.data.questions[this.currentQuestion].type === 'hybrid') {
+                    this.updateHybridProgress();
                 } else {
-                    // For identification and other question types
                     const progress = ((this.currentQuestion + 1) / this.data.questions.length) * 100;
                     document.getElementById('progressFill').style.width = `${progress}%`;
                 }
             }
 
             checkCompletion() {
-                // Auto-advance when all matches are made correctly
                 if (this.correctMatches === 42) {
                     UI.showNotification('Perfect! All concepts matched correctly!', 'success', 2000);
                     setTimeout(() => {
@@ -972,8 +1302,9 @@
             }
 
             resetCurrentQuestion() {
-                if (this.data.questions[this.currentQuestion].type === 'matching') {
-                    // Reset matching question
+                const question = this.data.questions[this.currentQuestion];
+                
+                if (question.type === 'matching') {
                     this.matches = {};
                     this.correctMatches = 0;
                     const allItems = document.querySelectorAll('.matching-item');
@@ -981,15 +1312,29 @@
                         item.classList.remove('selected', 'correct', 'incorrect', 'matched');
                     });
                     this.updateProgress();
-                } else if (this.data.questions[this.currentQuestion].type === 'identification') {
-                    // Reset identification question
-                    const question = this.data.questions[this.currentQuestion];
-                    question.userAnswers = Array(7).fill('');
+                } else if (question.type === 'identification') {
+                    question.userAnswers = Array(question.correctAnswers.length).fill('');
                     const inputs = document.querySelectorAll('.input-field');
                     inputs.forEach(input => {
                         input.value = '';
                         input.classList.remove('correct', 'incorrect');
                     });
+                } else if (question.type === 'hybrid') {
+                    this.matches = {};
+                    question.userAnswers = Array(16).fill('');
+                    
+                    const allItems = document.querySelectorAll('.matching-item');
+                    allItems.forEach(item => {
+                        item.classList.remove('selected', 'correct', 'incorrect', 'matched');
+                    });
+                    
+                    const inputs = document.querySelectorAll('#quizContainer input[id^="hybridAnswer"]');
+                    inputs.forEach(input => {
+                        input.value = '';
+                        input.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    this.updateHybridProgress();
                 }
             }
 
@@ -997,11 +1342,11 @@
                 if (this.currentQuestion > 0) {
                     this.currentQuestion--;
                     
-                    // Restore state for previous question
                     if (this.data.questions[this.currentQuestion].type === 'matching') {
-                        // Reset matching state if going back
                         this.matches = {};
                         this.correctMatches = 0;
+                    } else if (this.data.questions[this.currentQuestion].type === 'hybrid') {
+                        this.matches = {};
                     }
                     
                     this.renderQuestion();
@@ -1010,23 +1355,51 @@
 
             nextQuestion() {
                 if (this.currentQuestion < this.data.questions.length - 1) {
-                    // Save current state before moving
-                    if (this.data.questions[this.currentQuestion].type === 'matching') {
+                    const currentQ = this.data.questions[this.currentQuestion];
+                    
+                    if (currentQ.type === 'matching') {
                         this.answers[this.currentQuestion] = {
-                            questionId: this.data.questions[this.currentQuestion].id,
+                            questionId: currentQ.id,
                             type: 'matching',
                             matches: {...this.matches},
                             correctMatches: this.correctMatches,
                             score: this.correctMatches / 42
                         };
+                    } else if (currentQ.type === 'hybrid') {
+                        // Calculate hybrid score (symbols + names)
+                        let correctSymbols = 0;
+                        for (let [leftId, rightId] of Object.entries(this.matches)) {
+                            const leftItem = currentQ.leftItems.find(item => item.id === leftId);
+                            if (leftItem && (rightId === leftItem.correct || (leftItem.correct === 'any' && rightId === 'any'))) {
+                                correctSymbols++;
+                            }
+                        }
+                        
+                        let correctNames = 0;
+                        currentQ.userAnswers.forEach((answer, index) => {
+                            if (answer.trim().toLowerCase() === currentQ.identificationAnswers[index].toLowerCase()) {
+                                correctNames++;
+                            }
+                        });
+                        
+                        this.answers[this.currentQuestion] = {
+                            questionId: currentQ.id,
+                            type: 'hybrid',
+                            matches: {...this.matches},
+                            userAnswers: [...currentQ.userAnswers],
+                            correctSymbols: correctSymbols,
+                            correctNames: correctNames,
+                            score: (correctSymbols + correctNames) / 32
+                        };
                     }
                     
                     this.currentQuestion++;
                     
-                    // Reset state for new question
                     if (this.data.questions[this.currentQuestion].type === 'matching') {
                         this.matches = {};
                         this.correctMatches = 0;
+                    } else if (this.data.questions[this.currentQuestion].type === 'hybrid') {
+                        this.matches = {};
                     }
                     
                     this.renderQuestion();
@@ -1038,7 +1411,6 @@
             showAnswerKey() {
                 const question = this.data.questions[this.currentQuestion];
                 
-                // Create a modal-like overlay for the answer key
                 const overlay = document.createElement('div');
                 overlay.style.cssText = `
                     position: fixed;
@@ -1059,7 +1431,7 @@
                     background: white;
                     border-radius: 20px;
                     padding: 30px;
-                    max-width: 800px;
+                    max-width: 900px;
                     max-height: 80vh;
                     overflow-y: auto;
                     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -1068,7 +1440,6 @@
                 let answerKeyHTML = '';
 
                 if (question.type === 'matching') {
-                    // Generate matching answer key content
                     answerKeyHTML = `
                         <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key - Matching</h2>
                         <div style="display: grid; gap: 15px;">
@@ -1088,12 +1459,8 @@
                         `;
                     });
                 } else if (question.type === 'identification') {
-                    // Generate identification answer key content
                     answerKeyHTML = `
-                        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key - System Processes</h2>
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <strong>The 7 Processes of the Systems:</strong>
-                        </div>
+                        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key</h2>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                     `;
                     
@@ -1103,6 +1470,38 @@
                                 <div style="font-weight: bold; color: #28a745;">
                                     ${index + 1}. ${answer}
                                 </div>
+                            </div>
+                        `;
+                    });
+                } else if (question.type === 'hybrid') {
+                    answerKeyHTML = `
+                        <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key - Block Diagram</h2>
+                        
+                        <h3 style="color: var(--primary-color); margin-bottom: 15px;">Symbol Matching:</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px;">
+                    `;
+                    
+                    question.leftItems.forEach(item => {
+                        const correctSymbol = question.rightItems.find(right => right.id === item.correct);
+                        answerKeyHTML += `
+                            <div style="border: 1px solid #e9ecef; border-radius: 8px; padding: 10px; background: #f8f9fa; display: flex; justify-content: space-between;">
+                                <span><strong>${item.text}:</strong></span>
+                                <span>${correctSymbol ? correctSymbol.text : 'any'}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    answerKeyHTML += `
+                        </div>
+                        
+                        <h3 style="color: var(--primary-color); margin-bottom: 15px;">Component Names (in order):</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+                    `;
+                    
+                    question.identificationAnswers.forEach((answer, index) => {
+                        answerKeyHTML += `
+                            <div style="border: 1px solid #28a745; border-radius: 8px; padding: 10px; background: rgba(40, 167, 69, 0.1);">
+                                <strong>${index + 1}. ${answer}</strong>
                             </div>
                         `;
                     });
@@ -1122,7 +1521,6 @@
                 overlay.appendChild(modal);
                 document.body.appendChild(overlay);
                 
-                // Close on overlay click
                 overlay.addEventListener('click', (e) => {
                     if (e.target === overlay) {
                         overlay.remove();
@@ -1131,6 +1529,35 @@
             }
 
             finishQuiz() {
+                // Save current question if it's the hybrid question
+                const currentQ = this.data.questions[this.currentQuestion];
+                if (currentQ.type === 'hybrid') {
+                    let correctSymbols = 0;
+                    for (let [leftId, rightId] of Object.entries(this.matches)) {
+                        const leftItem = currentQ.leftItems.find(item => item.id === leftId);
+                        if (leftItem && (rightId === leftItem.correct || (leftItem.correct === 'any' && rightId === 'any'))) {
+                            correctSymbols++;
+                        }
+                    }
+                    
+                    let correctNames = 0;
+                    currentQ.userAnswers.forEach((answer, index) => {
+                        if (answer.trim().toLowerCase() === currentQ.identificationAnswers[index].toLowerCase()) {
+                            correctNames++;
+                        }
+                    });
+                    
+                    this.answers[this.currentQuestion] = {
+                        questionId: currentQ.id,
+                        type: 'hybrid',
+                        matches: {...this.matches},
+                        userAnswers: [...currentQ.userAnswers],
+                        correctSymbols: correctSymbols,
+                        correctNames: correctNames,
+                        score: (correctSymbols + correctNames) / 32
+                    };
+                }
+                
                 // Calculate final score from all questions
                 let totalScore = 0;
                 let totalPossible = 0;
@@ -1167,26 +1594,49 @@
                 document.getElementById('quizContainer').style.display = 'none';
                 const resultsContainer = document.getElementById('resultsContainer');
                 
+                // Calculate detailed stats
+                let totalConcepts = 0;
+                let correctConcepts = 0;
+                
+                this.answers.forEach(answer => {
+                    if (answer.type === 'matching') {
+                        totalConcepts += 42;
+                        correctConcepts += answer.correctMatches || 0;
+                    } else if (answer.type === 'identification') {
+                        totalConcepts += answer.userAnswers ? answer.userAnswers.length : 0;
+                        correctConcepts += answer.correctCount || 0;
+                    } else if (answer.type === 'hybrid') {
+                        totalConcepts += 32; // 16 symbols + 16 names
+                        correctConcepts += (answer.correctSymbols || 0) + (answer.correctNames || 0);
+                    }
+                });
+                
+                // Add current question if it's the matching question and not saved
+                if (this.currentQuestion === 0 && this.data.questions[0].type === 'matching') {
+                    totalConcepts += 42;
+                    correctConcepts += this.correctMatches;
+                }
+                
                 resultsContainer.innerHTML = `
                     <div class="results-container">
                         <h2>Quiz Complete!</h2>
                         <div class="score-display">${summary.score}%</div>
                         <p class="text-${summary.passed ? 'success' : 'danger'}" style="font-size: 1.2rem; margin-bottom: 30px;">
-                            ${summary.passed ? '🎉 Excellent! You have a strong understanding of control systems!' : '📚 Keep studying! Control systems concepts take practice to master.'}
+                            ${summary.passed ? '🎉 Excellent! You have mastered control systems concepts!' : '📚 Good effort! Keep studying to master these concepts.'}
                         </p>
                         
                         <div class="results-stats">
                             <div class="stat-card">
-                                <span class="stat-value text-success">${this.correctMatches}</span>
-                                <span>Correct Matches</span>
+                                <span class="stat-value text-success">${correctConcepts}</span>
+                                <span>Correct Answers</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-danger">${42 - this.correctMatches}</span>
-                                <span>Incorrect Matches</span>
+                                <span class="stat-value text-danger">${totalConcepts - correctConcepts}</span>
+                                <span>Incorrect Answers</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-primary">42</span>
-                                <span>Total Concepts</span>
+                                <span class="stat-value text-primary">${totalConcepts}</span>
+                                <span>Total Items</span>
                             </div>
                             <div class="stat-card">
                                 <span class="stat-value text-muted">${this.data.questions.length}</span>

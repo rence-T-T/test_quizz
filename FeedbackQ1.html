@@ -427,6 +427,7 @@
                 // Randomize the right items (definitions) to make it more challenging
                 this.data.questions[0].rightItems = Utils.shuffleArray(this.data.questions[0].rightItems);
                 
+                this.correctMatches = 0;
                 this.startTimer();
                 this.renderQuestion();
             }
@@ -482,8 +483,8 @@
                                     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" onclick="quiz.checkAnswers()" id="checkBtn">
-                                Check All Answers
+                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()" id="answerKeyBtn">
+                                Show Answer Key
                             </button>
                             <button class="btn btn-success" onclick="quiz.finishQuiz()" id="finishBtn" style="display: none;">
                                 Finish Quiz
@@ -516,12 +517,13 @@
                         
                         const leftId = selectedLeft.dataset.id;
                         const rightId = item.dataset.id;
+                        const correctAnswer = selectedLeft.dataset.correct;
                         
                         // Remove any existing match for this left item
                         if (this.matches[leftId]) {
                             const prevRightItem = document.querySelector(`[data-id="${this.matches[leftId]}"]`);
                             if (prevRightItem) {
-                                prevRightItem.classList.remove('matched', 'selected');
+                                prevRightItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
                             }
                         }
                         
@@ -531,7 +533,7 @@
                                 delete this.matches[key];
                                 const leftItem = document.querySelector(`[data-id="${key}"]`);
                                 if (leftItem) {
-                                    leftItem.classList.remove('matched', 'selected');
+                                    leftItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
                                 }
                                 break;
                             }
@@ -540,12 +542,22 @@
                         this.matches[leftId] = rightId;
                         
                         selectedLeft.classList.remove('selected');
-                        selectedLeft.classList.add('matched');
-                        item.classList.add('matched');
+                        item.classList.remove('selected');
+                        
+                        // Immediately check if the match is correct
+                        if (rightId === correctAnswer) {
+                            selectedLeft.classList.add('correct');
+                            item.classList.add('correct');
+                            this.correctMatches++;
+                        } else {
+                            selectedLeft.classList.add('incorrect');
+                            item.classList.add('incorrect');
+                        }
                         
                         selectedLeft = null;
                         
                         this.updateProgress();
+                        this.checkCompletion();
                     });
                 });
             }
@@ -558,44 +570,88 @@
                 document.getElementById('progressFill').style.width = `${progress}%`;
             }
 
-            checkAnswers() {
+            checkCompletion() {
+                const totalMatched = Object.keys(this.matches).length;
+                if (totalMatched === 42) {
+                    document.getElementById('finishBtn').style.display = 'inline-block';
+                }
+            }
+
+            showAnswerKey() {
                 const question = this.data.questions[this.currentQuestion];
-                this.correctMatches = 0;
                 
-                // Check each match
-                question.leftItems.forEach(item => {
-                    const leftElement = document.querySelector(`[data-id="${item.id}"]`);
-                    const rightId = this.matches[item.id];
-                    const rightElement = document.querySelector(`[data-id="${rightId}"]`);
-                    
-                    if (rightId === item.correct) {
-                        // Correct match
-                        leftElement.classList.remove('selected', 'matched');
-                        leftElement.classList.add('correct');
-                        if (rightElement) {
-                            rightElement.classList.remove('selected', 'matched');
-                            rightElement.classList.add('correct');
-                        }
-                        this.correctMatches++;
-                    } else if (rightId) {
-                        // Incorrect match
-                        leftElement.classList.remove('selected', 'matched');
-                        leftElement.classList.add('incorrect');
-                        if (rightElement) {
-                            rightElement.classList.remove('selected', 'matched');
-                            rightElement.classList.add('incorrect');
-                        }
-                    }
+                // Create a modal-like overlay for the answer key
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.8);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                `;
+                
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    background: white;
+                    border-radius: 20px;
+                    padding: 30px;
+                    max-width: 800px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                `;
+                
+                // Generate answer key content
+                let answerKeyHTML = `
+                    <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Answer Key</h2>
+                    <div style="display: grid; gap: 15px;">
+                `;
+                
+                question.leftItems.forEach((item, index) => {
+                    const correctDefinition = question.rightItems.find(right => right.id === item.correct);
+                    answerKeyHTML += `
+                        <div style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; background: #f8f9fa;">
+                            <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
+                                ${item.text}
+                            </div>
+                            <div style="color: var(--text-dark); font-size: 0.9rem;">
+                                ${correctDefinition.text}
+                            </div>
+                        </div>
+                    `;
                 });
                 
-                // Show results
-                document.getElementById('checkBtn').style.display = 'none';
-                document.getElementById('finishBtn').style.display = 'inline-block';
+                answerKeyHTML += `
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: var(--primary-gradient); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer;">
+                            Close Answer Key
+                        </button>
+                    </div>
+                `;
                 
-                // Show notification
-                const score = Math.round((this.correctMatches / 42) * 100);
-                UI.showNotification(`You got ${this.correctMatches} out of 42 correct (${score}%)`, 
-                    score >= 70 ? 'success' : 'error', 5000);
+                modal.innerHTML = answerKeyHTML;
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                // Close on overlay click
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.remove();
+                    }
+                });
+            }
+
+            checkAnswers() {
+                // This method is no longer needed but keeping for compatibility
+                console.log('Answers are checked automatically now');
             }
 
             finishQuiz() {

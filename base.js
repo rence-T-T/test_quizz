@@ -67,7 +67,7 @@ const Utils = {
 const Navigation = {
     // Go back to homepage
     goHome() {
-        window.location.href = 'index.html';
+        window.location.href = 'home.html';
     },
 
     // Navigate to specific quiz
@@ -295,7 +295,7 @@ document.head.appendChild(style);
 // Initialize base functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Set current page as active in navigation
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const currentPage = window.location.pathname.split('/').pop() || 'home.html';
     Navigation.setActiveNav(currentPage);
     
     // Add fade-in animation to main content

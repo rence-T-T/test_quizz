@@ -797,7 +797,7 @@
                                 <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
                                 <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answers</button>
                                 <button class="btn btn-primary" onclick="quiz.checkIdentificationAnswers()">Check Answers</button>
-                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn" style="display: none;">
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
                                     ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
                                 </button>
                             </div>
@@ -933,12 +933,9 @@
                     }
                 });
 
-                // Show next button
-                document.getElementById('nextBtn').style.display = 'inline-block';
-                
                 // Show notification
-                UI.showNotification(`You got ${correctCount} out of 7 correct!`, 
-                    correctCount >= 5 ? 'success' : 'error', 3000);
+                UI.showNotification(`You got ${correctCount} out of ${question.correctAnswers.length} correct!`, 
+                    correctCount >= Math.ceil(question.correctAnswers.length * 0.7) ? 'success' : 'error', 3000);
 
                 // Save answers for final scoring
                 this.answers[this.currentQuestion] = {
@@ -946,7 +943,7 @@
                     type: 'identification',
                     userAnswers: [...question.userAnswers],
                     correctCount: correctCount,
-                    score: correctCount / 7
+                    score: correctCount / question.correctAnswers.length
                 };
             }
 
@@ -993,7 +990,6 @@
                         input.value = '';
                         input.classList.remove('correct', 'incorrect');
                     });
-                    document.getElementById('nextBtn').style.display = 'none';
                 }
             }
 

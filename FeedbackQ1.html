@@ -123,6 +123,12 @@
             box-shadow: var(--shadow-medium);
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Quiz-specific styles */
         .quiz-header {
             background: rgba(255,255,255,0.1);
@@ -156,12 +162,6 @@
             font-size: 1.5rem;
             font-weight: bold;
             display: block;
-        }
-
-        .timer {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #ff6b6b;
         }
 
         .question-container {
@@ -280,6 +280,16 @@
             align-items: center;
             margin-top: 30px;
             gap: 20px;
+        }
+
+        .navigation-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 10px;
         }
 
         .progress-info {
@@ -430,6 +440,12 @@
                 gap: 15px;
             }
 
+            .navigation-controls,
+            .action-controls {
+                width: 100%;
+                justify-content: center;
+            }
+
             .results-stats {
                 grid-template-columns: 1fr 1fr;
             }
@@ -454,7 +470,7 @@
             <div class="quiz-info">
                 <div>
                     <h1>Control Systems: Concepts & Definitions</h1>
-                    <p>Match each control systems term with its correct definition</p>
+                    <p>Learn and master control systems terminology at your own pace</p>
                 </div>
                 <div class="quiz-details">
                     <div class="detail-item">
@@ -462,12 +478,8 @@
                         <span>Concepts</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-value">30</span>
-                        <span>Minutes</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-value timer" id="timer">30:00</span>
-                        <span>Remaining</span>
+                        <span class="detail-value">2</span>
+                        <span>Questions</span>
                     </div>
                 </div>
             </div>
@@ -494,58 +506,6 @@
                     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
                 }
                 return shuffled;
-            }
-        }
-
-        // Quiz Timer
-        class Quiz {
-            static timer = {
-                interval: null,
-                startTime: null,
-                timeLimit: 0,
-                
-                start(minutes, onTick, onComplete) {
-                    this.timeLimit = minutes * 60;
-                    this.startTime = Date.now();
-                    
-                    this.interval = setInterval(() => {
-                        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-                        const remaining = Math.max(0, this.timeLimit - elapsed);
-                        
-                        if (onTick) onTick(remaining);
-                        
-                        if (remaining <= 0) {
-                            this.stop();
-                            if (onComplete) onComplete();
-                        }
-                    }, 1000);
-                },
-                
-                stop() {
-                    if (this.interval) {
-                        clearInterval(this.interval);
-                        this.interval = null;
-                    }
-                },
-                
-                getElapsed() {
-                    if (!this.startTime) return 0;
-                    return Math.floor((Date.now() - this.startTime) / 1000);
-                }
-            };
-            
-            static formatTime(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${minutes}:${secs.toString().padStart(2, '0')}`;
-            }
-        }
-
-        // Storage
-        class Storage {
-            static saveQuizResult(quizId, result) {
-                // Since localStorage is not available, we'll just log the result
-                console.log('Quiz result:', result);
             }
         }
 
@@ -585,7 +545,6 @@
         const quizData = {
             id: 'control-systems',
             title: 'Control Systems: Concepts & Definitions',
-            timeLimit: 30, // minutes
             questions: [
                 {
                     id: 1,
@@ -695,7 +654,6 @@
                 this.data = data;
                 this.currentQuestion = 0;
                 this.answers = [];
-                this.startTime = Date.now();
                 this.matches = {};
                 this.correctMatches = 0;
                 
@@ -707,19 +665,7 @@
                 this.data.questions[0].rightItems = Utils.shuffleArray(this.data.questions[0].rightItems);
                 
                 this.correctMatches = 0;
-                this.startTimer();
                 this.renderQuestion();
-            }
-
-            startTimer() {
-                Quiz.timer.start(this.data.timeLimit, 
-                    (remaining) => {
-                        document.getElementById('timer').textContent = Quiz.formatTime(remaining);
-                    },
-                    () => {
-                        this.finishQuiz();
-                    }
-                );
             }
 
             renderQuestion() {
@@ -741,7 +687,7 @@
                 return `
                     <div class="question-container">
                         <div class="question-header">
-                            <div class="question-counter">Control Systems Matching Challenge</div>
+                            <div class="question-counter">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
                             <div class="question-type">Match All 42 Concepts</div>
                         </div>
                         
@@ -768,17 +714,25 @@
                         </div>
                         
                         <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="quiz.previousQuestion()" 
+                                        ${this.currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+                            </div>
+                            
                             <div class="progress-info">
                                 <div class="progress-text">Matched: <span id="matchedCount">0</span> / 42</div>
                                 <div class="progress-bar">
                                     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
-                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answer Key</button>
-                            <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
-                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                            </button>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
+                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -807,18 +761,25 @@
                         </div>
                         
                         <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="quiz.previousQuestion()">← Previous</button>
+                            </div>
+                            
                             <div class="progress-info">
                                 <div class="progress-text">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
                                 <div class="progress-bar">
                                     <div class="progress-fill" id="progressFill"></div>
                                 </div>
                             </div>
-                            <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
-                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answers</button>
-                            <button class="btn btn-primary" onclick="quiz.checkIdentificationAnswers()">Check Answers</button>
-                            <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn" style="display: none;">
-                                ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                            </button>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Show Answers</button>
+                                <button class="btn btn-primary" onclick="quiz.checkIdentificationAnswers()">Check Answers</button>
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn" style="display: none;">
+                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1015,14 +976,42 @@
                 }
             }
 
+            previousQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    
+                    // Restore state for previous question
+                    if (this.data.questions[this.currentQuestion].type === 'matching') {
+                        // Reset matching state if going back
+                        this.matches = {};
+                        this.correctMatches = 0;
+                    }
+                    
+                    this.renderQuestion();
+                }
+            }
+
             nextQuestion() {
                 if (this.currentQuestion < this.data.questions.length - 1) {
+                    // Save current state before moving
+                    if (this.data.questions[this.currentQuestion].type === 'matching') {
+                        this.answers[this.currentQuestion] = {
+                            questionId: this.data.questions[this.currentQuestion].id,
+                            type: 'matching',
+                            matches: {...this.matches},
+                            correctMatches: this.correctMatches,
+                            score: this.correctMatches / 42
+                        };
+                    }
+                    
                     this.currentQuestion++;
+                    
                     // Reset state for new question
                     if (this.data.questions[this.currentQuestion].type === 'matching') {
                         this.matches = {};
                         this.correctMatches = 0;
                     }
+                    
                     this.renderQuestion();
                 } else {
                     this.finishQuiz();
@@ -1125,9 +1114,6 @@
             }
 
             finishQuiz() {
-                Quiz.timer.stop();
-                const timeElapsed = Quiz.timer.getElapsed();
-                
                 // Calculate final score from all questions
                 let totalScore = 0;
                 let totalPossible = 0;
@@ -1153,13 +1139,9 @@
                     correct: Math.round(totalScore),
                     incorrect: totalPossible - Math.round(totalScore),
                     score: finalScore,
-                    timeElapsed,
                     percentage: finalScore,
                     passed: finalScore >= 70
                 };
-                
-                // Save results
-                Storage.saveQuizResult(this.data.id, summary);
                 
                 this.showResults(summary);
             }
@@ -1190,8 +1172,8 @@
                                 <span>Total Concepts</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-muted">${Quiz.formatTime(summary.timeElapsed)}</span>
-                                <span>Time Taken</span>
+                                <span class="stat-value text-muted">${this.data.questions.length}</span>
+                                <span>Questions Completed</span>
                             </div>
                         </div>
                         

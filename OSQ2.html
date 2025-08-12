@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operating Systems: Concepts & Definitions - Quiz Hub</title>
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #667eea;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-color: #f093fb;
+            --accent-color: #4facfe;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --text-muted: #868e96;
+            --bg-light: #f8f9fa;
+            --border-radius: 12px;
+            --border-radius-large: 20px;
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 25px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Quiz-specific styles */
+        .quiz-header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .quiz-details {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: var(--border-radius-large);
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .question-counter {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .question-type {
+            background: #f8f9fa;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Matching Question Styles */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        .matching-column {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .column-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--text-dark);
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            padding: 10px 0;
+            z-index: 10;
+        }
+
+        .matching-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .matching-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .matching-item.selected {
+            border-color: #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .matching-item.correct {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+            cursor: default;
+        }
+
+        .matching-item.incorrect {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+            cursor: default;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .navigation-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-info {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .results-container {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .text-success { color: #28a745; }
+        .text-danger { color: #dc3545; }
+        .text-primary { color: var(--primary-color); }
+        .text-muted { color: var(--text-muted); }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                max-height: none;
+            }
+
+            .matching-column {
+                max-height: 400px;
+            }
+
+            .quiz-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quiz-details {
+                justify-content: center;
+            }
+
+            .quiz-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .navigation-controls,
+            .action-controls {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-bar">
+            <div class="nav-content">
+                <a href="home.html" class="nav-brand">🎯 Quiz Hub</a>
+                <div class="nav-links">
+                    <a href="home.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link active">Operating Systems Quiz</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Header -->
+        <div class="quiz-header">
+            <div class="quiz-info">
+                <div>
+                    <h1>Operating Systems: Concepts & Definitions</h1>
+                    <p>Master fundamental operating system concepts and terminology</p>
+                </div>
+                <div class="quiz-details">
+                    <div class="detail-item">
+                        <span class="detail-value">54</span>
+                        <span>Concepts</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value">1</span>
+                        <span>Question</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-value">Advanced</span>
+                        <span>Difficulty</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div id="quizContainer">
+            <!-- Question will be loaded here -->
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" style="display: none;">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        // Utility functions
+        class Utils {
+            static shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+        }
+
+        // UI utilities
+        class UI {
+            static showNotification(message, type = 'info', duration = 3000) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 1000;
+                    transition: all 0.3s ease;
+                    color: white;
+                    background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, duration);
+            }
+        }
+
+        // Navigation
+        class Navigation {
+            static goHome() {
+                window.location.href = 'home.html';
+            }
+        }
+
+        // Operating Systems Quiz Data
+        const quizData = {
+            id: 'operating-systems',
+            title: 'Operating Systems: Concepts & Definitions',
+            questions: [
+                {
+                    id: 1,
+                    type: 'matching',
+                    question: 'Match each operating systems concept with its correct definition:',
+                    leftItems: [
+                        { id: 'a1', text: 'Authentication', correct: '1' },
+                        { id: 'a2', text: 'Authorization', correct: '2' },
+                        { id: 'a3', text: 'Basic Input/Output System (BIOS)', correct: '3' },
+                        { id: 'a4', text: 'Beginner\'s All-purpose Symbolic Instruction Code (BASIC)', correct: '4' },
+                        { id: 'a5', text: 'Boot Procedure', correct: '5' },
+                        { id: 'a6', text: 'Bootloader', correct: '6' },
+                        { id: 'a7', text: 'Bootstrap', correct: '7' },
+                        { id: 'a8', text: 'Client Operating System', correct: '8' },
+                        { id: 'a9', text: 'Clustering', correct: '9' },
+                        { id: 'a10', text: 'Command-line Interface', correct: '10' },
+                        { id: 'a11', text: 'Complementary Metal Oxide Semiconductor (CMOS)', correct: '11' },
+                        { id: 'a12', text: 'Computer Hardware', correct: '12' },
+                        { id: 'a13', text: 'Cooperative Multitasking', correct: '13' },
+                        { id: 'a14', text: 'Deterministic', correct: '14' },
+                        { id: 'a15', text: 'Device Driver', correct: '15' },
+                        { id: 'a16', text: 'Embedded System', correct: '16' },
+                        { id: 'a17', text: 'Fault Tolerance', correct: '17' },
+                        { id: 'a18', text: 'File Handle', correct: '18' },
+                        { id: 'a19', text: 'File System', correct: '19' },
+                        { id: 'a20', text: 'Firmware', correct: '20' },
+                        { id: 'a21', text: 'General-purpose Operating System', correct: '21' },
+                        { id: 'a22', text: 'Graphical User Interface (GUI)', correct: '22' },
+                        { id: 'a23', text: 'Hot Adding', correct: '23' },
+                        { id: 'a24', text: 'Hot Swapping', correct: '24' },
+                        { id: 'a25', text: 'Interrupt', correct: '25' },
+                        { id: 'a26', text: 'Interrupt Masking', correct: '26' },
+                        { id: 'a27', text: 'Interrupt Request (IRQ) Line', correct: '27' },
+                        { id: 'a28', text: 'Interrupt Service Routine (ISR)', correct: '28' },
+                        { id: 'a29', text: 'Kernel', correct: '29' },
+                        { id: 'a30', text: 'Kernel Mode', correct: '30' },
+                        { id: 'a31', text: 'Load-sharing Cluster', correct: '31' },
+                        { id: 'a32', text: 'Microsoft Disk Operating System (MS-DOS)', correct: '32' },
+                        { id: 'a33', text: 'Multitasking Operating System', correct: '33' },
+                        { id: 'a34', text: 'Multiuser Operating System', correct: '34' },
+                        { id: 'a35', text: 'Non-maskable Interrupt (NMI)', correct: '35' },
+                        { id: 'a36', text: 'Non-volatile Memory', correct: '36' },
+                        { id: 'a37', text: 'Operating System (OS)', correct: '37' },
+                        { id: 'a38', text: 'Personal Digital Assistant (PDA)', correct: '38' },
+                        { id: 'a39', text: 'Polling', correct: '39' },
+                        { id: 'a40', text: 'Power-on Self-test (POST)', correct: '40' },
+                        { id: 'a41', text: 'Preemptive Multitasking', correct: '41' },
+                        { id: 'a42', text: 'Process', correct: '42' },
+                        { id: 'a43', text: 'Process ID (PID)', correct: '43' },
+                        { id: 'a44', text: 'Real-time Operating System (RTOS)', correct: '44' },
+                        { id: 'a45', text: 'Scalability', correct: '45' },
+                        { id: 'a46', text: 'Server Operating System', correct: '46' },
+                        { id: 'a47', text: 'Service', correct: '47' },
+                        { id: 'a48', text: 'Single-tasking Operating System', correct: '48' },
+                        { id: 'a49', text: 'Single-user Operating System', correct: '49' },
+                        { id: 'a50', text: 'Standalone Operating System', correct: '50' },
+                        { id: 'a51', text: 'Trap', correct: '51' },
+                        { id: 'a52', text: 'Unified Extensible Firmware Interface (UEFI)', correct: '52' },
+                        { id: 'a53', text: 'User Interface', correct: '53' },
+                        { id: 'a54', text: 'User Mode', correct: '54' }
+                    ],
+                    rightItems: [
+                        { id: '1', text: 'Verifies that an account trying to access a system is valid and has provided valid credentials (username and password, for example)' },
+                        { id: '2', text: 'Verifies that an authenticated account has permission to perform an action on a system, such as open a file or perform configuration changes' },
+                        { id: '3', text: 'Firmware programs that play an important part in the boot process of a computer and the loading of an OS' },
+                        { id: '4', text: 'Became a widely used programming language for many years to follow. A few years later, in 1975, Bill Gates discovered it and became interested enough to write a compiler for it' },
+                        { id: '5', text: 'A series of steps performed by every computing device that starts with the application of power to the CPU and other hardware components and ends with a running system ready to perform work' },
+                        { id: '6', text: 'A program responsible for loading the initial process that makes up the operating system' },
+                        { id: '7', text: 'An initial bootstrap program that locates and then loads the bootloader program' },
+                        { id: '8', text: 'The primary purpose is to run applications requested by a user and request data from network servers as necessary and their primary purpose is to be used as a client' },
+                        { id: '9', text: 'The ability of two or more servers to act as one, for fault tolerance, load sharing, or both' },
+                        { id: '10', text: 'A text-based user interface used to interact with a computer operating system or software application' },
+                        { id: '11', text: 'A chip that uses a low-power memory technology that is powered by a small battery' },
+                        { id: '12', text: 'Refers to the physical parts of a computer' },
+                        { id: '13', text: 'In this method, the operating system gives CPU control to a process and waits for it to terminate or enter a waiting state, thereby giving up control of the CPU' },
+                        { id: '14', text: 'Components of real-time systems such as the communication network and storage system' },
+                        { id: '15', text: 'Usually a kernel mode process that accesses hardware devices directly on behalf of user mode processes or other kernel mode processes' },
+                        { id: '16', text: 'A computing device designed for a specific task, such as controlling a dishwasher or handling the braking system in an automobile' },
+                        { id: '17', text: 'The ability of a system to recover from a hardware or software failure' },
+                        { id: '18', text: 'An identifier for a file that contains all the information the file system needs to locate and access the file. When a process is terminated, the resources are released back to the operating system so they can be used by other processes' },
+                        { id: '19', text: 'The method an operating system uses to store, organize, and manage access to files on storage devices such as hard drives, USB flash drives, or SD cards. It handles how data is named, saved, retrieved, and protected on these devices' },
+                        { id: '20', text: 'Program code that is stored on computer hardware in non-volatile memory and is responsible for performing diagnostic tests and booting the operating system' },
+                        { id: '21', text: 'An operating system that provides a convenient user interface and runs applications in a home or business environment with reasonable performance' },
+                        { id: '22', text: 'The graphical user interface provides a method for users to interact with the computer, through the visual part of a computer application or operating system' },
+                        { id: '23', text: 'The adding of components so that storage, RAM or processors while the system is running' },
+                        { id: '24', text: 'The swapping of components such as hard disks, memory, and even processors without shutting down the system in case of component failure' },
+                        { id: '25', text: 'A signal, usually generated by an I/O device, that alerts the CPU and OS that a device needs attention' },
+                        { id: '26', text: 'To prevent unnecessary interruptions, ISRs turn off interrupts of equal or lower priority' },
+                        { id: '27', text: 'Hardware interrupts in which a signal generated by an I/O device causes a pin on the CPU to change state (from on to off or vice versa). These pins on a CPU are usually called interrupt request (IRQ) lines' },
+                        { id: '28', text: 'Calls the relevant device driver to service the device. After the device is serviced, program control resumes with the process that was running when the interrupt occurred' },
+                        { id: '29', text: 'Often the first process loaded when an OS boots, and it is responsible for managing and protecting resources. The kernel runs with the highest priority on the system—when the kernel needs access to the CPU, it gets access immediately' },
+                        { id: '30', text: 'A CPU mode in which a process has unrestricted access to the computer hardware and has access to privileged CPU instructions' },
+                        { id: '31', text: 'A load-sharing cluster, or load-balancing cluster, has two or more servers that alternate in taking client requests, which provides faster response time to clients' },
+                        { id: '32', text: 'Owned by Microsoft, was the precursor to Windows, which got multitasking capabilities with version 3.0' },
+                        { id: '33', text: 'Quickly switches between all the processes that are loaded into memory and scheduled to run, so Spotify can play music while you\'re typing a document and the Chrome browser is downloading a file' },
+                        { id: '34', text: 'Allows multiple users to sign in to it, start and stop processes, interact with the user interface, and access the local file system' },
+                        { id: '35', text: 'NMIs are primarily reserved for error conditions such as divide by zero or memory errors, but they can also be used for system debugging' },
+                        { id: '36', text: 'Memory that maintains its contents when no power is applied to the system' },
+                        { id: '37', text: 'A computer program that provides the following features: user interface, storage management, process and service management, memory and I/O management, security and resource protection, and the kernel' },
+                        { id: '38', text: 'Handheld devices that ran email programs, calendars, note-taking apps, Web browsers, and other productivity applications but didn\'t have integrated phones' },
+                        { id: '39', text: 'The OS checks each device one after the other in a round-robin fashion to see if it requires attention' },
+                        { id: '40', text: 'Performs tests at startup, such as memory and hardware component tests' },
+                        { id: '41', text: 'The operating system is in strict control of which processes get CPU time' },
+                        { id: '42', text: 'A program that\'s loaded into memory and run by the CPU' },
+                        { id: '43', text: 'Identifies the process, allowing other processes to communicate with it and the user to manage it' },
+                        { id: '44', text: 'Designed to process inputs and produce outputs not just in a reasonable amount of time, but in a very specific and repeatable amount of time' },
+                        { id: '45', text: 'Refers to the ability of a system to handle increasing workloads or demands' },
+                        { id: '46', text: 'The primary purpose is to share network resources such as storage and printers and provide network services to clients' },
+                        { id: '47', text: 'A process without a user interface that runs in the background' },
+                        { id: '48', text: 'Can execute only a single process at a time' },
+                        { id: '49', text: 'Allows only one user at a time to interact with the OS user interface, start processes, make system configuration changes, and interact directly with the file system' },
+                        { id: '50', text: 'Not designed to interact with other OSs or access network resources' },
+                        { id: '51', text: 'A software interrupt' },
+                        { id: '52', text: 'Firmware programs that play an important part in the boot process of a computer and the loading of an OS' },
+                        { id: '53', text: 'Provides a method for users to interact with the computer, usually with a keyboard and mouse or touch screen' },
+                        { id: '54', text: 'The process can only access memory locations allocated to it by the OS, must ask the OS to access I/O devices on its behalf, and can\'t execute privileged CPU instructions' }
+                    ]
+                }
+            ]
+        };
+
+        class OperatingSystemsQuiz {
+            constructor(data) {
+                this.data = data;
+                this.currentQuestion = 0;
+                this.answers = [];
+                this.matches = {};
+                this.correctMatches = 0;
+                
+                this.init();
+            }
+
+            init() {
+                // Randomize the right items (definitions) to make it more challenging
+                this.data.questions[0].rightItems = Utils.shuffleArray(this.data.questions[0].rightItems);
+                
+                this.correctMatches = 0;
+                this.renderQuestion();
+            }
+
+            renderQuestion() {
+                const question = this.data.questions[this.currentQuestion];
+                const container = document.getElementById('quizContainer');
+
+                container.innerHTML = this.renderMatchingQuestion(question);
+                this.setupMatchingInteraction();
+                this.updateProgress();
+            }
+
+            renderMatchingQuestion(question) {
+                return `
+                    <div class="question-container">
+                        <div class="question-header">
+                            <div class="question-counter">Operating Systems Concepts</div>
+                            <div class="question-type">Match All 54 Concepts</div>
+                        </div>
+                        
+                        <div class="question-text">${question.question}</div>
+                        
+                        <div class="matching-container">
+                            <div class="matching-column">
+                                <div class="column-title">Operating Systems Terms</div>
+                                ${question.leftItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}" data-correct="${item.correct}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <div class="matching-column">
+                                <div class="column-title">Definitions</div>
+                                ${question.rightItems.map(item => `
+                                    <div class="matching-item" data-id="${item.id}">
+                                        ${item.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="Navigation.goHome()">← Back to Home</button>
+                            </div>
+                            
+                            <div class="progress-info">
+                                <div class="progress-text">Matched: <span id="matchedCount">0</span> / 54</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset All</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
+                                <button class="btn btn-success" onclick="quiz.finishQuiz()" id="finishBtn">Finish Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupMatchingInteraction() {
+                const leftItems = document.querySelectorAll('.matching-column:first-child .matching-item');
+                const rightItems = document.querySelectorAll('.matching-column:last-child .matching-item');
+                let selectedLeft = null;
+
+                leftItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            // Allow changing answers - remove color coding and allow re-matching
+                            item.classList.remove('correct', 'incorrect');
+                            const matchedRightId = this.matches[item.dataset.id];
+                            if (matchedRightId) {
+                                const rightItem = document.querySelector(`[data-id="${matchedRightId}"]`);
+                                if (rightItem) {
+                                    rightItem.classList.remove('correct', 'incorrect');
+                                }
+                                // Update correct matches count
+                                if (matchedRightId === item.dataset.correct) {
+                                    this.correctMatches--;
+                                }
+                                delete this.matches[item.dataset.id];
+                                this.updateProgress();
+                            }
+                        }
+                        
+                        leftItems.forEach(i => i.classList.remove('selected'));
+                        item.classList.add('selected');
+                        selectedLeft = item;
+                    });
+                });
+
+                rightItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (!selectedLeft) return;
+                        
+                        // Allow changing if already matched
+                        if (item.classList.contains('correct') || item.classList.contains('incorrect')) {
+                            item.classList.remove('correct', 'incorrect');
+                        }
+                        
+                        const leftId = selectedLeft.dataset.id;
+                        const rightId = item.dataset.id;
+                        const correctAnswer = selectedLeft.dataset.correct;
+                        
+                        // Remove any existing match for this left item
+                        if (this.matches[leftId]) {
+                            const prevRightItem = document.querySelector(`[data-id="${this.matches[leftId]}"]`);
+                            if (prevRightItem) {
+                                prevRightItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
+                            }
+                            // Update correct matches count if previous was correct
+                            if (this.matches[leftId] === correctAnswer) {
+                                this.correctMatches--;
+                            }
+                        }
+                        
+                        // Remove any existing match for this right item
+                        for (let [key, value] of Object.entries(this.matches)) {
+                            if (value === rightId) {
+                                delete this.matches[key];
+                                const leftItem = document.querySelector(`[data-id="${key}"]`);
+                                if (leftItem) {
+                                    leftItem.classList.remove('matched', 'selected', 'correct', 'incorrect');
+                                    // Update correct matches count if previous was correct
+                                    const prevCorrect = leftItem.dataset.correct;
+                                    if (rightId === prevCorrect) {
+                                        this.correctMatches--;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        
+                        this.matches[leftId] = rightId;
+                        
+                        selectedLeft.classList.remove('selected');
+                        item.classList.remove('selected');
+                        
+                        // Immediately check if the match is correct
+                        if (rightId === correctAnswer) {
+                            selectedLeft.classList.add('correct');
+                            item.classList.add('correct');
+                            this.correctMatches++;
+                        } else {
+                            selectedLeft.classList.add('incorrect');
+                            item.classList.add('incorrect');
+                        }
+                        
+                        selectedLeft = null;
+                        
+                        this.updateProgress();
+                        this.checkCompletion();
+                    });
+                });
+            }
+
+            updateProgress() {
+                const matchedCount = Object.keys(this.matches).length;
+                document.getElementById('matchedCount').textContent = matchedCount;
+                
+                const progress = (matchedCount / 54) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            checkCompletion() {
+                if (this.correctMatches === 54) {
+                    UI.showNotification('Outstanding! All 54 operating system concepts matched correctly!', 'success', 3000);
+                    setTimeout(() => {
+                        this.finishQuiz();
+                    }, 3000);
+                } else if (Object.keys(this.matches).length === 54) {
+                    const accuracy = Math.round((this.correctMatches / 54) * 100);
+                    UI.showNotification(`All concepts matched! Accuracy: ${accuracy}% (${this.correctMatches}/54 correct)`, 
+                        accuracy >= 70 ? 'success' : 'info', 4000);
+                }
+            }
+
+            resetCurrentQuestion() {
+                this.matches = {};
+                this.correctMatches = 0;
+                const allItems = document.querySelectorAll('.matching-item');
+                allItems.forEach(item => {
+                    item.classList.remove('selected', 'correct', 'incorrect', 'matched');
+                });
+                this.updateProgress();
+                UI.showNotification('All matches have been reset. Start fresh!', 'info', 2000);
+            }
+
+            showAnswerKey() {
+                const question = this.data.questions[this.currentQuestion];
+                
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.8);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                `;
+                
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    background: white;
+                    border-radius: 20px;
+                    padding: 30px;
+                    max-width: 900px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                `;
+                
+                let answerKeyHTML = `
+                    <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color);">Operating Systems - Answer Key</h2>
+                    <div style="display: grid; gap: 15px;">
+                `;
+                
+                question.leftItems.forEach((item, index) => {
+                    const correctDefinition = question.rightItems.find(right => right.id === item.correct);
+                    answerKeyHTML += `
+                        <div style="border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; background: #f8f9fa;">
+                            <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 8px;">
+                                ${item.text}
+                            </div>
+                            <div style="color: var(--text-dark); font-size: 0.9rem; line-height: 1.4;">
+                                ${correctDefinition.text}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                answerKeyHTML += `
+                    </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: var(--primary-gradient); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; cursor: pointer;">
+                            Close Answer Key
+                        </button>
+                    </div>
+                `;
+                
+                modal.innerHTML = answerKeyHTML;
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.remove();
+                    }
+                });
+            }
+
+            finishQuiz() {
+                const totalMatched = Object.keys(this.matches).length;
+                const finalScore = Math.round((this.correctMatches / 54) * 100);
+                
+                const summary = {
+                    total: 54,
+                    correct: this.correctMatches,
+                    incorrect: totalMatched - this.correctMatches,
+                    unmatched: 54 - totalMatched,
+                    score: finalScore,
+                    percentage: finalScore,
+                    passed: finalScore >= 70
+                };
+                
+                this.showResults(summary);
+            }
+
+            showResults(summary) {
+                document.getElementById('quizContainer').style.display = 'none';
+                const resultsContainer = document.getElementById('resultsContainer');
+                
+                let performanceMessage = '';
+                let performanceClass = '';
+                
+                if (summary.score >= 90) {
+                    performanceMessage = '🏆 Outstanding! You have mastered operating systems concepts!';
+                    performanceClass = 'success';
+                } else if (summary.score >= 80) {
+                    performanceMessage = '🎉 Excellent work! You have a strong grasp of OS concepts!';
+                    performanceClass = 'success';
+                } else if (summary.score >= 70) {
+                    performanceMessage = '✅ Good job! You understand most OS concepts well.';
+                    performanceClass = 'success';
+                } else if (summary.score >= 60) {
+                    performanceMessage = '📚 Decent effort! Review the concepts you missed.';
+                    performanceClass = 'primary';
+                } else {
+                    performanceMessage = '📖 Keep studying! Operating systems concepts need more practice.';
+                    performanceClass = 'danger';
+                }
+                
+                resultsContainer.innerHTML = `
+                    <div class="results-container">
+                        <h2>Quiz Complete!</h2>
+                        <div class="score-display">${summary.score}%</div>
+                        <p class="text-${performanceClass}" style="font-size: 1.2rem; margin-bottom: 30px;">
+                            ${performanceMessage}
+                        </p>
+                        
+                        <div class="results-stats">
+                            <div class="stat-card">
+                                <span class="stat-value text-success">${summary.correct}</span>
+                                <span>Correct Matches</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-danger">${summary.incorrect}</span>
+                                <span>Incorrect Matches</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-muted">${summary.unmatched}</span>
+                                <span>Unmatched</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value text-primary">${summary.total}</span>
+                                <span>Total Concepts</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 20px;">Performance Breakdown</h3>
+                            <div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 30px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: center;">
+                                    <div>
+                                        <strong>Accuracy Rate:</strong><br>
+                                        <span style="font-size: 1.5rem; color: ${summary.score >= 70 ? '#28a745' : '#dc3545'};">
+                                            ${summary.score}%
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <strong>Completion Rate:</strong><br>
+                                        <span style="font-size: 1.5rem; color: var(--primary-color);">
+                                            ${Math.round(((summary.correct + summary.incorrect) / summary.total) * 100)}%
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <strong>Grade:</strong><br>
+                                        <span style="font-size: 1.5rem; font-weight: bold; color: ${summary.score >= 90 ? '#28a745' : summary.score >= 80 ? '#28a745' : summary.score >= 70 ? '#ffc107' : '#dc3545'};">
+                                            ${summary.score >= 90 ? 'A' : summary.score >= 80 ? 'B' : summary.score >= 70 ? 'C' : summary.score >= 60 ? 'D' : 'F'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Review Answer Key</button>
+                            <button class="btn btn-success" onclick="Navigation.goHome()">Back to Home</button>
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.style.display = 'block';
+                
+                // Save results to localStorage (if available)
+                try {
+                    const results = {
+                        quizId: 'operating-systems',
+                        score: summary.score,
+                        correct: summary.correct,
+                        total: summary.total,
+                        timestamp: new Date().toISOString()
+                    };
+                    localStorage.setItem('os-quiz-result', JSON.stringify(results));
+                } catch (e) {
+                    // localStorage not available, continue without saving
+                }
+            }
+        }
+
+        // Initialize quiz when page loads
+        let quiz;
+        document.addEventListener('DOMContentLoaded', () => {
+            quiz = new OperatingSystemsQuiz(quizData);
+        });
+    </script>
+</body>
+</html>

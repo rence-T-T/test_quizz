@@ -28,12 +28,12 @@
                 </div>
                 <div class="quiz-details">
                     <div class="detail-item">
-                        <span class="detail-value">54</span>
-                        <span>Concepts</span>
+                        <span class="detail-value">54+8</span>
+                        <span>Items</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-value">1</span>
-                        <span>Question</span>
+                        <span class="detail-value">2</span>
+                        <span>Questions</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-value">Advanced</span>
@@ -177,6 +177,21 @@
                         { id: '53', text: 'Provides a method for users to interact with the computer, usually with a keyboard and mouse or touch screen' },
                         { id: '54', text: 'The process can only access memory locations allocated to it by the OS, must ask the OS to access I/O devices on its behalf, and can\'t execute privileged CPU instructions' }
                     ]
+                },
+                {
+                    id: 2,
+                    type: 'identification',
+                    question: 'List the 8 Most Popular Linux Distributions (in any order):',
+                    correctAnswers: [
+                        'Ubuntu',
+                        'Debian', 
+                        'Fedora',
+                        'CentOS',
+                        'Linux Mint',
+                        'Arch Linux',
+                        'Red Hat Enterprise Linux',
+                        'openSUSE'
+                    ]
                 }
             ]
         };
@@ -185,99 +200,102 @@
         class OperatingSystemsQuiz extends QuizBase {
             constructor(data) {
                 super(data);
-                this.correctMatches = 0;
-                this.matches = {};
-            }
-
-            updateProgress() {
-                const progressText = document.getElementById('progressText');
-                const progressFill = document.getElementById('progressFill');
-                
-                if (!progressText || !progressFill) return;
-
-                const matchCount = Object.keys(this.matches).length;
-                const totalItems = 54;
-                progressText.textContent = `Matched: ${matchCount} / ${totalItems}`;
-                progressFill.style.width = `${(matchCount / totalItems) * 100}%`;
-
-                // Update the matched count display
-                const matchedCountElement = document.getElementById('matchedCount');
-                if (matchedCountElement) {
-                    matchedCountElement.textContent = matchCount;
-                }
-            }
-
-            updateQuestionState(data) {
-                if (data.matches) {
-                    this.matches = data.matches;
-                }
-                if (data.correctMatches !== undefined) {
-                    this.correctMatches = data.correctMatches;
-                }
-                this.updateProgress();
-                this.checkCompletion();
-            }
-
-            checkCompletion() {
-                if (this.correctMatches === 54) {
-                    UI.showNotification('Outstanding! All 54 operating system concepts matched correctly!', 'success', 3000);
-                    setTimeout(() => {
-                        this.finishQuiz();
-                    }, 3000);
-                } else if (Object.keys(this.matches).length === 54) {
-                    const accuracy = Math.round((this.correctMatches / 54) * 100);
-                    UI.showNotification(`All concepts matched! Accuracy: ${accuracy}% (${this.correctMatches}/54 correct)`, 
-                        accuracy >= 70 ? 'success' : 'info', 4000);
-                }
             }
 
             renderQuizControls() {
-                return `
-                    <div class="quiz-controls">
-                        <div class="navigation-controls">
-                            <button class="btn btn-secondary" onclick="Navigation.goHome()">← Back to Home</button>
-                        </div>
-                        
-                        <div class="progress-info">
-                            <div class="progress-text">Matched: <span id="matchedCount">0</span> / 54</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                const question = this.data.questions[this.currentQuestion];
+                
+                if (question.type === 'matching') {
+                    return `
+                        <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="quiz.previousQuestion()" 
+                                        ${this.currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+                            </div>
+                            
+                            <div class="progress-info">
+                                <div class="progress-text" id="progressText">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset All</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
+                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Next →' : 'Next →'}
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="action-controls">
-                            <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset All</button>
-                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
-                            <button class="btn btn-success" onclick="quiz.finishQuiz()" id="finishBtn">Finish Quiz</button>
+                    `;
+                } else {
+                    // Default controls for other question types
+                    return `
+                        <div class="quiz-controls">
+                            <div class="navigation-controls">
+                                <button class="btn btn-secondary" onclick="quiz.previousQuestion()" 
+                                        ${this.currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+                            </div>
+                            
+                            <div class="progress-info">
+                                <div class="progress-text" id="progressText">Question ${this.currentQuestion + 1} of ${this.data.questions.length}</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="action-controls">
+                                <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset</button>
+                                <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
+                                <button class="btn btn-primary" onclick="quiz.checkCurrentAnswers()">Check Answers</button>
+                                <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
+                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
-
-            resetCurrentQuestion() {
-                this.matches = {};
-                this.correctMatches = 0;
-                const allItems = document.querySelectorAll('.matching-item');
-                allItems.forEach(item => {
-                    item.classList.remove('selected', 'correct', 'incorrect', 'matched');
-                });
-                this.updateProgress();
-                UI.showNotification('All matches have been reset. Start fresh!', 'info', 2000);
+                    `;
+                }
             }
 
             finishQuiz() {
-                const totalMatched = Object.keys(this.matches).length;
-                const finalScore = Math.round((this.correctMatches / 54) * 100);
+                // Calculate final score across all questions
+                let totalScore = 0;
+                let totalPossible = 0;
+                let correctItems = 0;
+                let totalItems = 0;
+
+                this.answers.forEach((answer, index) => {
+                    if (answer) {
+                        const question = this.data.questions[index];
+                        if (question.type === 'matching') {
+                            const correctMatches = answer.correctMatches || 0;
+                            const totalMatches = question.leftItems.length;
+                            totalScore += correctMatches;
+                            totalPossible += totalMatches;
+                            correctItems += correctMatches;
+                            totalItems += totalMatches;
+                        } else if (question.type === 'identification') {
+                            const correct = answer.correctCount || 0;
+                            const total = question.correctAnswers.length;
+                            totalScore += correct;
+                            totalPossible += total;
+                            correctItems += correct;
+                            totalItems += total;
+                        }
+                    }
+                });
+
+                const finalScore = totalPossible > 0 ? Math.round((totalScore / totalPossible) * 100) : 0;
                 
                 const summary = {
-                    total: 54,
-                    correct: this.correctMatches,
-                    incorrect: totalMatched - this.correctMatches,
-                    unmatched: 54 - totalMatched,
+                    total: this.data.questions.length,
+                    correct: correctItems,
+                    incorrect: totalItems - correctItems,
+                    totalItems: totalItems,
                     score: finalScore,
                     percentage: finalScore,
-                    passed: finalScore >= 70,
-                    totalItems: 54
+                    passed: finalScore >= 70
                 };
                 
                 this.showResults(summary);
@@ -318,19 +336,19 @@
                         <div class="results-stats">
                             <div class="stat-card">
                                 <span class="stat-value text-success">${summary.correct}</span>
-                                <span>Correct Matches</span>
+                                <span>Correct Answers</span>
                             </div>
                             <div class="stat-card">
                                 <span class="stat-value text-danger">${summary.incorrect}</span>
-                                <span>Incorrect Matches</span>
+                                <span>Incorrect Answers</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-muted">${summary.unmatched}</span>
-                                <span>Unmatched</span>
+                                <span class="stat-value text-primary">${summary.totalItems}</span>
+                                <span>Total Items</span>
                             </div>
                             <div class="stat-card">
-                                <span class="stat-value text-primary">${summary.total}</span>
-                                <span>Total Concepts</span>
+                                <span class="stat-value text-muted">${summary.total}</span>
+                                <span>Questions Completed</span>
                             </div>
                         </div>
                         
@@ -345,9 +363,9 @@
                                         </span>
                                     </div>
                                     <div>
-                                        <strong>Completion Rate:</strong><br>
+                                        <strong>Total Score:</strong><br>
                                         <span style="font-size: 1.5rem; color: var(--primary-color);">
-                                            ${Math.round(((summary.correct + summary.incorrect) / summary.total) * 100)}%
+                                            ${summary.correct}/${summary.totalItems}
                                         </span>
                                     </div>
                                     <div>
@@ -362,8 +380,7 @@
                         
                         <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                             <button class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
-                            <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Review Answer Key</button>
-                            <button class="btn btn-success" onclick="Navigation.goHome()">Back to Home</button>
+                            <button class="btn btn-secondary" onclick="Navigation.goHome()">Back to Home</button>
                         </div>
                     </div>
                 `;

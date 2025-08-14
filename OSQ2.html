@@ -28,11 +28,11 @@
                 </div>
                 <div class="quiz-details">
                     <div class="detail-item">
-                        <span class="detail-value">54+8</span>
+                        <span class="detail-value">54+8+6</span>
                         <span>Items</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-value">2</span>
+                        <span class="detail-value">3</span>
                         <span>Questions</span>
                     </div>
                     <div class="detail-item">
@@ -192,6 +192,27 @@
                         'Red Hat Enterprise Linux',
                         'openSUSE'
                     ]
+                },
+                {
+                    id: 3,
+                    type: 'identification',
+                    question: 'List the 6 Core Operating System Features that every OS provides (in any order):',
+                    correctAnswers: [
+                        'User Interface',
+                        'The Kernel',
+                        'Security and resource protection',
+                        'Storage Management',
+                        'Process and service management',
+                        'Memory and I/O management'
+                    ]
+                },
+                {
+                    id: 4,
+                    type: 'identification',
+                    question: 'Meaning of CMOS',
+                    correctAnswers: [
+                        'Complementary Metal Oxide Semiconductor'
+                    ]
                 }
             ]
         };
@@ -224,7 +245,7 @@
                                 <button class="btn btn-warning" onclick="quiz.resetCurrentQuestion()">Reset All</button>
                                 <button class="btn btn-secondary" onclick="quiz.showAnswerKey()">Answer Key</button>
                                 <button class="btn btn-success" onclick="quiz.nextQuestion()" id="nextBtn">
-                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Next →' : 'Next →'}
+                                    ${this.currentQuestion === this.data.questions.length - 1 ? 'Finish Quiz' : 'Next →'}
                                 </button>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-// Quiz Engine - Fixed version with random shuffling and per-question options
+// Enhanced Quiz Engine - Ensures shuffled answers are always different from previous orientation
 class QuizEngine {
     constructor(quizData) {
         this.quizData = quizData;
@@ -6,6 +6,9 @@ class QuizEngine {
         this.score = 0;
         this.userAnswers = [];
         this.isQuizComplete = false;
+        
+        // Store previous shuffle states to ensure different orientations
+        this.previousShuffleStates = {};
         
         // Global options (can be overridden per question)
         this.globalOptions = {
@@ -31,13 +34,61 @@ class QuizEngine {
     // Get options for current question (question options override global options)
     getQuestionOptions(question) {
         return {
-            shuffleAnswers: question.options?.shuffleAnswers ?? this.globalOptions.shuffleAnswers,
-            caseSensitive: question.options?.caseSensitive ?? this.globalOptions.caseSensitive,
-            orderSensitive: question.options?.orderSensitive ?? this.globalOptions.orderSensitive,
-            shuffleChoices: question.options?.shuffleChoices ?? this.globalOptions.shuffleChoices,
-            shuffleMatches: question.options?.shuffleMatches ?? this.globalOptions.shuffleMatches,
-            unequalList: question.options?.unequalList ?? this.globalOptions.unequalList
+            shuffleAnswers: question.questionOptions?.shuffleAnswers ?? this.globalOptions.shuffleAnswers,
+            caseSensitive: question.questionOptions?.caseSensitive ?? this.globalOptions.caseSensitive,
+            orderSensitive: question.questionOptions?.orderSensitive ?? this.globalOptions.orderSensitive,
+            shuffleChoices: question.questionOptions?.shuffleChoices ?? this.globalOptions.shuffleChoices,
+            shuffleMatches: question.questionOptions?.shuffleMatches ?? this.globalOptions.shuffleMatches,
+            unequalList: question.questionOptions?.unequalList ?? this.globalOptions.unequalList
         };
+    }
+
+    // Enhanced shuffle that ensures different orientation from previous
+    shuffleArrayDifferently(array, stateKey) {
+        if (array.length <= 1) {
+            return array.map((_, i) => i); // Return indices for single item or empty
+        }
+
+        const indices = array.map((_, i) => i);
+        let newIndices;
+        let attempts = 0;
+        const maxAttempts = 50; // Prevent infinite loops
+        
+        do {
+            newIndices = this.shuffleArray(indices);
+            attempts++;
+        } while (
+            this.previousShuffleStates[stateKey] && 
+            this.arraysEqual(newIndices, this.previousShuffleStates[stateKey]) && 
+            attempts < maxAttempts
+        );
+        
+        // Store the new state
+        this.previousShuffleStates[stateKey] = [...newIndices];
+        
+        return newIndices;
+    }
+
+    // Check if two arrays are equal
+    arraysEqual(arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        return arr1.every((val, index) => val === arr2[index]);
+    }
+
+    // Enhanced shuffle for True/False that ensures different orientation
+    shuffleTrueFalseDifferently(stateKey) {
+        const options = [
+            { value: 'true', label: 'True' },
+            { value: 'false', label: 'False' }
+        ];
+        
+        // For True/False, we just need to track if it was [T,F] or [F,T] last time
+        const previousWasTrueFirst = this.previousShuffleStates[stateKey];
+        const trueFirst = previousWasTrueFirst === undefined ? Math.random() < 0.5 : !previousWasTrueFirst;
+        
+        this.previousShuffleStates[stateKey] = trueFirst;
+        
+        return trueFirst ? options : [options[1], options[0]];
     }
 
     renderQuizHeader() {
@@ -104,13 +155,14 @@ class QuizEngine {
     }
 
     renderMultipleChoice(question, options) {
-        let displayOptions = [...question.options];
         let indexMapping = question.options.map((_, i) => i);
         
         if (options.shuffleAnswers) {
-            indexMapping = this.shuffleArray(question.options.map((_, i) => i));
-            displayOptions = indexMapping.map(i => question.options[i]);
+            const stateKey = `mc_${this.currentQuestionIndex}`;
+            indexMapping = this.shuffleArrayDifferently(question.options, stateKey);
         }
+        
+        const displayOptions = indexMapping.map(i => question.options[i]);
         
         // Store the mapping for this question
         this.shuffledIndices[`mc_${this.currentQuestionIndex}`] = indexMapping;
@@ -131,13 +183,14 @@ class QuizEngine {
     }
 
     renderMultipleAnswer(question, options) {
-        let displayOptions = [...question.options];
         let indexMapping = question.options.map((_, i) => i);
         
         if (options.shuffleAnswers) {
-            indexMapping = this.shuffleArray(question.options.map((_, i) => i));
-            displayOptions = indexMapping.map(i => question.options[i]);
+            const stateKey = `ma_${this.currentQuestionIndex}`;
+            indexMapping = this.shuffleArrayDifferently(question.options, stateKey);
         }
+        
+        const displayOptions = indexMapping.map(i => question.options[i]);
         
         // Store the mapping for this question
         this.shuffledIndices[`ma_${this.currentQuestionIndex}`] = indexMapping;
@@ -165,13 +218,16 @@ class QuizEngine {
     }
 
     renderTrueFalse(question, options) {
-        let tfOptions = [
-            { value: 'true', label: 'True' },
-            { value: 'false', label: 'False' }
-        ];
+        let tfOptions;
         
         if (options.shuffleAnswers) {
-            tfOptions = this.shuffleArray(tfOptions);
+            const stateKey = `tf_${this.currentQuestionIndex}`;
+            tfOptions = this.shuffleTrueFalseDifferently(stateKey);
+        } else {
+            tfOptions = [
+                { value: 'true', label: 'True' },
+                { value: 'false', label: 'False' }
+            ];
         }
         
         return `
@@ -206,11 +262,15 @@ class QuizEngine {
         let displayMatches = [...question.matches];
         
         if (options.shuffleChoices) {
-            displayItems = this.shuffleArray([...question.items]);
+            const stateKey = `matching_items_${this.currentQuestionIndex}`;
+            const itemIndices = this.shuffleArrayDifferently(question.items, stateKey);
+            displayItems = itemIndices.map(i => question.items[i]);
         }
         
         if (options.shuffleMatches) {
-            displayMatches = this.shuffleArray([...question.matches]);
+            const stateKey = `matching_matches_${this.currentQuestionIndex}`;
+            const matchIndices = this.shuffleArrayDifferently(question.matches, stateKey);
+            displayMatches = matchIndices.map(i => question.matches[i]);
         }
         
         // For unequal lists, add dummy items
@@ -741,7 +801,7 @@ class QuizEngine {
         const active = [];
         if (options.shuffleAnswers) active.push('🔀 Shuffled');
         if (options.caseSensitive) active.push('Aa Case Sensitive');
-        if (!options.orderSensitive) active.push('↔️ Any Order');
+        if (!options.orderSensitive) active.push('↕️ Any Order');
         if (options.shuffleChoices) active.push('🔀 Mixed Items');
         if (options.shuffleMatches) active.push('🔀 Mixed Matches');
         if (options.unequalList) active.push('➕ Extra Options');
@@ -751,5 +811,16 @@ class QuizEngine {
                 <span class="options-label">Active options:</span> ${active.join(' • ')}
               </div>` 
             : '';
+    }
+
+    // Method to clear shuffle history (useful for quiz retries)
+    clearShuffleHistory() {
+        this.previousShuffleStates = {};
+    }
+
+    // Method to get debug info about current shuffle states
+    getShuffleDebugInfo() {
+        console.log('Current shuffle states:', this.previousShuffleStates);
+        return this.previousShuffleStates;
     }
 }

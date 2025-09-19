@@ -571,6 +571,16 @@ body {
     flex: 1;
 }
 
+.enumeration-input.correct {
+    border: 2px solid var(--success-color);
+    background-color: var(--success-bg);
+}
+
+.enumeration-input.incorrect {
+    border: 2px solid var(--error-color);
+    background-color: var(--error-bg);
+}
+
 /* Enhanced Drop Zone Styles */
 .drop-zone {
     position: relative;

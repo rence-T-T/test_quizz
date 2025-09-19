@@ -552,55 +552,85 @@ class QuizEngine {
                 return compareFunc(question.correctAnswer, userAnswer);
             
             case 'enumeration':
-                if (!userAnswer || userAnswer.length === 0) return false;
+                if (!userAnswer || userAnswer.length === 0) {
+                    this.lastEnumerationResults = []; // Clear results
+                    return false;
+                }
                 
                 const enumCompare = options.caseSensitive 
                     ? (a, b) => a === b 
                     : (a, b) => a.toLowerCase() === b.toLowerCase();
                 
-                // Get all acceptable answers flattened
-                const allAcceptableAnswers = [];
-                question.correctAnswer.forEach(answerSet => {
-                    if (Array.isArray(answerSet)) {
-                        allAcceptableAnswers.push(...answerSet);
-                    } else {
-                        allAcceptableAnswers.push(answerSet);
-                    }
-                });
+                const individualResults = []; // Store individual correctness
+                let allCorrect = true;
                 
                 if (options.orderSensitive) {
                     // Order matters - check each position
-                    if (userAnswer.length !== question.correctAnswer.length) return false;
-                    
-                    return userAnswer.every((ans, index) => {
-                        if (Array.isArray(question.correctAnswer[index])) {
-                            return question.correctAnswer[index].some(acceptable => 
-                                enumCompare(acceptable, ans)
-                            );
-                        }
-                        return enumCompare(question.correctAnswer[index], ans);
-                    });
-                } else {
-                    // Order doesn't matter - any valid answers in any order
-                    if (userAnswer.length > question.correctAnswer.length) return false;
-                    
-                    // Check if all user answers are valid
-                    const usedAnswers = new Set();
-                    for (let userAns of userAnswer) {
-                        let found = false;
-                        for (let acceptableAns of allAcceptableAnswers) {
-                            if (!usedAnswers.has(acceptableAns) && enumCompare(acceptableAns, userAns)) {
-                                usedAnswers.add(acceptableAns);
-                                found = true;
-                                break;
+                    userAnswer.forEach((ans, index) => {
+                        let isCorrect = false;
+                        if (index < question.correctAnswer.length && ans.trim()) {
+                            if (Array.isArray(question.correctAnswer[index])) {
+                                isCorrect = question.correctAnswer[index].some(acceptable =>
+                                    enumCompare(acceptable, ans)
+                                );
+                            } else {
+                                isCorrect = enumCompare(question.correctAnswer[index], ans);
                             }
                         }
-                        if (!found) return false;
+                        individualResults[index] = isCorrect;
+                        if (!isCorrect && ans.trim()) allCorrect = false;
+                    });
+                    
+                    if (userAnswer.length !== question.correctAnswer.length) allCorrect = false;
+                    
+                } else {
+                    // Order doesn't matter - any valid answers in any order
+                    if (userAnswer.length > question.correctAnswer.length) {
+                        // Too many answers - mark all as incorrect
+                        userAnswer.forEach((_, index) => {
+                            individualResults[index] = false;
+                        });
+                        this.lastEnumerationResults = individualResults;
+                        return false;
                     }
+                    
+                    // Get all acceptable answers flattened for checking
+                    const allAcceptableAnswers = [];
+                    question.correctAnswer.forEach(answerSet => {
+                        if (Array.isArray(answerSet)) {
+                            allAcceptableAnswers.push(...answerSet);
+                        } else {
+                            allAcceptableAnswers.push(answerSet);
+                        }
+                    });
+                    
+                    const usedAnswers = new Set();
+                    let allCorrect = true;
+                    
+                    // Check each user answer individually
+                    userAnswer.forEach((userAns, index) => {
+                        let isCorrect = false;
+                        
+                        if (userAns.trim()) {
+                            // Find if this answer matches any acceptable answer that hasn't been used
+                            for (let acceptableAns of allAcceptableAnswers) {
+                                if (!usedAnswers.has(acceptableAns) && enumCompare(acceptableAns, userAns)) {
+                                    usedAnswers.add(acceptableAns);
+                                    isCorrect = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        individualResults[index] = isCorrect;
+                        if (!isCorrect && userAns.trim()) allCorrect = false;
+                    });
                     
                     // Check if we have the required number of unique answers
                     const uniqueGroups = new Set();
                     for (let userAns of userAnswer) {
+                        if (!userAns.trim()) continue;
+                        
                         for (let i = 0; i < question.correctAnswer.length; i++) {
                             const answerGroup = Array.isArray(question.correctAnswer[i]) 
                                 ? question.correctAnswer[i] 
@@ -613,9 +643,16 @@ class QuizEngine {
                         }
                     }
                     
-                    return uniqueGroups.size === userAnswer.length && 
-                           userAnswer.length <= question.correctAnswer.length;
+                    const hasCorrectCount = uniqueGroups.size === userAnswer.filter(ans => ans.trim()).length && 
+                                        userAnswer.filter(ans => ans.trim()).length <= question.correctAnswer.length;
+                    
+                    if (!hasCorrectCount) allCorrect = false;
                 }
+
+                // Store results for visual feedback (this should be outside both if/else blocks)
+                this.lastEnumerationResults = individualResults;
+
+                return allCorrect;
             
             case 'matching':
                 if (!question.correctMatches) return false;
@@ -674,10 +711,15 @@ class QuizEngine {
             
             case 'enumeration':
                 const enumInputs = document.querySelectorAll('.enumeration-input');
-                enumInputs.forEach(input => {
-                    if (input.value) {
-                        input.classList.remove('correct', 'incorrect');
-                        input.classList.add(isCorrect ? 'correct' : 'incorrect');
+                enumInputs.forEach((input, index) => {
+                    input.classList.remove('correct', 'incorrect');
+                    
+                    const userAns = input.value.trim();
+                    if (!userAns) return;
+                    
+                    // Use stored results
+                    if (this.lastEnumerationResults && this.lastEnumerationResults[index] !== undefined) {
+                        input.classList.add(this.lastEnumerationResults[index] ? 'correct' : 'incorrect');
                     }
                 });
                 break;

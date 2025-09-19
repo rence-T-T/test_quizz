@@ -931,7 +931,7 @@ class QuizEngine {
             case 'multiple-choice':
             case 'multiple-answer':
             case 'true-false':
-                options.shuffleAnswers ? active.push('🔀 Shuffled') : active.push('📋 Fixed Order');
+                options.shuffleAnswers ? active.push('🔀 Shuffled') : active.push('🔒 Fixed Order');
                 break;
             case 'enumeration':
                 !options.orderSensitive ? active.push('↕️ Any Order') : active.push('🔢 Order Matters');
@@ -939,8 +939,8 @@ class QuizEngine {
                 options.caseSensitive ? active.push('Aa Case Sensitive') : active.push('aa Case Insensitive');
                 break;
             case 'matching':
-                options.shuffleChoices ? active.push('🔀 Mixed Items') : active.push('📝 Fixed Items');
-                options.shuffleMatches ? active.push('🔀 Mixed Matches') : active.push('🎯 Fixed Matches');
+                options.shuffleChoices ? active.push('🔀 Mixed Items') : active.push('🔒 Fixed Items');
+                options.shuffleMatches ? active.push('🔀 Mixed Matches') : active.push('🔒 Fixed Matches');
                 options.unequalList ? active.push('➕ Extra Options') : active.push('⚖️ Equal Lists');
                 break;
             default: 

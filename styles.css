@@ -352,29 +352,27 @@ body {
     transform: scale(1.02);
 }
 
-/* Answer Key Toggle */
+/* Answer Key Toggle - Integrated with quiz navigation */
 .answer-key-toggle {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 50px;
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
     transition: all 0.3s ease;
-    z-index: 100;
-    margin-bottom: 120px; /* Add space above navigation area */
+    position: static;
+    margin: 0;
+    font-size: 0.9rem;
 }
 
 .answer-key-toggle:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
-
 
 /* Answer Key Modal */
 .answer-key-modal {
@@ -491,7 +489,14 @@ body {
 .quiz-navigation {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 2rem;
+    gap: 1rem;
+}
+
+.quiz-navigation .nav-group {
+    display: flex;
+    gap: 1rem;
 }
 
 .nav-button {
@@ -782,10 +787,19 @@ body {
         font-size: 1.5rem;
     }
     
+    .quiz-navigation {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .quiz-navigation .nav-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
     .answer-key-toggle {
-        bottom: 1rem;
-        right: 1rem;
-        padding: 0.75rem 1.25rem;
+        width: 100%;
+        text-align: center;
     }
     
     .enumeration-item {

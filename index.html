@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Quiz Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1>📚 Practice Quiz Platform</h1>
+            <p>Select a quiz below to test your knowledge</p>
+        </header>
+
+        <div class="quiz-grid" id="quizGrid">
+            <!-- Quizzes will be dynamically loaded here -->
+        </div>
+
+        <div class="no-quizzes" id="noQuizzes" style="display: none;">
+            <p>No quizzes available yet. Add quiz files to see them here.</p>
+        </div>
+    </div>
+
+    <script>
+        // Define your quizzes here - add new entries as you create new quiz HTML files
+        const quizzes = [
+            {
+                title: "Sample Quiz 1",
+                description: "A demo quiz showing different question types",
+                difficulty: "Easy",
+                questions: 10,
+                url: "quiz1.html",
+                category: "General"
+            },
+            {
+                title: "JavaScript Fundamentals",
+                description: "Test your JavaScript knowledge",
+                difficulty: "Medium",
+                questions: 15,
+                url: "quiz2.html",
+                category: "Programming"
+            },
+            // Add more quiz entries here as you create them
+        ];
+
+        // Function to render quiz cards
+        function renderQuizzes() {
+            const grid = document.getElementById('quizGrid');
+            const noQuizzes = document.getElementById('noQuizzes');
+            
+            if (quizzes.length === 0) {
+                noQuizzes.style.display = 'block';
+                return;
+            }
+
+            quizzes.forEach((quiz, index) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.innerHTML = `
+                    <div class="quiz-category">${quiz.category}</div>
+                    <h3>${quiz.title}</h3>
+                    <p class="quiz-description">${quiz.description}</p>
+                    <div class="quiz-meta">
+                        <span class="difficulty ${quiz.difficulty.toLowerCase()}">${quiz.difficulty}</span>
+                        <span class="questions-count">${quiz.questions} questions</span>
+                    </div>
+                    <a href="${quiz.url}" class="quiz-button">Start Quiz →</a>
+                `;
+                card.style.animationDelay = `${index * 0.1}s`;
+                grid.appendChild(card);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', renderQuizzes);
+    </script>
+</body>
+</html>

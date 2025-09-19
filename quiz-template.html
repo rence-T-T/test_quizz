@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Template</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="quizContent">
+            <div id="quizHeader"></div>
+            
+            <div id="questionContainer"></div>
+            
+            <div class="quiz-navigation">
+                <button class="nav-button" id="prevBtn">Previous</button>
+                <button class="nav-button submit-button" id="nextBtn">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Answer Key Toggle Button -->
+        <button class="answer-key-toggle" id="answerKeyToggle">
+            📖 Show Answer
+        </button>
+
+        <!-- Answer Key Modal -->
+        <div class="answer-key-modal" id="answerKeyModal">
+            <div class="answer-key-content">
+                <div class="answer-key-header">
+                    <h3>Answer Key</h3>
+                    <button class="close-modal">✕</button>
+                </div>
+                <div id="answerKeyBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz-engine.js"></script>
+    <script>
+        // QUIZ DATA - Customize this for each quiz
+        const quizData = {
+            title: "Your Quiz Title",
+            description: "Brief description of your quiz",
+            questions: [
+                // Multiple Choice Example
+                {
+                    type: "multiple-choice",
+                    question: "What is the capital of France?",
+                    options: ["London", "Berlin", "Paris", "Madrid"],
+                    correctAnswer: 2, // Index of correct option (0-based)
+                    explanation: "Paris has been the capital of France since 987 AD.",
+                    hint: "Think about the Eiffel Tower!"
+                },
+                
+                // Multiple Answer Example (checkbox)
+                {
+                    type: "multiple-answer",
+                    question: "Which of the following are programming languages? (Select all that apply)",
+                    options: ["Python", "HTML", "JavaScript", "CSS", "Java"],
+                    correctAnswer: [0, 2, 4], // Indices of correct options
+                    explanation: "Python, JavaScript, and Java are programming languages. HTML and CSS are markup and styling languages.",
+                    hint: "Some are for structure and styling, others for programming logic."
+                },
+                
+                // True/False Example
+                {
+                    type: "true-false",
+                    question: "The Earth is flat.",
+                    correctAnswer: false,
+                    explanation: "The Earth is an oblate spheroid, not flat.",
+                    hint: "What does science tell us?"
+                },
+                
+                // Identification/Text Example
+                {
+                    type: "identification",
+                    question: "Who wrote the play 'Romeo and Juliet'?",
+                    correctAnswer: ["Shakespeare", "William Shakespeare"], // Accept multiple variations
+                    explanation: "William Shakespeare wrote Romeo and Juliet around 1594-1596.",
+                    hint: "Famous English playwright from the 16th century."
+                },
+                
+                // Enumeration Example
+                {
+                    type: "enumeration",
+                    question: "List the first 3 planets in our solar system (in order from the Sun):",
+                    correctAnswer: [
+                        "Mercury",
+                        "Venus",
+                        ["Earth", "The Earth"] // Accept variations
+                    ],
+                    explanation: "The order from the Sun is: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.",
+                    hint: "Start with the smallest planet closest to the Sun."
+                },
+                
+                // Matching Type Example
+                {
+                    type: "matching",
+                    question: "Match the countries with their capitals:",
+                    items: ["France", "Japan", "Brazil"],
+                    matches: ["Capital 1", "Capital 2", "Capital 3"],
+                    correctMatches: {
+                        "0": "France",
+                        "1": "Japan",
+                        "2": "Brazil"
+                    },
+                    explanation: "Paris is the capital of France, Tokyo of Japan, and Brasília of Brazil."
+                }
+            ]
+        };
+
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const quiz = new QuizEngine(quizData);
+        });
+    </script>
+</body>
+</html>

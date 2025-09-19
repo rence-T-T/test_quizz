@@ -892,12 +892,12 @@ class QuizEngine {
 
     getActiveOptionsDisplay(options) {
         const active = [];
-        if (options.shuffleAnswers) active.push('🔀 Shuffled');
-        if (options.caseSensitive) active.push('Aa Case Sensitive');
-        if (!options.orderSensitive) active.push('↕️ Any Order');
-        if (options.shuffleChoices) active.push('🔀 Mixed Items');
-        if (options.shuffleMatches) active.push('🔀 Mixed Matches');
-        if (options.unequalList) active.push('➕ Extra Options');
+        if (options.shuffleAnswers) active.push('🔀 Shuffled'); else active.push('📋 Fixed Order');
+        if (options.caseSensitive) active.push('Aa Case Sensitive'); else active.push('aa Case Insensitive');
+        if (!options.orderSensitive) active.push('↕️ Any Order'); else active.push('🔢 Order Matters');
+        if (options.shuffleChoices) active.push('🔀 Mixed Items'); else active.push('📝 Fixed Items');
+        if (options.shuffleMatches) active.push('🔀 Mixed Matches'); else active.push('🎯 Fixed Matches');
+        if (options.unequalList) active.push('➕ Extra Options'); else active.push('⚖️ Equal Lists');
         
         return active.length > 0 
             ? `<div class="quiz-options-display">

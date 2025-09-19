@@ -298,7 +298,7 @@ class QuizEngine {
                     ${displayMatches.map((match, index) => `
                         <div class="drop-zone" data-match="${match}">
                             <div class="match-label">${match}</div>
-                            <div class="dropped-item"></div>
+                            <div class="dropped-item" title="Click to remove"></div>
                         </div>
                     `).join('')}
                 </div>
@@ -390,9 +390,26 @@ class QuizEngine {
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const itemText = e.dataTransfer.getData('itemText');
-                zone.querySelector('.dropped-item').innerHTML = itemText;
+                const droppedItemDiv = zone.querySelector('.dropped-item');
+                
+                // Clear any existing item in this zone
+                droppedItemDiv.innerHTML = itemText;
                 zone.classList.remove('drag-over');
+                
+                // Check this individual match immediately
+                this.checkIndividualMatch(zone, itemText);
+                
+                // Also check overall answer status
                 this.checkAnswer();
+            });
+            
+            // Allow clicking to remove items from zones
+            zone.addEventListener('click', (e) => {
+                if (e.target.classList.contains('dropped-item') && e.target.textContent.trim()) {
+                    e.target.innerHTML = '';
+                    zone.classList.remove('correct-match', 'incorrect-match');
+                    this.checkAnswer();
+                }
             });
         });
     }
@@ -414,6 +431,64 @@ class QuizEngine {
             }
             this.userAnswers[this.currentQuestionIndex] = userAnswer;
         }
+    }
+
+    // New method to check individual matches in real-time
+    checkIndividualMatch(zone, droppedItem) {
+        const question = this.quizData.questions[this.currentQuestionIndex];
+        
+        if (question.type !== 'matching' || !question.correctMatches) {
+            return;
+        }
+        
+        const matchKey = zone.dataset.match;
+        const correctItem = question.correctMatches[matchKey];
+        
+        // Remove previous match styling
+        zone.classList.remove('correct-match', 'incorrect-match');
+        
+        if (droppedItem === correctItem) {
+            zone.classList.add('correct-match');
+            // Optional: Show a small checkmark or success indicator
+            this.showIndividualMatchFeedback(zone, true);
+        } else {
+            zone.classList.add('incorrect-match');
+            // Optional: Show a small X or error indicator
+            this.showIndividualMatchFeedback(zone, false);
+        }
+    }
+
+    // Optional method to show individual match feedback
+    showIndividualMatchFeedback(zone, isCorrect) {
+        // Remove any existing feedback indicators
+        const existingFeedback = zone.querySelector('.match-feedback');
+        if (existingFeedback) {
+            existingFeedback.remove();
+        }
+        
+        // Add new feedback indicator
+        const feedback = document.createElement('div');
+        feedback.className = 'match-feedback';
+        feedback.innerHTML = isCorrect ? '✓' : '✗';
+        feedback.style.cssText = `
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: ${isCorrect ? 'var(--success-color)' : 'var(--error-color)'};
+            background: ${isCorrect ? '#d4edda' : '#f8d7da'};
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        `;
+        
+        zone.style.position = 'relative';
+        zone.appendChild(feedback);
     }
 
     getUserAnswer(type) {
@@ -610,6 +685,24 @@ class QuizEngine {
                         input.classList.add(isCorrect ? 'correct' : 'incorrect');
                     }
                 });
+                break;
+            
+            case 'matching':
+                // Individual matches are handled by checkIndividualMatch()
+                // This just provides overall completion feedback
+                const zones = document.querySelectorAll('.drop-zone');
+                const filledZones = Array.from(zones).filter(zone => 
+                    zone.querySelector('.dropped-item').textContent.trim()
+                );
+                
+                if (isCorrect && filledZones.length === zones.length) {
+                    // All matches are correct and complete
+                    zones.forEach(zone => {
+                        if (!zone.classList.contains('correct-match')) {
+                            zone.classList.add('overall-complete');
+                        }
+                    });
+                }
                 break;
         }
     }

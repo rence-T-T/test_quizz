@@ -118,7 +118,7 @@ class QuizEngine {
                     <span class="question-type">${this.getQuestionTypeLabel(question.type)}</span>
                 </div>
                 <div class="question-text">${question.question}</div>
-                ${this.getActiveOptionsDisplay(questionOptions)}
+                ${this.getActiveOptionsDisplay(questionOptions, question.type)}
                 <div id="answerArea">
                     ${this.renderAnswerInput(question, questionOptions)}
                 </div>
@@ -141,7 +141,6 @@ class QuizEngine {
             case 'multiple-answer':
                 return this.renderMultipleAnswer(question, options);
             case 'identification':
-            case 'text':
                 return this.renderTextInput(question);
             case 'matching':
                 return this.renderMatching(question, options);
@@ -316,7 +315,6 @@ class QuizEngine {
                 this.attachCheckboxListeners();
                 break;
             case 'identification':
-            case 'text':
                 this.attachTextInputListener();
                 break;
             case 'enumeration':
@@ -503,7 +501,6 @@ class QuizEngine {
                 return Array.from(checked).map(cb => parseInt(cb.value));
             
             case 'identification':
-            case 'text':
                 const textInput = document.getElementById('textAnswer');
                 return textInput ? textInput.value.trim() : '';
             
@@ -542,7 +539,6 @@ class QuizEngine {
                     userAnswer.every(ans => question.correctAnswer.includes(ans));
             
             case 'identification':
-            case 'text':
                 if (!userAnswer) return false;
                 const compareFunc = options.caseSensitive 
                     ? (a, b) => a === b 
@@ -669,7 +665,6 @@ class QuizEngine {
                 break;
             
             case 'identification':
-            case 'text':
                 const textInput = document.getElementById('textAnswer');
                 if (textInput && textInput.value) {
                     textInput.classList.remove('correct', 'incorrect');
@@ -723,7 +718,6 @@ class QuizEngine {
                 answerHtml = `Correct Answers: ${correctOptions}`;
                 break;
             case 'identification':
-            case 'text':
                 if (Array.isArray(question.correctAnswer)) {
                     answerHtml = `Acceptable Answers: ${question.correctAnswer.join(', ')}`;
                 } else {
@@ -872,7 +866,6 @@ class QuizEngine {
             'multiple-choice': 'Multiple Choice',
             'multiple-answer': 'Multiple Answer',
             'identification': 'Identification',
-            'text': 'Text Answer',
             'matching': 'Matching Type',
             'true-false': 'True or False',
             'enumeration': 'Enumeration'
@@ -890,14 +883,27 @@ class QuizEngine {
         return shuffled;
     }
 
-    getActiveOptionsDisplay(options) {
+    getActiveOptionsDisplay(options, type) {
         const active = [];
-        if (options.shuffleAnswers) active.push('🔀 Shuffled'); else active.push('📋 Fixed Order');
-        if (options.caseSensitive) active.push('Aa Case Sensitive'); else active.push('aa Case Insensitive');
-        if (!options.orderSensitive) active.push('↕️ Any Order'); else active.push('🔢 Order Matters');
-        if (options.shuffleChoices) active.push('🔀 Mixed Items'); else active.push('📝 Fixed Items');
-        if (options.shuffleMatches) active.push('🔀 Mixed Matches'); else active.push('🎯 Fixed Matches');
-        if (options.unequalList) active.push('➕ Extra Options'); else active.push('⚖️ Equal Lists');
+        switch(type) {
+            case 'multiple-choice':
+            case 'multiple-answer':
+            case 'true-false':
+                options.shuffleAnswers ? active.push('🔀 Shuffled') : active.push('📋 Fixed Order');
+                break;
+            case 'enumeration':
+                !options.orderSensitive ? active.push('↕️ Any Order') : active.push('🔢 Order Matters');
+            case 'identification':
+                options.caseSensitive ? active.push('Aa Case Sensitive') : active.push('aa Case Insensitive');
+                break;
+            case 'matching':
+                options.shuffleChoices ? active.push('🔀 Mixed Items') : active.push('📝 Fixed Items');
+                options.shuffleMatches ? active.push('🔀 Mixed Matches') : active.push('🎯 Fixed Matches');
+                options.unequalList ? active.push('➕ Extra Options') : active.push('⚖️ Equal Lists');
+                break;
+            default: 
+                return '<p>Unknown question type</p>';
+        }
         
         return active.length > 0 
             ? `<div class="quiz-options-display">

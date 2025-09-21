@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Template - All Features Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="quizHeader"></div>
+        
+        <div id="quizContent">
+            <div id="questionContainer"></div>
+            
+            <div class="quiz-navigation">
+                <button id="prevBtn" class="nav-button">Previous</button>
+                <button id="answerKeyToggle" class="answer-key-toggle">Show Answer Key</button>
+                <button id="nextBtn" class="nav-button">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Home Button -->
+        <a href="index.html" class="home-button">🏠 Home</a>
+
+        <!-- Answer Key Modal -->
+        <div id="answerKeyModal" class="answer-key-modal">
+            <div class="answer-key-content">
+                <div class="answer-key-header">
+                    <h3>Answer Key</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div id="answerKeyBody"></div>
+            </div>
+        </div>
+    </div>
+    <script src="quiz-engine.js"></script>
+    <script>
+        
+        // Comprehensive quiz data showcasing all question types and options
+        const quizData = {
+            title: "Cryptography Quiz - Week 7 Lecture",
+            description: "Test your knowledge of cryptography concepts, algorithms, and security principles from the lecture notes.",
+            options: {
+                shuffleAnswers: false,
+                caseSensitive: false,
+                orderSensitive: true,
+                shuffleChoices: false,
+                shuffleMatches: false,
+                unequalList: false
+            },
+            questions: [
+                {
+                    type: "identification",
+                    question: "What does the prefix 'crypt' mean in cryptography?",
+                    correctAnswer: ["hidden", "Hidden", "HIDDEN"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The prefix 'crypt' means 'hidden' and the suffix 'graphy' means 'writing'.",
+                    hint: "Think about what cryptography does to information."
+                },
+
+                {
+                    type: "identification", 
+                    question: "What does AES stand for?",
+                    correctAnswer: ["Advanced Encryption Standard", "advanced encryption standard"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "AES (Advanced Encryption Standard) is a modern cipher considered virtually unbreakable.",
+                    hint: "It's a modern encryption standard with three words."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List the three main goals that cryptography ensures for information security.",
+                    correctAnswer: [
+                        ["confidentiality", "Confidentiality"],
+                        ["integrity", "Integrity"], 
+                        ["authentication", "Authentication"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Cryptography ensures confidentiality, integrity, and authentication to prevent unauthorized access to information.",
+                    hint: "Think about what cryptography protects: secrecy, wholeness, and identity verification."
+                },
+
+                {
+                    type: "identification",
+                    question: "What messaging app was mentioned as an example of using cryptography to encrypt conversations?",
+                    correctAnswer: ["WhatsApp", "whatsapp", "Whatsapp"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "WhatsApp encrypts conversations between people to ensure they cannot be hacked or intercepted.",
+                    hint: "It's a popular green messaging application."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name the two types of stream ciphers mentioned in the lecture.",
+                    correctAnswer: [
+                        ["self-synchronizing", "Self-synchronizing", "self synchronizing", "Self synchronizing"],
+                        ["synchronous", "Synchronous"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Stream ciphers include self-synchronizing (which stays in sync by recognizing its position) and synchronous (which generates keystream independently).",
+                    hint: "One type synchronizes itself, the other generates keystream independently."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does RSA stand for? (Enter the three last names separated by commas)",
+                    correctAnswer: ["Rivest, Shamir, Adleman", "rivest, shamir, adleman", "Rivest,Shamir,Adleman"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "RSA is named after its MIT mathematician developers: Ronald Rivest, Adi Shamir, and Leonard Adleman.",
+                    hint: "Three MIT mathematicians' surnames, in alphabetical order by first name."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List the three main types of cryptographic algorithms discussed in the lecture.",
+                    correctAnswer: [
+                        ["Secret Key Cryptography", "secret key cryptography", "symmetric encryption", "Symmetric encryption"],
+                        ["Public Key Cryptography", "public key cryptography", "asymmetric cryptography", "Asymmetric cryptography"],
+                        ["Hash Function", "hash function", "hashing", "Hashing"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "The three main types are Secret Key Cryptography (symmetric), Public Key Cryptography (asymmetric), and Hash Functions.",
+                    hint: "Think about single key, dual key, and integrity verification methods."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each cryptographic algorithm with its primary characteristic.",
+                    items: ["RSA", "ECC", "DSA"],
+                    matches: ["Uses large prime number factorization", "Designed for limited computing devices", "Standard for digital signatures"],
+                    correctMatches: {
+                        "Uses large prime number factorization": "RSA",
+                        "Designed for limited computing devices": "ECC", 
+                        "Standard for digital signatures": "DSA"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "RSA uses prime factorization, ECC is efficient for limited devices, and DSA is the standard for digital signatures.",
+                    hint: "Think about what makes each algorithm unique."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does IBE stand for in cryptography?",
+                    correctAnswer: ["Identity-based Encryption", "identity-based encryption", "Identity based Encryption"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "IBE (Identity-based Encryption) allows public keys to be calculated from unique user identity information like email addresses.",
+                    hint: "It's based on user identity information - three words."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name any four applications of cryptography mentioned in the lecture.",
+                    correctAnswer: [
+                        ["Computer passwords", "computer passwords", "passwords", "Passwords"],
+                        ["Digital Currencies", "digital currencies"],
+                        ["cryptocurrencies", "Cryptocurrencies", "bitcoin", "Bitcoin"],
+                        ["Secure web browsing", "secure web browsing", "web browsing", "SSL", "TLS"],
+                        ["Electronic Signatures", "electronic signatures", "digital signatures", "Digital signatures"],
+                        ["Authentication", "authentication"],
+                        ["End-to-end Internet Encryption", "end-to-end encryption", "End-to-end encryption"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Cryptography is used in passwords, digital currencies, web browsing, electronic signatures, authentication, and end-to-end encryption.",
+                    hint: "Think about daily digital activities that need security."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does SHA stand for?",
+                    correctAnswer: ["Secure Hash Algorithm", "secure hash algorithm"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "SHA (Secure Hash Algorithm) is a type of hash function, with versions like SHA-1, SHA-2, and SHA-3.",
+                    hint: "It's a type of hash algorithm - three words starting with S, H, A."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List three types of cryptographic key attack risks mentioned in the lecture.",
+                    correctAnswer: [
+                        ["Weak keys", "weak keys"],
+                        ["Incorrect use of keys", "incorrect use of keys", "incorrect use", "improper use"],
+                        ["Reuse of keys", "reuse of keys", "key reuse"],
+                        ["Non-rotation of keys", "non-rotation of keys", "non rotation", "key non-rotation"],
+                        ["Inappropriate storage of keys", "inappropriate storage", "poor storage"],
+                        ["Inadequate protection of keys", "inadequate protection", "poor protection"],
+                        ["Insecure movement of keys", "insecure movement", "insecure key movement"],
+                        ["Insider threats", "insider threats", "insider threat"],
+                        ["Lack of resilience", "lack of resilience", "no resilience"],
+                        ["Lack of audit logging", "lack of audit logging", "no audit logging"],
+                        ["Manual key management processes", "manual key management", "manual processes"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Key attacks include weak keys, incorrect use, reuse, non-rotation, inappropriate storage, inadequate protection, insecure movement, insider threats, lack of resilience, lack of audit logging, and manual processes.",
+                    hint: "Think about how keys can be compromised or mismanaged."
+                },
+
+                {
+                    type: "identification",
+                    question: "What year was the Diffie-Hellman algorithm devised?",
+                    correctAnswer: ["1976"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The Diffie-Hellman algorithm was devised in 1976 by Stanford University professor Martin Hellman and his graduate student Whitfield Diffie.",
+                    hint: "It was in the 1970s, during the mid-decade."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each hash function characteristic with its description.",
+                    items: ["Folding", "Digit rearrangement", "Data integrity"],
+                    matches: ["Takes specific digits and reverses them", "Divides value into parts and adds them", "Main purpose of hash functions"],
+                    correctMatches: {
+                        "Takes specific digits and reverses them": "Digit rearrangement",
+                        "Divides value into parts and adds them": "Folding",
+                        "Main purpose of hash functions": "Data integrity"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "Folding divides and adds parts, digit rearrangement reverses specific digits, and hash functions ensure data integrity.",
+                    hint: "Think about what each hash method does to the original data."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does PKC stand for?",
+                    correctAnswer: ["Public Key Cryptography", "public key cryptography"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "PKC (Public Key Cryptography) is also known as asymmetric cryptography and uses mathematical functions to create difficult-to-crack codes.",
+                    hint: "It's the type of cryptography that uses two related keys."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name the three communication apps mentioned in the lecture that use end-to-end encryption.",
+                    correctAnswer: [
+                        ["WhatsApp", "whatsapp"],
+                        ["Signal", "signal"], 
+                        ["email", "Email"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "WhatsApp, Signal, and email can use end-to-end encryption to protect communications.",
+                    hint: "Two are messaging apps, one is a traditional form of digital communication."
+                },
+
+                {
+                    type: "identification",
+                    question: "According to the lecture, approximately what percentage of storage space and bandwidth does ECC consume compared to RSA?",
+                    correctAnswer: ["10%", "10 percent", "10", "ten percent"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "ECC (Elliptic Curve Cryptography) consumes around 10% of the storage space and bandwidth that RSA requires, making it efficient for devices with limited resources.",
+                    hint: "It's a small percentage, less than 15%."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each security principle with its cryptographic implementation.",
+                    items: ["Confidentiality", "Integrity", "Authentication", "Non-repudiation"],
+                    matches: ["Digital signatures", "Hash functions", "Encryption", "Digital signatures and tracking"],
+                    correctMatches: {
+                        "Encryption": "Confidentiality",
+                        "Hash functions": "Integrity",
+                        "Digital signatures": "Authentication", 
+                        "Digital signatures and tracking": "Non-repudiation"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "Confidentiality uses encryption, integrity uses hash functions, authentication uses digital signatures, and non-repudiation uses digital signatures and tracking.",
+                    hint: "Think about which cryptographic tool best serves each security goal."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does KEA stand for?",
+                    correctAnswer: ["Key Exchange Algorithm", "key exchange algorithm"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "KEA (Key Exchange Algorithm) is a variation of the Diffie-Hellman algorithm proposed for the NIST/NSA Capstone project.",
+                    hint: "It's an algorithm for exchanging something essential in cryptography."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List the three basic states of matter that were mentioned as an analogy (this tests if you read the template example, but answer anyway).",
+                    correctAnswer: [
+                        ["solid", "Solid"],
+                        ["liquid", "Liquid"],
+                        ["gas", "Gas", "gaseous", "Gaseous"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "The three basic states of matter are solid, liquid, and gas - like ice, water, and steam.",
+                    hint: "Think about water in its different forms."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does the prefix 'crypt' mean in cryptography?",
+                    correctAnswer: ["hidden", "Hidden", "HIDDEN"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The prefix 'crypt' means 'hidden' and the suffix 'graphy' means 'writing'.",
+                    hint: "Think about what cryptography does to information - it conceals it."
+                },
+
+                {
+                    type: "identification", 
+                    question: "What is the standard encryption algorithm that is considered virtually unbreakable?",
+                    correctAnswer: ["AES", "Advanced Encryption Standard"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "AES (Advanced Encryption Standard) is a modern cipher considered virtually unbreakable.",
+                    hint: "It's a three-letter acronym that starts with 'A'."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List the four main goals/purposes that cryptography ensures (in any order):",
+                    correctAnswer: [
+                        ["confidentiality", "Confidentiality"],
+                        ["integrity", "Integrity"],
+                        ["authentication", "Authentication"],
+                        ["nonrepudiation", "non-repudiation", "Nonrepudiation", "Non-repudiation"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Cryptography ensures confidentiality, integrity, authentication, and nonrepudiation.",
+                    hint: "Think about what security aspects cryptography protects."
+                },
+
+                {
+                    type: "identification",
+                    question: "What type of cryptography uses a single key to encrypt and decrypt messages?",
+                    correctAnswer: ["Secret Key Cryptography", "symmetric encryption", "Symmetric Encryption", "secret key cryptography"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Secret Key Cryptography, also known as symmetric encryption, uses a single key for both encryption and decryption.",
+                    hint: "It's also called symmetric encryption because the same key is used for both processes."
+                },
+
+                {
+                    type: "identification",
+                    question: "What does PKC stand for in cryptography?",
+                    correctAnswer: ["Public Key Cryptography"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "PKC stands for Public Key Cryptography, also known as asymmetric cryptography.",
+                    hint: "It's a three-word phrase where the first two words describe the type of key used."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name the three MIT mathematicians who developed the RSA algorithm (last names only, any order):",
+                    correctAnswer: [
+                        ["Rivest", "rivest"],
+                        ["Shamir", "shamir"], 
+                        ["Adleman", "adleman"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "RSA was developed by Ronald Rivest, Adi Shamir, and Leonard Adleman at MIT.",
+                    hint: "The algorithm RSA is named after the first letters of their last names."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each cryptographic algorithm/concept with its description:",
+                    items: ["RSA", "ECC", "DSA", "IBE"],
+                    matches: ["Most common PKC implementation", "Designed for limited computing devices", "Standard for digital signatures", "Uses email address as public key"],
+                    correctMatches: {
+                        "Most common PKC implementation": "RSA",
+                        "Designed for limited computing devices": "ECC",
+                        "Standard for digital signatures": "DSA", 
+                        "Uses email address as public key": "IBE"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "RSA is the most common PKC, ECC works on limited devices, DSA enables digital signatures, and IBE uses identity-based keys.",
+                    hint: "Think about the specific advantages or characteristics of each algorithm."
+                },
+
+                {
+                    type: "identification",
+                    question: "What is the process called where a key is mapped to a specific value for data integrity?",
+                    correctAnswer: ["Hashing", "hashing", "Hash Function", "hash function"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Hashing is the process of taking a key and mapping it to a specific value (hash value) to ensure data integrity.",
+                    hint: "It transforms data into a fixed-size string and is used in databases for quick retrieval."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List three examples of Secure Hash Algorithms mentioned in the lecture (in any order):",
+                    correctAnswer: [
+                        ["SHA-1", "sha-1"],
+                        ["SHA-2", "sha-2"],
+                        ["SHA-3", "sha-3"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "The three Secure Hash Algorithm types mentioned are SHA-1, SHA-2, and SHA-3.",
+                    hint: "They all start with 'SHA' followed by a number or hyphen and number."
+                },
+
+                {
+                    type: "identification",
+                    question: "What encryption protocol uses public key cryptography to secure web browsing?",
+                    correctAnswer: ["SSL", "TLS", "SSL/TLS", "Secure Sockets Layer", "Transport Layer Security"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "SSL (Secure Sockets Layer) and TLS (Transport Layer Security) protocols use public key cryptography to encrypt web traffic.",
+                    hint: "There are two main protocols - one is a three-letter acronym starting with 'S' and another starting with 'T'."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each cryptographic key attack/risk with its description:",
+                    items: ["Weak keys", "Key reuse", "Insider threats", "Manual processes"],
+                    matches: ["Keys that are too short or predictable", "Using same key multiple times", "Rogue employee access", "Paper-based key management"],
+                    correctMatches: {
+                        "Keys that are too short or predictable": "Weak keys",
+                        "Using same key multiple times": "Key reuse",
+                        "Rogue employee access": "Insider threats",
+                        "Paper-based key management": "Manual processes"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "These are common vulnerabilities in cryptographic key management that can compromise security.",
+                    hint: "Consider what makes keys vulnerable or how they might be mishandled."
+                },
+
+                {
+                    type: "identification",
+                    question: "What messaging app was mentioned as an example of end-to-end encryption?",
+                    correctAnswer: ["WhatsApp", "whatsapp"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "WhatsApp was mentioned as an example of a messaging tool that encrypts conversations using end-to-end encryption.",
+                    hint: "It's a popular messaging application owned by Meta."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name the two types of ciphers used in Secret Key Cryptography (any order):",
+                    correctAnswer: [
+                        ["Stream ciphers", "stream ciphers", "Stream cipher", "stream cipher"],
+                        ["Block ciphers", "block ciphers", "Block cipher", "block cipher"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "Secret Key Cryptography uses Stream ciphers (work on single bits/bytes) and Block ciphers (encrypt fixed-size blocks).",
+                    hint: "One works continuously on individual bits, the other works on chunks of data."
+                },
+
+                {
+                    type: "identification",
+                    question: "What is the information density of a file measured in bits or characters called?",
+                    correctAnswer: ["entropy", "Entropy"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Entropy is the information density of a file in bits or characters, used in creating high-quality random number generators.",
+                    hint: "It's a term also used in physics and information theory to describe randomness or disorder."
+                },
+
+                {
+                    type: "matching",
+                    question: "Match each cryptography application with its example:",
+                    items: ["Digital Currencies", "Secure Web Browsing", "Authentication", "Electronic Signatures"],
+                    matches: ["Bitcoin transactions", "SSL/TLS protocols", "Bank account access", "Digital documents"],
+                    correctMatches: {
+                        "Bitcoin transactions": "Digital Currencies",
+                        "SSL/TLS protocols": "Secure Web Browsing", 
+                        "Bank account access": "Authentication",
+                        "Digital documents": "Electronic Signatures"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true,
+                        unequalList: false
+                    },
+                    explanation: "These are practical applications where cryptography is used to secure different types of digital interactions.",
+                    hint: "Think about how cryptography protects different aspects of digital life."
+                },
+
+                {
+                    type: "identification",
+                    question: "What year was the Diffie-Hellman key exchange algorithm devised?",
+                    correctAnswer: ["1976"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The Diffie-Hellman algorithm was devised in 1976 by Martin Hellman and Whitfield Diffie at Stanford University.",
+                    hint: "It was developed in the mid-1970s, specifically 1976."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "List any four PKCS standards numbers mentioned in the lecture (format: just the number, any order):",
+                    correctAnswer: [
+                        ["1", "3", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "PKCS (Public Key Cryptography Standards) includes standards numbered 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, and 15.",
+                    hint: "They are numbered from 1 to 15, pick any four numbers in that range."
+                },
+
+                {
+                    type: "identification",
+                    question: "What is the name of the cipher mentioned as a good example of block ciphers?",
+                    correctAnswer: ["Feistel cipher", "feistel cipher", "Feistel"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The Feistel cipher was mentioned as a good example of block ciphers that uses key expansion, permutation, and substitution.",
+                    hint: "It's named after a cryptographer and uses elements like key expansion and permutation."
+                },
+
+                {
+                    type: "identification",
+                    question: "What percentage of storage space and bandwidth does ECC consume compared to RSA?",
+                    correctAnswer: ["10%", "10 percent", "ten percent"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "ECC (Elliptic Curve Cryptography) consumes around 10% of the storage space and bandwidth that RSA requires.",
+                    hint: "It's a small single-digit percentage followed by a zero."
+                },
+
+                {
+                    type: "enumeration",
+                    question: "Name three communication apps mentioned that use end-to-end encryption (any order):",
+                    correctAnswer: [
+                        ["WhatsApp", "whatsapp"],
+                        ["Signal", "signal"],
+                        ["email", "Email"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "WhatsApp, Signal, and email were mentioned as examples of communications that use end-to-end encryption.",
+                    hint: "One is owned by Meta, one is known for privacy, and one is a general form of digital communication."
+                }
+            ]
+        };
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const quiz = new QuizEngine(quizData);
+        });
+    </script>
+</body>
+</html>

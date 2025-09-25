@@ -1,7 +1,8 @@
 // Enhanced Quiz Engine - Ensures shuffled answers are always different from previous orientation
 class QuizEngine {
     constructor(quizData) {
-        this.quizData = quizData;
+        this.originalQuizData = quizData;
+        this.quizData = JSON.parse(JSON.stringify(quizData)); // Work with a copy
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.userAnswers = [];
@@ -12,6 +13,7 @@ class QuizEngine {
         
         // Global options (can be overridden per question)
         this.globalOptions = {
+            shuffleQuestions: true, // Always enabled
             shuffleAnswers: quizData.options?.shuffleAnswers ?? false,
             caseSensitive: quizData.options?.caseSensitive ?? false,
             orderSensitive: quizData.options?.orderSensitive ?? true,
@@ -19,16 +21,46 @@ class QuizEngine {
             shuffleMatches: quizData.options?.shuffleMatches ?? false,
             unequalList: quizData.options?.unequalList ?? false
         };
+
+        this.questionOrder = []; // Store the order of questions after shuffling
         
         this.shuffledIndices = {}; // Store shuffle mappings for answer checking
         this.init();
     }
 
     init() {
+        this.shuffleQuestions(); // Shuffle questions first
         this.renderQuizHeader();
         this.renderQuestion();
         this.setupEventListeners();
         this.updateProgress();
+    }
+
+    // Method to reset quiz with new question shuffle
+    resetQuizWithNewShuffle() {
+        this.currentQuestionIndex = 0;
+        this.score = 0;
+        this.userAnswers = [];
+        this.isQuizComplete = false;
+        this.clearShuffleHistory();
+        this.quizData = JSON.parse(JSON.stringify(this.originalQuizData)); // Reset to original
+        this.shuffleQuestions(); // Shuffle again
+        this.renderQuizHeader();
+        this.renderQuestion();
+        this.updateProgress();
+    }
+
+    // Shuffle questions - always enabled
+    shuffleQuestions() {
+        const stateKey = 'questions';
+        const questionIndices = this.shuffleArrayDifferently(this.quizData.questions, stateKey);
+        
+        // Reorder questions based on shuffled indices
+        const shuffledQuestions = questionIndices.map(i => this.originalQuizData.questions[i]);
+        this.quizData.questions = shuffledQuestions;
+        
+        // Store the question order for reference
+        this.questionOrder = questionIndices;
     }
 
     // Get options for current question (question options override global options)
@@ -94,8 +126,8 @@ class QuizEngine {
     renderQuizHeader() {
         const headerHtml = `
             <div class="quiz-header">
-                <h1 class="quiz-title">${this.quizData.title}</h1>
-                <p>${this.quizData.description}</p>
+                <h1 class="quiz-title">${this.originalQuizData.title}</h1>
+                <p>${this.originalQuizData.description}</p> 
                 <div class="quiz-progress">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill"></div>
@@ -114,8 +146,7 @@ class QuizEngine {
         let questionHtml = `
             <div class="question-container">
                 <div class="question-header">
-                    <span class="question-number">Question ${this.currentQuestionIndex + 1}</span>
-                    <span class="question-type">${this.getQuestionTypeLabel(question.type)}</span>
+                <span class="question-number">Question ${this.currentQuestionIndex + 1} (Originally #${this.questionOrder[this.currentQuestionIndex] + 1})</span>                    <span class="question-type">${this.getQuestionTypeLabel(question.type)}</span>
                 </div>
                 <div class="question-text">${question.question}</div>
                 ${this.getActiveOptionsDisplay(questionOptions, question.type)}

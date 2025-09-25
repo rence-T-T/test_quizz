@@ -38,493 +38,949 @@
     <script>
         
         // Comprehensive quiz data showcasing all question types and options
-    const quizData = {
-        title: "Operating Systems Processing & Cryptography Comprehensive Quiz",
-        description: "A comprehensive quiz covering all topics from Processing/CPU Scheduling and Cryptography lecture materials.",
-        options: {
-            shuffleAnswers: false,
-            caseSensitive: false,
-            orderSensitive: true,
-            shuffleChoices: false,
-            shuffleMatches: false,
-            unequalList: false
+const quizData = {
+    title: "Processing and CPU Scheduling Quiz",
+    description: "Comprehensive quiz covering process management, CPU scheduling, process states, and operating system fundamentals.",
+    options: {
+        shuffleAnswers: false,
+        caseSensitive: false,
+        orderSensitive: true,
+        shuffleChoices: false,
+        shuffleMatches: false,
+        unequalList: false
+    },
+    questions: [
+        {
+            type: "identification",
+            question: "What is the unit of work in a modern computing system?",
+            correctAnswer: ["Process", "process"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "A process is the unit of work in a modern computing system and represents a program in execution.",
+            hint: "Think about the basic unit that the operating system manages for executing programs."
         },
-        questions: [
-            // PROCESSING AND CPU SCHEDULING QUESTIONS
-            {
-                type: "identification",
-                question: "What is the unit of work in a modern computing system?",
-                correctAnswer: ["Process", "process"],
-                questionOptions: { caseSensitive: false },
-                explanation: "A process is the unit of work in a modern computing system - a program in execution.",
-                hint: "It's a program that is actively running."
+        
+        {
+            type: "identification", 
+            question: "What is a program in execution called?",
+            correctAnswer: ["Process", "process"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What do we call a program that is stored on disk but not currently executing?",
-                correctAnswer: ["Passive Program", "passive program", "Program", "program"],
-                questionOptions: { caseSensitive: false },
-                explanation: "A program by itself is a passive entity - just instructions stored on disk until loaded into memory.",
-                hint: "It's the opposite of an active entity."
+            explanation: "A process is a program in execution, representing an active entity with resources.",
+            hint: "This term describes when a passive program becomes active."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the four main sections of a process's memory layout (in any order):",
+            correctAnswer: [
+                ["Text", "text", "Text section", "text section"],
+                ["Data", "data", "Data section", "data section"], 
+                ["Heap", "heap", "Heap section", "heap section"],
+                ["Stack", "stack", "Stack section", "stack section"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the four main sections of a process memory layout.",
-                correctAnswer: [
-                    ["Text section", "text section", "Text", "text"],
-                    ["Data section", "data section", "Data", "data"], 
-                    ["Heap section", "heap section", "Heap", "heap"],
-                    ["Stack section", "stack section", "Stack", "stack"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "The four sections are: Text (executable code), Data (global variables), Heap (dynamic allocation), Stack (temporary data).",
-                hint: "Think about code, variables, dynamic memory, and function calls."
+            explanation: "The four sections are: Text (executable code), Data (global variables), Heap (dynamically allocated memory), and Stack (temporary data storage).",
+            hint: "Think about code, variables, dynamic memory, and function calls."
+        },
+
+        {
+            type: "identification",
+            question: "Which section contains the executable code?",
+            correctAnswer: ["Text", "text", "Text section", "text section"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "Which memory sections have fixed sizes that don't change during program runtime?",
-                correctAnswer: ["Text and Data", "text and data", "Text and Data sections", "text and data sections"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Text and Data sections are fixed in size, while Heap and Stack can grow and shrink dynamically.",
-                hint: "Think about which sections contain predetermined content."
+            explanation: "The text section contains the executable code of the program.",
+            hint: "This section contains the actual program instructions."
+        },
+
+        {
+            type: "identification",
+            question: "Which section contains global variables?",
+            correctAnswer: ["Data", "data", "Data section", "data section"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What contains function parameters, local variables, and return addresses?",
-                correctAnswer: ["Activation record", "activation record"],
-                questionOptions: { caseSensitive: false },
-                explanation: "An activation record is pushed onto the stack when a function is called and contains these elements.",
-                hint: "It's created when functions are invoked."
+            explanation: "The data section contains global variables that are declared in the program.",
+            hint: "This section stores variables that persist throughout program execution."
+        },
+
+        {
+            type: "identification",
+            question: "Which section contains memory that is dynamically allocated during program run time?",
+            correctAnswer: ["Heap", "heap", "Heap section", "heap section"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the five possible states of a process.",
-                correctAnswer: [
-                    ["New", "new"],
-                    ["Running", "running"],
-                    ["Waiting", "waiting"],
-                    ["Ready", "ready"],
-                    ["Terminated", "terminated"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "Process states: New (being created), Running (executing), Waiting (for event), Ready (waiting for processor), Terminated (finished).",
-                hint: "Think about the lifecycle from creation to completion."
+            explanation: "The heap section contains memory that is dynamically allocated during program runtime using functions like malloc().",
+            hint: "This section grows and shrinks as memory is allocated and deallocated."
+        },
+
+        {
+            type: "identification",
+            question: "Which section stores temporary data when invoking functions?",
+            correctAnswer: ["Stack", "stack", "Stack section", "stack section"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is another name for Process Control Block?",
-                correctAnswer: ["Task Control Block", "task control block", "TCB"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Process Control Block (PCB) is also called Task Control Block - it represents the process in the OS.",
-                hint: "It's an alternative name using 'Task' instead of 'Process'."
+            explanation: "The stack section stores temporary data such as function parameters, return addresses, and local variables.",
+            hint: "This section follows LIFO (Last In, First Out) principle."
+        },
+
+        {
+            type: "enumeration",
+            question: "List what the stack section stores when functions are called (3 items):",
+            correctAnswer: [
+                ["Function parameters", "function parameters", "parameters", "Parameters"],
+                ["Return addresses", "return addresses", "Return address", "return address"],
+                ["Local variables", "local variables", "Local variable", "local variable"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the seven types of information stored in a Process Control Block.",
-                correctAnswer: [
-                    ["Process state", "process state"],
-                    ["Program counter", "program counter"],
-                    ["CPU registers", "cpu registers", "registers"],
-                    ["CPU-scheduling information", "cpu-scheduling information", "scheduling information"],
-                    ["Memory-management information", "memory-management information", "memory management information"],
-                    ["Accounting information", "accounting information"],
-                    ["I/O status information", "i/o status information", "io status information"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "PCB contains all data needed to start/restart a process including state, counter, registers, scheduling, memory, accounting, and I/O info.",
-                hint: "Think about all aspects needed to manage and restart a process."
+            explanation: "The stack stores function parameters, return addresses, and local variables in activation records.",
+            hint: "Think about what information is needed when a function is called and needs to return."
+        },
+
+        {
+            type: "identification",
+            question: "What is an activation record?",
+            correctAnswer: ["A record containing function parameters, local variables, and the return address", "activation record containing function parameters, local variables, and return address", "record with function parameters, local variables, return address"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What allows a process to have multiple threads of execution?",
-                correctAnswer: ["Multithreading", "multithreading", "Multiple threads", "multiple threads", "Threads", "threads"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Modern operating systems extend the process concept to allow multiple threads, enabling multiple tasks simultaneously.",
-                hint: "It enables parallel execution within a single process."
+            explanation: "An activation record contains function parameters, local variables, and the return address, and is pushed onto the stack when a function is called.",
+            hint: "This contains all the information needed for a function call."
+        },
+
+        {
+            type: "enumeration",
+            question: "Which two memory sections have fixed sizes that do not change during program runtime?",
+            correctAnswer: [
+                ["Text", "text", "Text section", "text section"],
+                ["Data", "data", "Data section", "data section"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is the objective of multiprogramming?",
-                correctAnswer: ["Maximize CPU utilization", "maximize cpu utilization", "CPU utilization", "cpu utilization"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Multiprogramming aims to have some process running at all times to maximize CPU utilization.",
-                hint: "It's about keeping the processor busy."
+            explanation: "The text and data sections have fixed sizes because the executable code and global variables are determined at compile time.",
+            hint: "These sections contain elements that are known before the program runs."
+        },
+
+        {
+            type: "enumeration",
+            question: "Which two memory sections can shrink and grow dynamically during program execution?",
+            correctAnswer: [
+                ["Stack", "stack", "Stack section", "stack section"],
+                ["Heap", "heap", "Heap section", "heap section"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is the objective of time sharing?",
-                correctAnswer: ["Switch CPU among processes frequently", "switch cpu among processes frequently", "Frequent CPU switching", "frequent cpu switching"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Time sharing switches CPU core among processes so frequently that users can interact with each program while running.",
-                hint: "It's about giving each process small time slices."
+            explanation: "The stack and heap sections can dynamically change size based on function calls and dynamic memory allocation.",
+            hint: "These sections change size based on program execution needs."
+        },
+
+        {
+            type: "identification",
+            question: "What is a passive entity containing a list of instructions stored on disk called?",
+            correctAnswer: ["Program", "program", "Executable file", "executable file"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is the number of processes currently in memory called?",
-                correctAnswer: ["Degree of multiprogramming", "degree of multiprogramming"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The degree of multiprogramming refers to how many processes are currently loaded in memory.",
-                hint: "It measures the level of concurrent process loading."
+            explanation: "A program is a passive entity, such as a file containing instructions stored on disk (executable file).",
+            hint: "This becomes active when loaded into memory."
+        },
+
+        {
+            type: "identification",
+            question: "What is an active entity with a program counter and associated resources called?",
+            correctAnswer: ["Process", "process"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What type of process spends more time doing I/O than computations?",
-                correctAnswer: ["I/O-bound process", "i/o-bound process", "io-bound process", "I/O bound process", "io bound process"],
-                questionOptions: { caseSensitive: false },
-                explanation: "An I/O-bound process spends more time doing I/O operations than computational work.",
-                hint: "It frequently waits for input/output operations."
+            explanation: "A process is an active entity with a program counter specifying the next instruction and associated resources.",
+            hint: "This is what a program becomes when it's running."
+        },
+
+        {
+            type: "enumeration",
+            question: "List all five possible process states:",
+            correctAnswer: [
+                ["New", "new"],
+                ["Running", "running"],
+                ["Waiting", "waiting"],
+                ["Ready", "ready"],
+                ["Terminated", "terminated"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What type of process generates I/O requests infrequently and uses more time doing computations?",
-                correctAnswer: ["CPU-bound process", "cpu-bound process", "CPU bound process", "cpu bound process"],
-                questionOptions: { caseSensitive: false },
-                explanation: "A CPU-bound process does mostly computational work with infrequent I/O requests.",
-                hint: "It keeps the processor busy with calculations."
+            explanation: "The five process states are: New (being created), Running (executing), Waiting (waiting for event), Ready (waiting for processor), Terminated (finished).",
+            hint: "Think about the lifecycle of a process from creation to completion."
+        },
+
+        {
+            type: "identification",
+            question: "In which state is a process that is being created?",
+            correctAnswer: ["New", "new"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "Where are processes placed when they are ready and waiting to execute on a CPU core?",
-                correctAnswer: ["Ready queue", "ready queue"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The ready queue holds processes that are ready to execute but waiting for CPU allocation.",
-                hint: "It's where processes wait for their turn to run."
+            explanation: "A process in the 'New' state is being created by the operating system.",
+            hint: "This is the initial state when a process is first being set up."
+        },
+
+        {
+            type: "identification",
+            question: "In which state is a process when instructions are being executed?",
+            correctAnswer: ["Running", "running"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "Where are processes placed when waiting for events like I/O completion?",
-                correctAnswer: ["Wait queue", "wait queue", "Waiting queue", "waiting queue"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Wait queues hold processes that are waiting for specific events to occur before they can continue.",
-                hint: "Processes go here when they can't proceed immediately."
+            explanation: "A process is in the 'Running' state when its instructions are actively being executed by the CPU.",
+            hint: "This state means the process currently has CPU control."
+        },
+
+        {
+            type: "identification",
+            question: "In which state is a process waiting for some event to occur (such as I/O completion)?",
+            correctAnswer: ["Waiting", "waiting"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "matching",
-                question: "Match each process memory section with its content.",
-                items: ["Text section", "Data section", "Heap section", "Stack section"],
-                matches: ["Executable code", "Global variables", "Dynamic allocation", "Function data"],
-                correctMatches: {
-                    "Executable code": "Text section",
-                    "Global variables": "Data section",
-                    "Dynamic allocation": "Heap section",
-                    "Function data": "Stack section"
-                },
-                questionOptions: { shuffleChoices: true, shuffleMatches: true, unequalList: false },
-                explanation: "Each section has specific purposes: Text (code), Data (globals), Heap (dynamic), Stack (functions).",
-                hint: "Think about what type of information each section stores."
+            explanation: "A process is in the 'Waiting' state when it's waiting for an event like I/O completion or signal reception.",
+            hint: "This state occurs when a process cannot continue until something happens."
+        },
+
+        {
+            type: "identification",
+            question: "In which state is a process waiting to be assigned to a processor?",
+            correctAnswer: ["Ready", "ready"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "matching",
-                question: "Match each process state with its description.",
-                items: ["New", "Running", "Waiting", "Ready", "Terminated"],
-                matches: ["Being created", "Instructions executing", "Waiting for event", "Waiting for processor", "Finished execution"],
-                correctMatches: {
-                    "Being created": "New",
-                    "Instructions executing": "Running", 
-                    "Waiting for event": "Waiting",
-                    "Waiting for processor": "Ready",
-                    "Finished execution": "Terminated"
-                },
-                questionOptions: { shuffleChoices: true, shuffleMatches: true, unequalList: false },
-                explanation: "Each state represents a different phase in the process lifecycle.",
-                hint: "Match the activity with the appropriate state name."
+            explanation: "A process is in the 'Ready' state when it's prepared to run but waiting for CPU allocation.",
+            hint: "The process can run immediately if given CPU time."
+        },
+
+        {
+            type: "identification",
+            question: "In which state is a process that has finished execution?",
+            correctAnswer: ["Terminated", "terminated"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            // CRYPTOGRAPHY QUESTIONS
-            {
-                type: "identification",
-                question: "What does the prefix 'crypt' mean?",
-                correctAnswer: ["Hidden", "hidden"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The prefix 'crypt' means 'hidden' and 'graphy' means 'writing', so cryptography is hidden writing.",
-                hint: "It's the opposite of visible or open."
+            explanation: "A process is in the 'Terminated' state when it has completed execution and finished all tasks.",
+            hint: "This is the final state when a process is done."
+        },
+
+        {
+            type: "identification",
+            question: "What is the Process Control Block also called?",
+            correctAnswer: ["Task Control Block", "task control block", "TCB"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What does the suffix 'graphy' mean?",
-                correctAnswer: ["Writing", "writing"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The suffix 'graphy' means 'writing', combined with 'crypt' (hidden) to form cryptography.",
-                hint: "It's what you do with a pen on paper."
+            explanation: "The Process Control Block (PCB) is also called a Task Control Block (TCB).",
+            hint: "It's an alternative name using 'task' instead of 'process'."
+        },
+
+        {
+            type: "identification",
+            question: "What represents a process in the operating system?",
+            correctAnswer: ["Process Control Block", "process control block", "PCB", "Task Control Block", "task control block"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the three main security principles that cryptography ensures.",
-                correctAnswer: [
-                    ["Confidentiality", "confidentiality"],
-                    ["Integrity", "integrity"],
-                    ["Authentication", "authentication"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "Cryptography ensures confidentiality (privacy), integrity (data unchanged), and authentication (verified identity).",
-                hint: "Think about keeping secrets, preventing tampering, and proving identity."
+            explanation: "The Process Control Block (PCB) represents a process in the operating system and contains all process information.",
+            hint: "This data structure contains all information needed to manage a process."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the main types of information stored in a Process Control Block (7 types):",
+            correctAnswer: [
+                ["Process state", "process state", "State"],
+                ["Program counter", "program counter", "PC"],
+                ["CPU registers", "cpu registers", "Registers"],
+                ["CPU scheduling information", "cpu scheduling information", "Scheduling information", "scheduling information"],
+                ["Memory management information", "memory management information", "Memory information"],
+                ["Accounting information", "accounting information"],
+                ["I/O status information", "i/o status information", "IO status information", "I/O information"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What modern encryption standard is considered virtually unbreakable?",
-                correctAnswer: ["AES", "aes", "Advanced Encryption Standard", "advanced encryption standard"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The Advanced Encryption Standard (AES) with 128-bit and 256-bit keys is considered virtually unbreakable.",
-                hint: "It's abbreviated as three letters starting with 'A'."
+            explanation: "The PCB stores: process state, program counter, CPU registers, scheduling info, memory management info, accounting info, and I/O status info.",
+            hint: "Think about all the different aspects the OS needs to track for each process."
+        },
+
+        {
+            type: "identification",
+            question: "What indicates the address of the next instruction to be executed for a process?",
+            correctAnswer: ["Program counter", "program counter", "PC"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What messaging app is mentioned as an example of encrypted conversations?",
-                correctAnswer: ["WhatsApp", "whatsapp", "Whatsapp"],
-                questionOptions: { caseSensitive: false },
-                explanation: "WhatsApp encrypts conversations between people to ensure they cannot be hacked or intercepted.",
-                hint: "It's a popular green-colored messaging application."
+            explanation: "The program counter indicates the address of the next instruction to be executed for the process.",
+            hint: "This register keeps track of where the process is in its execution."
+        },
+
+        {
+            type: "identification",
+            question: "What allows a process to perform multiple tasks at the same time?",
+            correctAnswer: ["Threads", "threads", "Multiple threads", "multiple threads", "Multithreading", "multithreading"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What cryptographic feature ensures a sender cannot deny sending a message?",
-                correctAnswer: ["Nonrepudiation", "nonrepudiation", "Non-repudiation", "non-repudiation"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Nonrepudiation prevents senders from later denying they created or transmitted information.",
-                hint: "It prevents denial of responsibility."
+            explanation: "Threads allow a process to have multiple execution paths and perform multiple tasks simultaneously.",
+            hint: "This concept extends the process model to enable concurrent execution within a single process."
+        },
+
+        {
+            type: "identification",
+            question: "What is the objective of multiprogramming?",
+            correctAnswer: ["To have some process running at all times to maximize CPU utilization", "maximize CPU utilization", "maximizing CPU utilization", "keep CPU busy"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is another name for Secret Key Cryptography?",
-                correctAnswer: ["Symmetric encryption", "symmetric encryption", "Symmetric cryptography", "symmetric cryptography"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Secret Key Cryptography is also known as symmetric encryption because it uses the same key for encryption and decryption.",
-                hint: "Both parties use identical keys."
+            explanation: "Multiprogramming aims to have some process running at all times to maximize CPU utilization.",
+            hint: "Think about keeping the CPU as busy as possible."
+        },
+
+        {
+            type: "identification",
+            question: "What is the objective of time sharing?",
+            correctAnswer: ["To switch CPU among processes so frequently that users can interact with each program while it is running", "switch CPU among processes frequently", "allow user interaction with multiple programs", "interactive computing"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the two types of Secret Key Cryptography mentioned.",
-                correctAnswer: [
-                    ["Stream ciphers", "stream ciphers", "Stream cipher", "stream cipher"],
-                    ["Block ciphers", "block ciphers", "Block cipher", "block cipher"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "Secret Key Cryptography includes stream ciphers (work on bits/bytes) and block ciphers (work on fixed-size blocks).",
-                hint: "One works on individual units, the other on chunks."
+            explanation: "Time sharing aims to switch the CPU among processes so frequently that users can interact with each program while running.",
+            hint: "Think about creating the illusion that multiple programs are running simultaneously."
+        },
+
+        {
+            type: "identification",
+            question: "What selects an available process for program execution on a core?",
+            correctAnswer: ["Process scheduler", "process scheduler", "Scheduler", "scheduler"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What is another name for Public Key Cryptography?",
-                correctAnswer: ["Asymmetric cryptography", "asymmetric cryptography", "PKC"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Public Key Cryptography (PKC) is also called asymmetric cryptography because it uses different keys for encryption and decryption.",
-                hint: "The keys are not the same or symmetric."
+            explanation: "The process scheduler selects available processes for execution on CPU cores.",
+            hint: "This OS component decides which process gets CPU time."
+        },
+
+        {
+            type: "identification",
+            question: "What is the number of processes currently in memory called?",
+            correctAnswer: ["Degree of multiprogramming", "degree of multiprogramming"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What was the first and most common PKC implementation?",
-                correctAnswer: ["RSA", "rsa"],
-                questionOptions: { caseSensitive: false },
-                explanation: "RSA was the first and remains the most common PKC implementation, named after Rivest, Shamir, and Adleman.",
-                hint: "It's named after three MIT mathematicians' initials."
+            explanation: "The degree of multiprogramming refers to the number of processes currently loaded in memory.",
+            hint: "This measures how many processes are competing for resources."
+        },
+
+        {
+            type: "identification",
+            question: "What type of process spends more time doing I/O than computations?",
+            correctAnswer: ["I/O bound", "i/o bound", "I/O-bound", "i/o-bound", "IO bound", "io bound"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the three developers of the RSA algorithm.",
-                correctAnswer: [
-                    ["Ronald Rivest", "ronald rivest", "Rivest", "rivest"],
-                    ["Adi Shamir", "adi shamir", "Shamir", "shamir"],
-                    ["Leonard Adleman", "leonard adleman", "Adleman", "adleman"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "RSA was developed by MIT mathematicians Ronald Rivest, Adi Shamir, and Leonard Adleman.",
-                hint: "Their last names form the acronym RSA."
+            explanation: "An I/O-bound process spends more time doing I/O operations than computational work.",
+            hint: "This type of process frequently waits for input/output operations."
+        },
+
+        {
+            type: "identification",
+            question: "What type of process generates I/O requests infrequently and uses more time doing computations?",
+            correctAnswer: ["CPU bound", "cpu bound", "CPU-bound", "cpu-bound"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What PKC algorithm is designed for devices with limited computing power?",
-                correctAnswer: ["ECC", "ecc", "Elliptic Curve Cryptography", "elliptic curve cryptography"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Elliptic Curve Cryptography (ECC) is designed for devices with limited computing power or memory.",
-                hint: "It uses mathematical curves and is abbreviated as three letters."
+            explanation: "A CPU-bound process generates few I/O requests and spends most time doing computational work.",
+            hint: "This type of process keeps the processor busy with calculations."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the two main types of processes based on their behavior:",
+            correctAnswer: [
+                ["I/O bound", "i/o bound", "I/O-bound", "i/o-bound", "IO bound"],
+                ["CPU bound", "cpu bound", "CPU-bound", "cpu-bound"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What standard enables digital signatures to be used in message authentication?",
-                correctAnswer: ["DSA", "dsa", "Digital Signature Algorithm", "digital signature algorithm"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Digital Signature Algorithm (DSA) was introduced by NIST in 1991 for digital signatures in message authentication.",
-                hint: "It's abbreviated as three letters starting with 'D'."
+            explanation: "Processes are generally classified as either I/O-bound (more I/O operations) or CPU-bound (more computations).",
+            hint: "Think about whether a process spends more time with input/output or processing."
+        },
+
+        {
+            type: "identification",
+            question: "Where are processes placed when they are ready and waiting to execute on a CPU core?",
+            correctAnswer: ["Ready queue", "ready queue"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What organization introduced the DSA standard in 1991?",
-                correctAnswer: ["NIST", "nist", "National Institute of Standards and Technology", "national institute of standards and technology"],
-                questionOptions: { caseSensitive: false },
-                explanation: "The National Institute of Standards and Technology (NIST) introduced DSA in 1991.",
-                hint: "It's a US government standards organization."
+            explanation: "Processes that are ready to execute are placed in the ready queue to wait for CPU allocation.",
+            hint: "This queue contains processes that can run immediately if given CPU time."
+        },
+
+        {
+            type: "identification",
+            question: "Where are processes placed when they are waiting for a certain event to occur?",
+            correctAnswer: ["Wait queue", "wait queue", "Waiting queue", "waiting queue"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What PKC system allows public keys to be calculated from user identity information?",
-                correctAnswer: ["IBE", "ibe", "Identity-based Encryption", "identity-based encryption"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Identity-based Encryption (IBE) allows public keys to be calculated from unique user identity information like email addresses.",
-                hint: "It's based on who you are rather than what keys you have."
+            explanation: "Processes waiting for events (like I/O completion) are placed in wait queues.",
+            hint: "These processes cannot continue until their waiting condition is met."
+        },
+
+        {
+            type: "matching",
+            question: "Match each memory section with its contents:",
+            items: ["Text Section", "Data Section", "Heap Section", "Stack Section"],
+            matches: ["Executable code", "Global variables", "Dynamically allocated memory", "Function parameters and local variables"],
+            correctMatches: {
+                "Executable code": "Text Section",
+                "Global variables": "Data Section", 
+                "Dynamically allocated memory": "Heap Section",
+                "Function parameters and local variables": "Stack Section"
             },
-            
-            {
-                type: "identification",
-                question: "Which professors developed the Diffie-Hellman algorithm in 1976?",
-                correctAnswer: ["Martin Hellman and Whitfield Diffie", "martin hellman and whitfield diffie", "Hellman and Diffie", "hellman and diffie"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Stanford professor Martin Hellman and graduate student Whitfield Diffie developed the algorithm in 1976.",
-                hint: "The algorithm is named after both of them."
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
             },
-            
-            {
-                type: "identification",
-                question: "What is the primary purpose of hash functions in cryptography?",
-                correctAnswer: ["Data integrity", "data integrity", "Ensure data integrity", "ensure data integrity"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Hash functions ensure that data integrity is maintained during encryption and decryption phases.",
-                hint: "It's about making sure data hasn't been changed."
+            explanation: "Each memory section has a specific purpose: Text (code), Data (globals), Heap (dynamic memory), Stack (function data).",
+            hint: "Think about what type of information belongs in each memory area."
+        },
+
+        {
+            type: "matching",
+            question: "Match each process state with its description:",
+            items: ["New", "Running", "Waiting", "Ready", "Terminated"],
+            matches: ["Process is being created", "Instructions are being executed", "Waiting for an event to occur", "Waiting to be assigned to processor", "Process has finished execution"],
+            correctMatches: {
+                "Process is being created": "New",
+                "Instructions are being executed": "Running",
+                "Waiting for an event to occur": "Waiting", 
+                "Waiting to be assigned to processor": "Ready",
+                "Process has finished execution": "Terminated"
             },
-            
-            {
-                type: "enumeration",
-                question: "List the three SHA (Secure Hash Algorithm) types mentioned.",
-                correctAnswer: [
-                    ["SHA-1", "sha-1"],
-                    ["SHA-2", "sha-2"],
-                    ["SHA-3", "sha-3"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "The Secure Hash Algorithm family includes SHA-1, SHA-2, and SHA-3 variants.",
-                hint: "They're numbered sequentially 1, 2, 3."
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
             },
-            
-            {
-                type: "identification",
-                question: "What makes cryptographic keys more difficult to crack?",
-                correctAnswer: ["Length", "length", "Key length", "key length", "Longer length", "longer length"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Keys are random numbers that become more difficult to crack the longer the number is.",
-                hint: "More characters means more possible combinations."
+            explanation: "Each process state represents a specific stage in the process lifecycle from creation to termination.",
+            hint: "Consider what the process is doing or waiting for in each state."
+        },
+
+        {
+            type: "matching",
+            question: "Match each PCB information type with what it contains:",
+            items: ["Process State", "Program Counter", "CPU Registers", "Scheduling Information"],
+            matches: ["Current process state (new, ready, running, etc.)", "Address of next instruction to execute", "Values of processor registers", "Process priority and scheduling parameters"],
+            correctMatches: {
+                "Current process state (new, ready, running, etc.)": "Process State",
+                "Address of next instruction to execute": "Program Counter",
+                "Values of processor registers": "CPU Registers",
+                "Process priority and scheduling parameters": "Scheduling Information"
             },
-            
-            {
-                type: "enumeration",
-                question: "List five types of cryptographic key risks mentioned in the document.",
-                correctAnswer: [
-                    ["Weak keys", "weak keys"],
-                    ["Incorrect use of keys", "incorrect use of keys", "Incorrect use", "incorrect use"],
-                    ["Reuse of keys", "reuse of keys", "Key reuse", "key reuse"],
-                    ["Non-rotation of keys", "non-rotation of keys", "Non-rotation", "non-rotation"],
-                    ["Inappropriate storage of keys", "inappropriate storage of keys", "Inappropriate storage", "inappropriate storage"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "Key risks include weak keys, incorrect use, reuse, non-rotation, inappropriate storage, inadequate protection, insecure movement, insider threats, lack of resilience, lack of audit logging, and manual processes.",
-                hint: "Think about different ways keys can be compromised or mismanaged."
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
             },
-            
-            {
-                type: "identification",
-                question: "What major cyberattacks are mentioned as capable of exposing cryptographic keys in server memory?",
-                correctAnswer: ["Meltdown/Spectre and Heartbleed", "meltdown/spectre and heartbleed", "Meltdown and Heartbleed", "meltdown and heartbleed"],
-                questionOptions: { caseSensitive: false },
-                explanation: "Meltdown/Spectre and Heartbleed attacks were capable of exposing cryptographic keys stored in server memory.",
-                hint: "One is about processor vulnerabilities, the other about SSL/TLS."
+            explanation: "The PCB contains various types of information needed to manage and control process execution.",
+            hint: "Think about what information the OS needs to properly manage each process."
+        },
+
+        {
+            type: "enumeration",
+            question: "List three events that could occur when a process is allocated a CPU core and executing:",
+            correctAnswer: [
+                ["Issue an I/O request", "issue i/o request", "I/O request", "io request", "make I/O request"],
+                ["Create a new child process", "create child process", "fork a child", "spawn child process", "create new process"],
+                ["Be removed forcibly from the core", "be interrupted", "time slice expires", "removed forcibly", "preempted"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
             },
-            
-            {
-                type: "matching",
-                question: "Match each cryptography application with its description.",
-                items: ["Computer passwords", "Digital currencies", "Secure web browsing", "Electronic signatures", "Cryptocurrencies"],
-                matches: ["Hashed and encrypted", "Bitcoin protection", "SSL/TLS protocols", "Digital equivalent of handwritten signature", "Blockchain security"],
-                correctMatches: {
-                    "Hashed and encrypted": "Computer passwords",
-                    "Bitcoin protection": "Digital currencies",
-                    "SSL/TLS protocols": "Secure web browsing",
-                    "Digital equivalent of handwritten signature": "Electronic signatures",
-                    "Blockchain security": "Cryptocurrencies"
-                },
-                questionOptions: { shuffleChoices: true, shuffleMatches: true, unequalList: false },
-                explanation: "Each application uses cryptography differently: passwords (hashing), currencies (transaction protection), browsing (encrypted channels), signatures (authentication), crypto (blockchain security).",
-                hint: "Match the technology with its security application."
+            explanation: "A running process can: make I/O requests, create child processes, or be forcibly removed due to interrupts or time slice expiration.",
+            hint: "Think about why a running process might stop using the CPU."
+        },
+
+        {
+            type: "identification",
+            question: "How is the ready queue generally stored?",
+            correctAnswer: ["Linked list", "linked list", "As a linked list", "as a linked list"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "matching",
-                question: "Match each PKC algorithm with its characteristic.",
-                items: ["RSA", "ECC", "DSA", "IBE"],
-                matches: ["First and most common PKC", "For limited computing power", "Digital signature standard", "Uses user identity information"],
-                correctMatches: {
-                    "First and most common PKC": "RSA",
-                    "For limited computing power": "ECC",
-                    "Digital signature standard": "DSA", 
-                    "Uses user identity information": "IBE"
-                },
-                questionOptions: { shuffleChoices: true, shuffleMatches: true, unequalList: false },
-                explanation: "Each PKC algorithm has specific characteristics: RSA (pioneering), ECC (efficient), DSA (signatures), IBE (identity-based).",
-                hint: "Think about what makes each algorithm unique or special."
+            explanation: "The ready queue is generally stored as a linked list with pointers connecting Process Control Blocks.",
+            hint: "This data structure allows efficient insertion and removal of processes."
+        },
+
+        {
+            type: "identification",
+            question: "What contains pointers to the first PCB in the ready queue?",
+            correctAnswer: ["Ready queue header", "ready queue header", "Ready-queue header", "ready-queue header"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What protocols use public key cryptography to encrypt data between web servers and clients?",
-                correctAnswer: ["SSL and TLS", "ssl and tls", "SSL/TLS", "ssl/tls", "Secure Sockets Layer and Transport Layer Security", "secure sockets layer and transport layer security"],
-                questionOptions: { caseSensitive: false },
-                explanation: "SSL (Secure Sockets Layer) and TLS (Transport Layer Security) protocols use public key cryptography for secure web communication.",
-                hint: "Two protocols commonly used for HTTPS connections."
+            explanation: "The ready-queue header contains pointers to the first PCB in the linked list structure.",
+            hint: "This is the starting point for accessing the queue of ready processes."
+        },
+
+        {
+            type: "identification",
+            question: "What does the prefix 'crypt' mean in cryptography?",
+            correctAnswer: ["hidden", "Hidden", "HIDDEN"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "identification",
-                question: "What provides a high level of security and privacy in communication apps like WhatsApp and Signal?",
-                correctAnswer: ["End-to-end encryption", "end-to-end encryption", "End to end encryption", "end to end encryption"],
-                questionOptions: { caseSensitive: false },
-                explanation: "End-to-end encryption ensures that only intended recipients can read messages, even if intercepted.",
-                hint: "It protects messages from sender to receiver completely."
+            explanation: "The prefix 'crypt' means 'hidden' and the suffix 'graphy' means 'writing'.",
+            hint: "Think about what cryptography does to information."
+        },
+        
+        {
+            type: "identification",
+            question: "What does the suffix 'graphy' mean in cryptography?",
+            correctAnswer: ["writing", "Writing", "WRITING"],
+            questionOptions: {
+                caseSensitive: false
             },
-            
-            {
-                type: "enumeration",
-                question: "List the four main importance areas of cryptography mentioned.",
-                correctAnswer: [
-                    ["Privacy and confidentiality", "privacy and confidentiality"],
-                    ["Authentication", "authentication"],
-                    ["Integrity", "integrity"],
-                    ["Key exchange", "key exchange"]
-                ],
-                questionOptions: { orderSensitive: false, caseSensitive: false },
-                explanation: "Cryptography is important for privacy/confidentiality, authentication, integrity (including nonrepudiation), and key exchange.",
-                hint: "Think about protecting data, proving identity, ensuring unchanged data, and sharing keys."
-            }
-        ]
-    };
-            
+            explanation: "The prefix 'crypt' means 'hidden' and the suffix 'graphy' means 'writing'.",
+            hint: "Think about the act of recording or creating text."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the three main purposes of cryptography (confidentiality, integrity, and one more)",
+            correctAnswer: [
+                ["confidentiality", "Confidentiality", "CONFIDENTIALITY"],
+                ["integrity", "Integrity", "INTEGRITY"],
+                ["authentication", "Authentication", "AUTHENTICATION"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Cryptography ensures confidentiality, integrity, and authentication of information.",
+            hint: "Think about protecting data secrecy, accuracy, and verifying identity."
+        },
+
+        {
+            type: "identification",
+            question: "What is the modern encryption standard that is considered virtually unbreakable?",
+            correctAnswer: ["AES", "Advanced Encryption Standard", "aes", "advanced encryption standard"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "The Advanced Encryption Standard (AES) is considered virtually unbreakable.",
+            hint: "It's a three-letter acronym that stands for Advanced Encryption Standard."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the two common encryption key bit lengths mentioned in modern cryptography",
+            correctAnswer: [
+                ["128", "128-bit", "128 bit"],
+                ["256", "256-bit", "256 bit"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Modern cryptography uses 128-bit and 256-bit encryption keys.",
+            hint: "Think about common powers of 2 used in computing."
+        },
+
+        {
+            type: "identification",
+            question: "What messaging application is mentioned as an example of encrypted conversations?",
+            correctAnswer: ["WhatsApp", "whatsapp", "WHATSAPP"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "WhatsApp encrypts conversations between people to ensure they cannot be hacked or intercepted.",
+            hint: "It's a popular messaging app owned by Meta."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the four key properties that cryptography provides (confidentiality, authentication, integrity, and one more)",
+            correctAnswer: [
+                ["confidentiality", "Confidentiality"],
+                ["authentication", "Authentication"],
+                ["integrity", "Integrity"],
+                ["nonrepudiation", "Nonrepudiation", "non-repudiation", "Non-repudiation"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Cryptography provides confidentiality, authentication, integrity, and nonrepudiation.",
+            hint: "The fourth one prevents denial of sending or receiving messages."
+        },
+
+        {
+            type: "identification",
+            question: "What is another name for Secret Key Cryptography?",
+            correctAnswer: ["symmetric encryption", "Symmetric encryption", "symmetric", "Symmetric"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "Secret Key Cryptography is also known as symmetric encryption because it uses the same key for encryption and decryption.",
+            hint: "It uses the same key for both processes, making it 'balanced' or equal."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the two types of stream ciphers mentioned",
+            correctAnswer: [
+                ["self-synchronizing", "Self-synchronizing", "self synchronizing"],
+                ["synchronous", "Synchronous"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "The two types are self-synchronizing stream cipher and synchronous stream cipher.",
+            hint: "One adjusts itself automatically, the other maintains timing independently."
+        },
+
+        {
+            type: "identification",
+            question: "What is a good example of a block cipher mentioned in the document?",
+            correctAnswer: ["Feistel cipher", "feistel cipher", "Feistel", "feistel"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "The Feistel cipher is mentioned as a good example of block ciphers that uses key expansion, permutation, and substitution.",
+            hint: "It's named after a cryptographer and uses elements like permutation and substitution."
+        },
+
+        {
+            type: "identification",
+            question: "What is another name for Public Key Cryptography?",
+            correctAnswer: ["asymmetric cryptography", "Asymmetric cryptography", "asymmetric", "Asymmetric"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "Public Key Cryptography is also known as asymmetric cryptography because it uses different keys for encryption and decryption.",
+            hint: "It uses different keys, making it 'unbalanced' or unequal."
+        },
+
+        {
+            type: "matching",
+            question: "Match each RSA developer with their first name",
+            items: ["Rivest", "Shamir", "Adleman"],
+            matches: ["Ronald", "Adi", "Leonard"],
+            correctMatches: {
+                "Ronald": "Rivest",
+                "Adi": "Shamir",
+                "Leonard": "Adleman"
+            },
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
+            },
+            explanation: "RSA was developed by Ronald Rivest, Adi Shamir, and Leonard Adleman at MIT.",
+            hint: "These are the three MIT mathematicians who created the RSA algorithm."
+        },
+
+        {
+            type: "identification",
+            question: "What does ECC stand for in cryptography?",
+            correctAnswer: ["Elliptic Curve Cryptography", "elliptic curve cryptography", "Eliptic Curve Cryptography"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "ECC stands for Elliptic Curve Cryptography, designed for devices with limited computing power.",
+            hint: "It involves mathematical curves and is designed for resource-constrained devices."
+        },
+
+        {
+            type: "identification",
+            question: "What does DSA stand for?",
+            correctAnswer: ["Digital Signature Algorithm", "digital signature algorithm"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "DSA stands for Digital Signature Algorithm, introduced by NIST in 1991.",
+            hint: "It's an algorithm specifically for creating digital signatures."
+        },
+
+        {
+            type: "identification",
+            question: "What does IBE stand for?",
+            correctAnswer: ["Identity-based Encryption", "identity-based encryption", "Identity based Encryption"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "IBE stands for Identity-based Encryption, which uses unique user information like email addresses.",
+            hint: "It's based on the user's unique identifying information."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the three PKCS standards that have RFC equivalents (just the PKCS numbers, e.g., PKCS #1)",
+            correctAnswer: [
+                ["PKCS #1", "PKCS #7", "PKCS #8", "PKCS #9", "PKCS #10", "PKCS #12"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Several PKCS standards have RFC equivalents including PKCS #1, #7, #8, #9, #10, and #12.",
+            hint: "Look for the standards that mention 'or RFC' in the document."
+        },
+
+        {
+            type: "identification",
+            question: "In what year was the Diffie-Hellman algorithm devised?",
+            correctAnswer: ["1976"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "The Diffie-Hellman algorithm was devised in 1976 by Martin Hellman and Whitfield Diffie.",
+            hint: "It was in the mid-1970s, during the bicentennial year of the United States."
+        },
+
+        {
+            type: "matching",
+            question: "Match each hash function type with its description",
+            items: ["Folding", "Digit rearrangement", "SHA"],
+            matches: ["Divides value into parts and adds them", "Reverses specific digits", "Secure Hash Algorithm"],
+            correctMatches: {
+                "Divides value into parts and adds them": "Folding",
+                "Reverses specific digits": "Digit rearrangement", 
+                "Secure Hash Algorithm": "SHA"
+            },
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
+            },
+            explanation: "These are different types of hash functions with distinct methodologies.",
+            hint: "Think about how each method manipulates the original data."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the three versions of SHA mentioned (just the numbers, e.g., SHA-1)",
+            correctAnswer: [
+                ["SHA-1", "SHA1", "SHA 1"],
+                ["SHA-2", "SHA2", "SHA 2"],
+                ["SHA-3", "SHA3", "SHA 3"]
+            ],
+            questionOptions: {
+                orderSensitive: true,
+                caseSensitive: false
+            },
+            explanation: "The document mentions SHA-1, SHA-2, and SHA-3 as examples of hash function types.",
+            hint: "They are numbered sequentially from 1 to 3."
+        },
+
+        {
+            type: "identification",
+            question: "What is entropy in the context of cryptographic keys?",
+            correctAnswer: ["information density", "Information density", "the information density of a file"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "Entropy is defined as the information density of a file in bits or characters.",
+            hint: "It measures how much information is packed into a file."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name any four types of cryptographic key attacks or risks mentioned",
+            correctAnswer: [
+                ["weak keys", "Weak keys"],
+                ["incorrect use of keys", "Incorrect use of keys"],
+                ["reuse of keys", "Reuse of keys"],
+                ["non-rotation of keys", "Non-rotation of keys"],
+                ["inappropriate storage of keys", "Inappropriate storage of keys"],
+                ["inadequate protection of keys", "Inadequate protection of keys"],
+                ["insecure movement of keys", "Insecure movement of keys"],
+                ["insider threats", "Insider threats"],
+                ["lack of resilience", "Lack of resilience"],
+                ["lack of audit logging", "Lack of audit logging"],
+                ["manual key management processes", "Manual key management processes"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "The document lists multiple types of key-based security risks and attack vectors.",
+            hint: "Think about ways keys can be mishandled, stored poorly, or compromised."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the two major cyberattacks mentioned that can expose cryptographic keys",
+            correctAnswer: [
+                ["Meltdown", "meltdown", "Meltdown/Spectre"],
+                ["Spectre", "spectre"],
+                ["Heartbleed", "heartbleed"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Meltdown/Spectre and Heartbleed are mentioned as major attacks capable of exposing cryptographic keys.",
+            hint: "One involves processor vulnerabilities, the other is related to SSL/TLS."
+        },
+
+        {
+            type: "matching",
+            question: "Match each cryptography application with its primary benefit",
+            items: ["Computer passwords", "Digital Currencies", "Electronic Signatures", "End-to-end encryption"],
+            matches: ["Hash and encrypt stored passwords", "Prevent fraud and tampering", "Digital equivalent of handwritten signature", "Only intended recipients can read messages"],
+            correctMatches: {
+                "Hash and encrypt stored passwords": "Computer passwords",
+                "Prevent fraud and tampering": "Digital Currencies",
+                "Digital equivalent of handwritten signature": "Electronic Signatures",
+                "Only intended recipients can read messages": "End-to-end encryption"
+            },
+            questionOptions: {
+                shuffleChoices: true,
+                shuffleMatches: true,
+                unequalList: false
+            },
+            explanation: "Each application of cryptography serves a specific security purpose.",
+            hint: "Think about what each application is primarily designed to protect or verify."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the two cryptocurrencies specifically mentioned in the document",
+            correctAnswer: [
+                ["Bitcoin", "bitcoin"],
+                ["Ethereum", "ethereum"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Bitcoin and Ethereum are mentioned as cryptocurrencies that heavily use cryptography.",
+            hint: "One is the original cryptocurrency, the other is known for smart contracts."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the two secure communication protocols mentioned for web browsing",
+            correctAnswer: [
+                ["SSL", "Secure Sockets Layer"],
+                ["TLS", "Transport Layer Security"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "SSL (Secure Sockets Layer) and TLS (Transport Layer Security) protocols use public key cryptography for secure web browsing.",
+            hint: "These are the protocols that create secure HTTPS connections."
+        },
+
+        {
+            type: "identification",
+            question: "What year did NIST introduce the Digital Signature Algorithm (DSA)?",
+            correctAnswer: ["1991"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "The Digital Signature Algorithm (DSA) was introduced by NIST in 1991.",
+            hint: "It was in the early 1990s, shortly after the end of the Cold War."
+        },
+
+        {
+            type: "identification",
+            question: "What percentage of storage space and bandwidth does ECC consume compared to RSA?",
+            correctAnswer: ["10%", "10 percent", "ten percent"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "ECC consumes around 10% of the storage space and bandwidth that RSA requires.",
+            hint: "It's a small single-digit percentage, making it very efficient."
+        },
+
+        {
+            type: "enumeration",
+            question: "Name the three elements that the Feistel cipher uses to create confusion and diffusion",
+            correctAnswer: [
+                ["key expansion", "Key expansion"],
+                ["permutation", "Permutation"],
+                ["substitution", "Substitution"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "The Feistel cipher uses key expansion, permutation, and substitution to create confusion and diffusion.",
+            hint: "Think about expanding, rearranging, and replacing elements."
+        },
+
+        {
+            type: "identification",
+            question: "What is the name of the NIST/NSA project that developed cryptography standards and included KEA?",
+            correctAnswer: ["Capstone", "capstone", "Capstone project"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "KEA was proposed in the NIST/NSA's Capstone project, which developed cryptography standards.",
+            hint: "It's named after the top stone of an arch or the culminating achievement."
+        },
+
+        {
+            type: "enumeration",
+            question: "List the three key properties that resilience protects in cryptographic keys",
+            correctAnswer: [
+                ["availability", "Availability"],
+                ["confidentiality", "Confidentiality"],
+                ["integrity", "Integrity"]
+            ],
+            questionOptions: {
+                orderSensitive: false,
+                caseSensitive: false
+            },
+            explanation: "Resilience is vital to protecting the availability, confidentiality, and integrity of keys.",
+            hint: "These are the three fundamental pillars of information security (CIA triad)."
+        },
+
+        {
+            type: "identification",
+            question: "What type of attack involves employees having malicious access to cryptographic keys?",
+            correctAnswer: ["insider threats", "Insider threats", "insider threat", "Insider threat"],
+            questionOptions: {
+                caseSensitive: false
+            },
+            explanation: "Insider threats occur through rogue employees having access to keys and using them maliciously.",
+            hint: "The threat comes from within the organization rather than external attackers."
+        }
+    ]
+};
         // Initialize the quiz when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             const quiz = new QuizEngine(quizData);

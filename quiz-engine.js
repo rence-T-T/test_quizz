@@ -7,6 +7,8 @@ class QuizEngine {
         this.score = 0;
         this.userAnswers = [];
         this.isQuizComplete = false;
+        this.shiftKeyPressed = false; // Track shift key state
+        this.answerKeyVisible = false; // Track modal state
         
         // Store previous shuffle states to ensure different orientations
         this.previousShuffleStates = {};
@@ -33,6 +35,7 @@ class QuizEngine {
         this.renderQuizHeader();
         this.renderQuestion();
         this.setupEventListeners();
+        this.setupKeyboardNavigation(); // Add keyboard navigation
         this.updateProgress();
     }
 
@@ -900,6 +903,7 @@ class QuizEngine {
         
         document.getElementById('quizContent').innerHTML = resultsHtml;
         this.isQuizComplete = true;
+        this.removeKeyboardNavigation();
     }
 
     setupEventListeners() {
@@ -924,14 +928,76 @@ class QuizEngine {
         });
     }
 
+    setupKeyboardNavigation() {
+        // Store reference to the handler so we can remove it later
+        this.keydownHandler = (e) => {
+            // Only handle navigation if quiz is not complete
+            if (this.isQuizComplete) return;
+            
+            // Handle Shift key for answer key toggle
+            if (e.key === 'Shift' && !this.shiftKeyPressed) {
+                this.shiftKeyPressed = true;
+                this.showAnswerKey();
+                return;
+            }
+            
+            // Prevent default behavior for our key combinations
+            if ((e.key === 'Enter' && !e.ctrlKey) || e.key === 'ArrowRight') {
+                e.preventDefault();
+                this.nextQuestion();
+            } else if ((e.key === 'Enter' && e.ctrlKey) || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                this.previousQuestion();
+            }
+        };
+        
+        // Add keyup handler for shift release
+        this.keyupHandler = (e) => {
+            if (e.key === 'Shift' && this.shiftKeyPressed) {
+                this.shiftKeyPressed = false;
+                this.hideAnswerKey();
+            }
+        };
+        
+        document.addEventListener('keydown', this.keydownHandler);
+        document.addEventListener('keyup', this.keyupHandler);
+    }
+
+    removeKeyboardNavigation() {
+        // Remove both event listeners
+        document.removeEventListener('keydown', this.keydownHandler);
+        document.removeEventListener('keyup', this.keyupHandler);
+    }
+
+    showAnswerKey() {
+        const modal = document.getElementById('answerKeyModal');
+        if (modal && !this.answerKeyVisible) {
+            modal.classList.add('show');
+            this.answerKeyVisible = true;
+        }
+    }
+
+    hideAnswerKey() {
+        const modal = document.getElementById('answerKeyModal');
+        if (modal && this.answerKeyVisible) {
+            modal.classList.remove('show');
+            this.answerKeyVisible = false;
+        }
+    }
+
     toggleAnswerKey() {
         const modal = document.getElementById('answerKeyModal');
-        modal.classList.toggle('show');
+        const isVisible = modal.classList.contains('show');
+        
+        if (isVisible) {
+            this.hideAnswerKey();
+        } else {
+            this.showAnswerKey();
+        }
     }
 
     closeAnswerKey() {
-        const modal = document.getElementById('answerKeyModal');
-        modal.classList.remove('show');
+        this.hideAnswerKey();
     }
 
     getQuestionTypeLabel(type) {

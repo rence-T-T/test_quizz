@@ -1,0 +1,14 @@
+Generate a JavaScript constant named `quizData` based on the contents of the uploaded lecture PDF.
+
+Instructions:
+
+1. Focus on bolded text in the PDF as the primary source for questions. Include non-bolded content only when needed to complete or clarify topics.
+2. Prioritize **identification** and **enumeration** questions. Include a **few matching** questions for variety. Do **not** include multiple-choice, true/false, or multiple-answer questions unless absolutely necessary to cover a topic that hasn't already been addressed.
+3. Include **as many questions as possible**. Coverage should be thorough, spanning every bolded concept.
+4. Output only the JavaScript block:
+   const quizData = { ... };
+   Do not include HTML, summaries, explanations, breakdowns, or commentary.
+5. Keep explanations and hints **minimal**. Include them only if helpful for understanding or clarification.
+6. Ensure the object is valid JavaScript and formatted for direct use in a pre-configured quiz engine.
+
+Your entire output should be a single JavaScript object named `quizData`. Return nothing else.

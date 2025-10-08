@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Template - All Features Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="quizHeader"></div>
+        
+        <div id="quizContent">
+            <div id="questionContainer"></div>
+            
+            <div class="quiz-navigation">
+                <button id="prevBtn" class="nav-button">Previous</button>
+                <button id="answerKeyToggle" class="answer-key-toggle">Show Answer Key</button>
+                <button id="nextBtn" class="nav-button">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Home Button -->
+        <a href="index.html" class="home-button">🏠 Home</a>
+
+        <!-- Answer Key Modal -->
+        <div id="answerKeyModal" class="answer-key-modal">
+            <div class="answer-key-content">
+                <div class="answer-key-header">
+                    <h3>Answer Key</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div id="answerKeyBody"></div>
+            </div>
+        </div>
+    </div>
+    <script src="quiz-engine.js"></script>
+    <script>
+        
+        // Comprehensive quiz data showcasing all question types and options
+        const quizData = {
+            title: "Compensator Design Quiz",
+            description: "Test your knowledge on compensator design in control systems.",
+            options: {
+                shuffleAnswers: false,
+                caseSensitive: false,
+                orderSensitive: true,
+                shuffleChoices: false,
+                shuffleMatches: false,
+                unequalList: false
+            },
+            questions: [
+                {
+                    type: "identification",
+                    question: "What is a compensator in a control system?",
+                    correctAnswer: ["a component in the control system that is used to regulate another system", "component used to regulate another system", "component that regulates another system"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the three types of compensators.",
+                    correctAnswer: [
+                        ["lag", "lag compensator"],
+                        ["lead", "lead compensator"],
+                        ["lag-lead", "lag lead", "lead-lag", "lead lag"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What does the term 'compensation' mean in control systems?",
+                    correctAnswer: ["an adjustment in the arrangement of a structure to provide suitable performance", "adjustment to provide suitable performance", "adjustment in arrangement for suitable performance"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "Name the three types of compensation techniques.",
+                    correctAnswer: [
+                        ["series compensation", "cascade compensation", "series", "cascade"],
+                        ["feedback compensation", "parallel compensation", "feedback", "parallel"],
+                        ["state feedback compensation", "state feedback"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is series compensation also known as?",
+                    correctAnswer: ["cascade compensation", "cascade"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is feedback compensation also known as?",
+                    correctAnswer: ["parallel compensation", "parallel"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the most common type of electrical compensator?",
+                    correctAnswer: ["RC Filter", "RC", "resistor-capacitor filter"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is a lead network?",
+                    correctAnswer: ["a system with one pole and one dominating zero", "system with one pole and one dominant zero", "one pole and one dominating zero"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "In a lead network, what is a dominating zero?",
+                    correctAnswer: ["the zero that is closer to the origin than all other zeros", "zero closer to the origin", "zero closest to origin"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the effects of phase lead compensation.",
+                    correctAnswer: [
+                        ["velocity constant rises", "Kv1 rises", "Kv increases"],
+                        ["slope of magnitude plot decreases", "magnitude plot slope decreases"],
+                        ["phase margin widens", "phase margin increases"],
+                        ["response time shortens", "faster response"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "Name the advantages of phase lead compensation.",
+                    correctAnswer: [
+                        ["increase system speed", "increases speed", "speed increases"],
+                        ["maximum overshoot is reduced", "reduced overshoot", "overshoot reduced"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the disadvantage of phase lead compensation?",
+                    correctAnswer: ["steady-state error is not improved", "does not improve steady state error", "no steady state improvement"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is a phase lag network?",
+                    correctAnswer: ["a system that is a combination of one dominant pole and one zero", "combination of one dominant pole and one zero", "one dominant pole and one zero"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "In a lag network, what is a dominating pole?",
+                    correctAnswer: ["the one that is closest to the origin of all the other poles", "pole closest to the origin", "pole nearest to origin"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the effects of phase lag compensation.",
+                    correctAnswer: [
+                        ["frequency of gain crossover rises", "gain crossover frequency rises"],
+                        ["bandwidth is reduced", "reduced bandwidth"],
+                        ["phase margin will be raised", "phase margin raised", "increased phase margin"],
+                        ["response times will be slower", "slower response"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "Name the advantages of phase lag compensation.",
+                    correctAnswer: [
+                        ["low frequencies and high frequencies are attenuated", "frequencies attenuated"],
+                        ["steady-state accuracy improves", "improved steady state accuracy"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the disadvantage of phase lag compensation?",
+                    correctAnswer: ["system speed will decrease", "speed decreases", "slower system"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is a lag-lead compensator?",
+                    correctAnswer: ["a combination of lag and lead compensator", "combination of lag and lead"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is another name for lag-lead compensator?",
+                    correctAnswer: ["phase compensator"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the advantages of phase lag-lead compensation.",
+                    correctAnswer: [
+                        ["system speed increases", "speed increases"],
+                        ["accuracy is improved", "improved accuracy"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each compensator type with its key characteristic.",
+                    items: ["Lead Compensator", "Lag Compensator", "Lag-Lead Compensator"],
+                    matches: ["Increases system speed but does not improve steady-state error", "Improves steady-state accuracy but decreases system speed", "Combines both speed increase and improved accuracy"],
+                    correctMatches: {
+                        "Increases system speed but does not improve steady-state error": "Lead Compensator",
+                        "Improves steady-state accuracy but decreases system speed": "Lag Compensator",
+                        "Combines both speed increase and improved accuracy": "Lag-Lead Compensator"
+                    },
+                    questionOptions: {
+                        shuffleChoices: false,
+                        shuffleMatches: false,
+                        unequalList: false
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match the compensation type with its description.",
+                    items: ["Series Compensation", "Feedback Compensation", "State Feedback Compensation"],
+                    matches: ["Connecting compensating circuit between error detector and plants", "Compensators used in a feedback manner", "Control signal generated by feeding state variables back via constant real gains"],
+                    correctMatches: {
+                        "Connecting compensating circuit between error detector and plants": "Series Compensation",
+                        "Compensators used in a feedback manner": "Feedback Compensation",
+                        "Control signal generated by feeding state variables back via constant real gains": "State Feedback Compensation"
+                    },
+                    questionOptions: {
+                        shuffleChoices: false,
+                        shuffleMatches: false,
+                        unequalList: false
+                    }
+                },
+                        {
+                    type: "identification",
+                    question: "What are the two main objectives of a control system?",
+                    correctAnswer: ["output y follow input r", "disturbance w is ignored"],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List five standard test signals used for performance evaluation.",
+                    correctAnswer: [
+                        ["impulse"],
+                        ["step"],
+                        ["ramp"],
+                        ["parabola"],
+                        ["sine wave"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What family of functions is used extensively in the study of control systems?",
+                    correctAnswer: ["singularity functions"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "Name the three most widely used singularity functions.",
+                    correctAnswer: [
+                        ["unit step"],
+                        ["unit impulse"],
+                        ["unit ramp"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the unit impulse response of a system?",
+                    correctAnswer: ["the output y(t) of the system when the input u(t) is delta function and all initial conditions are zero"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The unit impulse response is the system's output when excited by a unit impulse with zero initial conditions."
+                },
+                {
+                    type: "identification",
+                    question: "What is the unit step response?",
+                    correctAnswer: ["the output y(t) when the input u(t) is 1(t) and all initial conditions are zero"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the unit ramp response?",
+                    correctAnswer: ["the output y(t) when the input u(t) is t for t greater than 0 and all initial conditions are zero"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What are the two main classifications of standard performance criteria?",
+                    correctAnswer: ["time domain", "frequency domain"],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What do time-domain specifications concern?",
+                    correctAnswer: ["response to steps ramps parabolas"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What do frequency-domain specifications concern?",
+                    correctAnswer: ["characteristics of the system frequency response"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the four transient response characteristics commonly specified for a control system.",
+                    correctAnswer: [
+                        ["rise time"],
+                        ["peak time"],
+                        ["peak overshoot"],
+                        ["settling time"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is rise time for underdamped systems?",
+                    correctAnswer: ["the time required for the step response to rise from 0 to 100 percent of its final value"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What rise time definition is commonly used for overdamped systems?",
+                    correctAnswer: ["10 to 90 percent rise time"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is peak time?",
+                    correctAnswer: ["the time required for the response to reach the first peak of the overshoot"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is peak overshoot?",
+                    correctAnswer: ["the peak value of the response curve measured from unity"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is settling time?",
+                    correctAnswer: ["the time required for the response to damp out all transients"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the typical acceptable level for settling time (in percentage of final value)?",
+                    correctAnswer: ["two or five percent", "2 or 5 percent"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What performance criteria are intended as speed of response criteria?",
+                    correctAnswer: ["rise time and peak time"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is peak overshoot mainly used for?",
+                    correctAnswer: ["relative stability"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What percentage of peak overshoot may indicate the system is dangerously close to absolute instability?",
+                    correctAnswer: ["40 percent", "40%"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is steady-state error?",
+                    correctAnswer: ["an index of steady state response of a system to a specified input"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Steady-state error indicates the error between actual output and desired output as time tends to infinity."
+                },
+                {
+                    type: "identification",
+                    question: "What is the decay ratio?",
+                    correctAnswer: ["the ratio of the second overshoot divided by the first"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the most common design value for decay ratio in process control systems?",
+                    correctAnswer: ["1/4", "one fourth", "0.25"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What does robustness describe?",
+                    correctAnswer: ["the ability of the system to satisfactorily perform in the face of inconsistencies of the model used for design and the real plant"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What are model uncertainties?",
+                    correctAnswer: ["general notion for deviations of the model dynamics from the original system behavior"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "enumeration",
+                    question: "List the three main reasons for model uncertainties.",
+                    correctAnswer: [
+                        ["incomplete knowledge of the system"],
+                        ["achievable performance depends on quality of model"],
+                        ["model based on physical phenomena excludes secondary effects"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is the nominal model of the plant?",
+                    correctAnswer: ["the model at hand that yields merely an approximation of the original system performance"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What are structured uncertainties?",
+                    correctAnswer: ["particular points within the plant are made responsible for the uncertainties"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What are unstructured uncertainties?",
+                    correctAnswer: ["it is only known that there are some discrepancies between the model and the real plant"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What is a robust controller?",
+                    correctAnswer: ["a feedback controller that satisfies the design requirements on stability speed of response and steady state accuracy for all models of a given family"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What equation represents a family of plants with uncertainties?",
+                    correctAnswer: ["G(s) plus delta G(s)", "G(s) + ΔG(s)"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    hint: "The nominal model plus the error model."
+                },
+                {
+                    type: "enumeration",
+                    question: "What three design requirements must a robust controller satisfy?",
+                    correctAnswer: [
+                        ["stability"],
+                        ["speed of response"],
+                        ["steady state accuracy"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "In linear control theory, what does the design engineer focus attention on?",
+                    correctAnswer: ["dynamics specifications"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "In robust control theory, what is the primary aim of design?",
+                    correctAnswer: ["robustness requirement"],
+                    questionOptions: {
+                        caseSensitive: false
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each transient response criterion to its description.",
+                    items: ["Rise time", "Peak time", "Settling time", "Peak overshoot"],
+                    matches: [
+                        "Time to rise from 0 to 100% of final value",
+                        "Time to reach first peak",
+                        "Time to damp out all transients",
+                        "Peak value measured from unity"
+                    ],
+                    correctMatches: {
+                        "Time to rise from 0 to 100% of final value": "Rise time",
+                        "Time to reach first peak": "Peak time",
+                        "Time to damp out all transients": "Settling time",
+                        "Peak value measured from unity": "Peak overshoot"
+                    },
+                    questionOptions: {
+                        shuffleChoices: false,
+                        shuffleMatches: false
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each test signal to its characteristic.",
+                    items: ["Step", "Ramp", "Parabola"],
+                    matches: [
+                        "Easiest input requiring constant output",
+                        "More difficult tracking problem",
+                        "Even more difficult one degree faster than ramp"
+                    ],
+                    correctMatches: {
+                        "Easiest input requiring constant output": "Step",
+                        "More difficult tracking problem": "Ramp",
+                        "Even more difficult one degree faster than ramp": "Parabola"
+                    },
+                    questionOptions: {
+                        shuffleChoices: false,
+                        shuffleMatches: false
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What determines the order of a control system?",
+                    correctAnswer: ["power of s in the denominator of its transfer function", "power of s in denominator of transfer function", "power of s in the denominator"],
+                    explanation: "The order is determined by the power of s in the denominator of the transfer function."
+                },
+                {
+                    type: "identification",
+                    question: "What is a system called when the power of s in the denominator of its transfer function is 2?",
+                    correctAnswer: ["second-order control system", "second order control system", "second order system"],
+                    explanation: "When the power of s is 2, the system is a second-order control system."
+                },
+                {
+                    type: "identification",
+                    question: "What Greek letter represents the damping ratio?",
+                    correctAnswer: ["ζ", "zeta"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The damping ratio is represented by ζ (zeta)."
+                },
+                {
+                    type: "identification",
+                    question: "What symbol represents the natural frequency of a system?",
+                    correctAnswer: ["ωn", "wn", "omega n"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Natural frequency is represented by ωn."
+                },
+                {
+                    type: "identification",
+                    question: "What is ωd referred to as?",
+                    correctAnswer: ["damped frequency of the oscillation", "damped frequency", "damped frequency of oscillation"],
+                    explanation: "ωd is the damped frequency of the oscillation."
+                },
+                {
+                    type: "identification",
+                    question: "What is the time constant of exponential decay in the error signal expression?",
+                    correctAnswer: ["1/ζωn", "1/(ζωn)", "1/zeta*wn"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The time constant of exponential decay is 1/ζωn."
+                },
+                {
+                    type: "identification",
+                    question: "What is td in transient response specifications?",
+                    correctAnswer: ["delay time", "Delay time"],
+                    explanation: "td represents delay time."
+                },
+                {
+                    type: "identification",
+                    question: "What percentage of final value must the response reach for delay time (td) to be measured?",
+                    correctAnswer: ["50%", "50", "fifty percent"],
+                    explanation: "Delay time is the time to reach 50% of final value during the first cycle."
+                },
+                {
+                    type: "identification",
+                    question: "What is tr in transient response specifications?",
+                    correctAnswer: ["rise time", "Rise time"],
+                    explanation: "tr represents rise time."
+                },
+                {
+                    type: "identification",
+                    question: "For an overdamped signal, rise time is measured from what percentage to what percentage of final value?",
+                    correctAnswer: ["10% to 90%", "10 to 90", "ten percent to ninety percent"],
+                    explanation: "For overdamped systems, rise time is from 10% to 90% of final value."
+                },
+                {
+                    type: "identification",
+                    question: "What is tp in transient response specifications?",
+                    correctAnswer: ["peak time", "Peak time"],
+                    explanation: "tp represents peak time."
+                },
+                {
+                    type: "identification",
+                    question: "What is Mp in transient response specifications?",
+                    correctAnswer: ["maximum overshoot", "Maximum overshoot"],
+                    explanation: "Mp represents maximum overshoot."
+                },
+                {
+                    type: "identification",
+                    question: "What is ts in transient response specifications?",
+                    correctAnswer: ["settling time", "Settling time"],
+                    explanation: "ts represents settling time."
+                },
+                {
+                    type: "identification",
+                    question: "What is ess in transient response specifications?",
+                    correctAnswer: ["steady-state error", "steady state error", "Steady-state error"],
+                    explanation: "ess represents steady-state error."
+                },
+                {
+                    type: "identification",
+                    question: "Within what specified range (in percentage) must the response settle for settling time?",
+                    correctAnswer: ["2% to 5%", "2 to 5", "two percent to five percent"],
+                    explanation: "Settling time is defined for a response to settle within 2% to 5% of final value."
+                },
+                {
+                    type: "identification",
+                    question: "What is the formula for peak time (tp)?",
+                    correctAnswer: ["π/ωd", "pi/ωd", "π/wd"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Peak time tp = π/ωd."
+                },
+                {
+                    type: "identification",
+                    question: "What is the expression for maximum overshoot (Mp)?",
+                    correctAnswer: ["e^(-πζ/√(1-ζ²))", "exp(-πζ/√(1-ζ²))"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Maximum overshoot Mp = e^(-πζ/√(1-ζ²))."
+                },
+                {
+                    type: "identification",
+                    question: "What is the formula for settling time (ts)?",
+                    correctAnswer: ["4/ζωn", "4/(ζωn)", "4/zeta*wn"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Settling time ts = 4/ζωn, approximately 4 times the time constant."
+                },
+                {
+                    type: "identification",
+                    question: "What condition (ζ value) defines an underdamped system?",
+                    correctAnswer: ["ζ < 1", "zeta < 1", "less than 1", "ζ less than 1"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "An underdamped system has ζ < 1."
+                },
+                {
+                    type: "identification",
+                    question: "What condition (ζ value) defines a critically damped system?",
+                    correctAnswer: ["ζ = 1", "zeta = 1", "equal to 1", "ζ equals 1"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "A critically damped system has ζ = 1."
+                },
+                {
+                    type: "identification",
+                    question: "What condition (ζ value) defines an overdamped system?",
+                    correctAnswer: ["ζ > 1", "zeta > 1", "greater than 1", "ζ greater than 1"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "An overdamped system has ζ > 1."
+                },
+                {
+                    type: "identification",
+                    question: "What condition (ζ value) defines a system with sustained oscillations?",
+                    correctAnswer: ["ζ = 0", "zeta = 0", "zero", "ζ equals 0"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "Sustained oscillations occur when ζ = 0 (no damping)."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the three system types based on damping ratio (in any order).",
+                    correctAnswer: [
+                        ["underdamped", "under damped", "underdamped system", "under damped system"],
+                        ["critically damped", "critically damped system"],
+                        ["overdamped", "over damped", "overdamped system", "over damped system"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "The three types are underdamped (ζ<1), critically damped (ζ=1), and overdamped (ζ>1)."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the six main transient response specifications in order: delay time, rise time, peak time, maximum overshoot, settling time, and steady-state error.",
+                    correctAnswer: ["delay time", "rise time", "peak time", "maximum overshoot", "settling time", "steady-state error"],
+                    questionOptions: {
+                        orderSensitive: true,
+                        caseSensitive: false
+                    },
+                    explanation: "The six specifications characterize transient response performance."
+                },
+                {
+                    type: "identification",
+                    question: "In an underdamped system, what is the nature of the roots?",
+                    correctAnswer: ["complex", "complex in nature"],
+                    explanation: "Underdamped systems have complex roots with negative real parts."
+                },
+                {
+                    type: "identification",
+                    question: "In a critically damped system, what is the nature of the roots?",
+                    correctAnswer: ["real and repetitive", "real", "repetitive"],
+                    explanation: "Critically damped systems have real and repetitive roots."
+                },
+                {
+                    type: "identification",
+                    question: "In an overdamped system, what is the nature of the roots?",
+                    correctAnswer: ["real and distinct", "real", "distinct"],
+                    explanation: "Overdamped systems have real and distinct roots."
+                },
+                {
+                    type: "identification",
+                    question: "Which damped system type has the presence of finite overshoot?",
+                    correctAnswer: ["underdamped", "under damped", "underdamped system"],
+                    explanation: "Only underdamped systems exhibit finite overshoot."
+                },
+                {
+                    type: "identification",
+                    question: "What is the time constant of a second-order control system?",
+                    correctAnswer: ["1/ζωn", "1/(ζωn)", "1/zeta*wn"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The time constant is 1/ζωn."
+                },
+                {
+                    type: "identification",
+                    question: "What is the relationship between settling time and time constant?",
+                    correctAnswer: ["4 times", "approximately 4 times", "4 times time constant"],
+                    explanation: "Settling time is approximately 4 times the time constant."
+                },
+                {
+                    type: "identification",
+                    question: "What percentage above final value must the response reach to be considered at steady-state for settling time?",
+                    correctAnswer: ["98%", "98", "nearly 98%"],
+                    explanation: "Response reaches steady-state when it's above nearly 98% of final value."
+                },
+                {
+                    type: "identification",
+                    question: "What type of input function is commonly used to express control system performance?",
+                    correctAnswer: ["unit step input", "unit step", "unit step function"],
+                    explanation: "Unit step input is easy to generate and commonly used for performance analysis."
+                },
+                {
+                    type: "identification",
+                    question: "At what value of n does maximum overshoot occur in the peak time expression?",
+                    correctAnswer: ["1", "n = 1"],
+                    explanation: "Maximum overshoot occurs at n = 1."
+                },
+                {
+                    type: "identification",
+                    question: "What condition must be satisfied at peak time for the response curve?",
+                    correctAnswer: ["dc(t)/dt = 0", "derivative equals zero", "dc/dt = 0"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "At peak time, the derivative dc(t)/dt = 0."
+                },
+                {
+                    type: "identification",
+                    question: "What is the frequency of oscillation in the error signal?",
+                    correctAnswer: ["ωd", "wd", "damped frequency"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The oscillation frequency is ωd (damped frequency)."
+                },
+                {
+                    type: "identification",
+                    question: "What term is called the damping ratio because it affects damping significantly?",
+                    correctAnswer: ["ζ", "zeta"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "ζ (zeta) is called the damping ratio as it significantly affects damping."
+                },
+                {
+                    type: "identification",
+                    question: "What are the initial conditions assumed for the system when analyzing transient response?",
+                    correctAnswer: ["zero", "all zero", "initially at rest"],
+                    explanation: "The system is assumed initially at rest with all initial conditions zero."
+                },
+                {
+                    type: "identification",
+                    question: "What type of oscillation does the error signal exhibit when ζ < 1?",
+                    correctAnswer: ["oscillation type with exponentially decaying magnitude", "exponentially decaying oscillation", "decaying oscillation"],
+                    explanation: "When ζ < 1, the error exhibits oscillation with exponentially decaying magnitude."
+                },
+                {
+                    type: "identification",
+                    question: "What is the general form of the characteristic equation roots: s = α ± j times what?",
+                    correctAnswer: ["ωd", "wd"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "The roots are s = α ± jωd."
+                },
+                {
+                    type: "identification",
+                    question: "What does α equal in the characteristic equation?",
+                    correctAnswer: ["ζωn", "zeta*wn"],
+                    questionOptions: {
+                        caseSensitive: false
+                    },
+                    explanation: "α = ζωn in the characteristic equation."
+                },
+                {
+                    type: "matching",
+                    question: "Match each transient response parameter with its symbol.",
+                    items: ["Delay time", "Rise time", "Peak time", "Maximum overshoot", "Settling time", "Steady-state error"],
+                    matches: ["td", "tr", "tp", "Mp", "ts", "ess"],
+                    correctMatches: {
+                        "td": "Delay time",
+                        "tr": "Rise time",
+                        "tp": "Peak time",
+                        "Mp": "Maximum overshoot",
+                        "ts": "Settling time",
+                        "ess": "Steady-state error"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each damping condition with its ζ value range.",
+                    items: ["Underdamped", "Critically damped", "Overdamped", "Sustained oscillations"],
+                    matches: ["ζ < 1", "ζ = 1", "ζ > 1", "ζ = 0"],
+                    correctMatches: {
+                        "ζ < 1": "Underdamped",
+                        "ζ = 1": "Critically damped",
+                        "ζ > 1": "Overdamped",
+                        "ζ = 0": "Sustained oscillations"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each parameter with its formula.",
+                    items: ["Peak time", "Settling time", "Time constant"],
+                    matches: ["π/ωd", "4/ζωn", "1/ζωn"],
+                    correctMatches: {
+                        "π/ωd": "Peak time",
+                        "4/ζωn": "Settling time",
+                        "1/ζωn": "Time constant"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "Which system type has the least rise time?",
+                    correctAnswer: ["underdamped", "under damped", "underdamped system"],
+                    explanation: "Underdamped systems have the least rise time compared to other types."
+                },
+                {
+                    type: "identification",
+                    question: "Which system types have no finite overshoot?",
+                    correctAnswer: ["critically damped and overdamped", "overdamped and critically damped"],
+                    explanation: "Both critically damped and overdamped systems have no finite overshoot."
+                },
+                {
+                    type: "identification",
+                    question: "What happens to damping when ζ = 0?",
+                    correctAnswer: ["no damping", "no damping occurs"],
+                    explanation: "When ζ = 0, no damping occurs, resulting in sustained oscillations."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two main parameters that characterize a second-order control system.",
+                    correctAnswer: [
+                        ["damping ratio", "ζ", "zeta"],
+                        ["natural frequency", "ωn", "wn"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false,
+                        caseSensitive: false
+                    },
+                    explanation: "The two parameters are damping ratio (ζ) and natural frequency (ωn)."
+                },
+                {
+                    type: "identification",
+                    question: "Are underdamped, critically damped, and overdamped systems asymptotically stable?",
+                    correctAnswer: ["yes", "asymptotically stable"],
+                    explanation: "All three system types (underdamped, critically damped, overdamped) are asymptotically stable."
+                },
+                {
+                    type: "identification",
+                    question: "What is the magnitude of output signal at rise time for an underdamped system?",
+                    correctAnswer: ["1", "unity", "final value"],
+                    explanation: "At rise time, the magnitude of output signal is 1 (c(t) = 1)."
+                }
+            
+            ]
+        };
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const quiz = new QuizEngine(quizData);
+        });
+    </script>
+</body>
+</html>

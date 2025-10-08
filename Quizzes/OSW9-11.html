@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Template - All Features Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="quizHeader"></div>
+        
+        <div id="quizContent">
+            <div id="questionContainer"></div>
+            
+            <div class="quiz-navigation">
+                <button id="prevBtn" class="nav-button">Previous</button>
+                <button id="answerKeyToggle" class="answer-key-toggle">Show Answer Key</button>
+                <button id="nextBtn" class="nav-button">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Home Button -->
+        <a href="index.html" class="home-button">🏠 Home</a>
+
+        <!-- Answer Key Modal -->
+        <div id="answerKeyModal" class="answer-key-modal">
+            <div class="answer-key-content">
+                <div class="answer-key-header">
+                    <h3>Answer Key</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div id="answerKeyBody"></div>
+            </div>
+        </div>
+    </div>
+    <script src="quiz-engine.js"></script>
+    <script>
+        
+        // Comprehensive quiz data showcasing all question types and options
+        const quizData = {
+            title: "Memory Management Quiz",
+            description: "Test your knowledge on memory management concepts from Week 11 lecture notes.",
+            options: {
+                shuffleAnswers: false,
+                caseSensitive: false,
+                orderSensitive: true,
+                shuffleChoices: false,
+                shuffleMatches: false,
+                unequalList: false
+            },
+            questions: [
+                {
+                    type: "identification",
+                    question: "What is the association of memory addresses with instructions and data of a program called?",
+                    correctAnswer: ["Memory binding", "memory binding"],
+                    explanation: "Memory binding is performed several times - statically by compiler/linker and dynamically by OS.",
+                    hint: "It relates addresses to program elements."
+                },
+                {
+                    type: "identification",
+                    question: "What hardware component is part of the memory hierarchy along with cache and RAM?",
+                    correctAnswer: ["MMU", "Memory Management Unit", "memory management unit"],
+                    explanation: "The MMU works with cache and RAM in the memory hierarchy.",
+                    hint: "It's abbreviated as MMU."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two fundamental concerns in the design of a memory allocator.",
+                    correctAnswer: [
+                        ["speed of memory allocation", "speed", "allocation speed"],
+                        ["efficient use of memory", "efficiency", "memory efficiency"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "Memory allocators must balance speed and efficiency.",
+                    hint: "One relates to performance, the other to resource utilization."
+                },
+                {
+                    type: "identification",
+                    question: "What problem arises in memory reuse that leads to inefficient use of memory?",
+                    correctAnswer: ["Memory fragmentation", "memory fragmentation", "fragmentation"],
+                    explanation: "Fragmentation occurs when memory is reused, creating unusable gaps.",
+                    hint: "It involves memory breaking into pieces."
+                },
+                {
+                    type: "identification",
+                    question: "What is the set of all addresses that a process can generate using its CPU called?",
+                    correctAnswer: ["Logical Address Space", "logical address space"],
+                    explanation: "This defines the range of memory locations available from the process's perspective.",
+                    hint: "It's the address space from the process's viewpoint."
+                },
+                {
+                    type: "identification",
+                    question: "What is the set of all actual memory addresses in the main memory (RAM) called?",
+                    correctAnswer: ["Physical Address Space", "physical address space"],
+                    explanation: "This represents the real locations where data and instructions are stored.",
+                    hint: "It's the actual memory in RAM."
+                },
+                {
+                    type: "identification",
+                    question: "What component loads a process into main memory?",
+                    correctAnswer: ["loader", "Loader"],
+                    explanation: "A loader is responsible for loading processes into memory.",
+                    hint: "It performs the loading operation."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two types of loading.",
+                    correctAnswer: [
+                        ["Static Loading", "static loading"],
+                        ["Dynamic Loading", "dynamic loading"]
+                    ],
+                    explanation: "Static loading loads entire programs into fixed addresses, while dynamic loading loads routines only when needed.",
+                    hint: "One is fixed, the other is on-demand."
+                },
+                {
+                    type: "identification",
+                    question: "Which type of loading loads the entire program into a fixed address and requires more memory space?",
+                    correctAnswer: ["Static Loading", "static loading"],
+                    explanation: "Static loading loads everything at once into a fixed location.",
+                    hint: "It's not dynamic."
+                },
+                {
+                    type: "identification",
+                    question: "Which type of loading loads program routines into memory only when they are needed?",
+                    correctAnswer: ["Dynamic Loading", "dynamic loading"],
+                    explanation: "Dynamic loading saves memory by loading only what's necessary.",
+                    hint: "It loads on demand."
+                },
+                {
+                    type: "identification",
+                    question: "What component combines object files into a single executable?",
+                    correctAnswer: ["linker", "Linker"],
+                    explanation: "A linker combines multiple object files into one executable program.",
+                    hint: "It creates the final executable."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two types of linking.",
+                    correctAnswer: [
+                        ["Static Linking", "static linking"],
+                        ["Dynamic Linking", "dynamic linking"]
+                    ],
+                    explanation: "Static linking combines all modules at compile time, while dynamic linking loads modules at runtime.",
+                    hint: "Similar to loading types."
+                },
+                {
+                    type: "identification",
+                    question: "Which type of linking uses a stub for library calls and loads routines at runtime if not in memory?",
+                    correctAnswer: ["Dynamic Linking", "dynamic linking"],
+                    explanation: "Dynamic linking uses stubs and loads libraries as needed during execution.",
+                    hint: "It happens during program execution."
+                },
+                {
+                    type: "identification",
+                    question: "What is the process called that moves processes between main memory and secondary memory to manage limited memory space?",
+                    correctAnswer: ["Swapping", "swapping"],
+                    explanation: "Swapping allows multiple processes to run by temporarily moving lower priority processes to disk.",
+                    hint: "It swaps processes in and out."
+                },
+                {
+                    type: "identification",
+                    question: "In monoprogramming memory management, what hardware register is used to protect the OS from user programs?",
+                    correctAnswer: ["fence register", "Fence register"],
+                    explanation: "The fence register provides protection between OS and user program memory.",
+                    hint: "It acts as a boundary."
+                },
+                {
+                    type: "identification",
+                    question: "What data structure does the operating system use to keep track of the status of memory partitions?",
+                    correctAnswer: ["partition table", "Partition table"],
+                    explanation: "The partition table maintains information about partition status.",
+                    hint: "It's a table for partitions."
+                },
+                {
+                    type: "identification",
+                    question: "What memory management method gives each process a single, continuous block of memory?",
+                    correctAnswer: ["Contiguous Memory Allocation", "contiguous memory allocation"],
+                    explanation: "In this method, all process data is stored in adjacent memory locations.",
+                    hint: "Memory blocks are continuous."
+                },
+                {
+                    type: "identification",
+                    question: "What memory management method allows processes to be broken into smaller parts placed in non-adjacent memory locations?",
+                    correctAnswer: ["Non-Contiguous Memory Allocation", "non-contiguous memory allocation"],
+                    explanation: "This method splits processes into parts that can be scattered in memory.",
+                    hint: "Memory blocks are not continuous."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two techniques for non-contiguous memory allocation mentioned in the lecture.",
+                    correctAnswer: [
+                        ["Paging", "paging"],
+                        ["Segmentation", "segmentation"]
+                    ],
+                    explanation: "Paging uses fixed-size blocks while segmentation uses variable-sized segments.",
+                    hint: "One uses pages, the other uses segments."
+                },
+                {
+                    type: "identification",
+                    question: "In paging, what are the fixed-size blocks that a process is divided into called?",
+                    correctAnswer: ["pages", "Pages"],
+                    explanation: "Pages are the fixed-size blocks of a process in paging.",
+                    hint: "The technique is named after them."
+                },
+                {
+                    type: "identification",
+                    question: "In paging, what are the fixed-size blocks that memory is divided into called?",
+                    correctAnswer: ["frames", "Frames"],
+                    explanation: "Frames are the physical memory blocks that hold pages.",
+                    hint: "They hold pages in physical memory."
+                },
+                {
+                    type: "identification",
+                    question: "In paging, what data structure does the OS maintain to map logical pages to physical frames?",
+                    correctAnswer: ["page table", "Page table"],
+                    explanation: "The page table provides the mapping between logical and physical addresses.",
+                    hint: "It's a table for pages."
+                },
+                {
+                    type: "identification",
+                    question: "In segmentation, what data structure does the OS maintain to map logical segments to physical memory?",
+                    correctAnswer: ["segment table", "Segment table"],
+                    explanation: "The segment table maps segments to their physical memory locations.",
+                    hint: "It's a table for segments."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two types of fragmentation.",
+                    correctAnswer: [
+                        ["Internal Fragmentation", "internal fragmentation"],
+                        ["External Fragmentation", "external fragmentation"]
+                    ],
+                    explanation: "Internal fragmentation wastes space inside blocks, external fragmentation creates scattered free blocks.",
+                    hint: "One is inside, one is outside."
+                },
+                {
+                    type: "identification",
+                    question: "What type of fragmentation occurs when wasted space exists inside allocated memory blocks when a process is given more memory than it needs?",
+                    correctAnswer: ["Internal Fragmentation", "internal fragmentation"],
+                    explanation: "This happens when allocated space exceeds actual needs.",
+                    hint: "The waste is internal to the allocation."
+                },
+                {
+                    type: "identification",
+                    question: "What type of fragmentation occurs when free memory exists but is divided into small scattered blocks?",
+                    correctAnswer: ["External Fragmentation", "external fragmentation"],
+                    explanation: "Free memory is available but too scattered to allocate large contiguous spaces.",
+                    hint: "The waste is external, between allocations."
+                },
+                {
+                    type: "identification",
+                    question: "In which memory allocation strategy is memory divided into fixed-sized partitions where each partition can hold only one process?",
+                    correctAnswer: ["Fixed Partition Allocation", "fixed partition allocation"],
+                    explanation: "This strategy uses predetermined, unchanging partition sizes.",
+                    hint: "Partitions don't change size."
+                },
+                {
+                    type: "identification",
+                    question: "In which memory allocation strategy is memory divided into variable-sized partitions based on the size of the processes?",
+                    correctAnswer: ["Dynamic Partition Allocation", "dynamic partition allocation"],
+                    explanation: "Partitions are created based on actual process sizes.",
+                    hint: "Partition sizes vary."
+                },
+                {
+                    type: "matching",
+                    question: "Match each placement algorithm with its description.",
+                    items: ["First Fit", "Best Fit", "Worst Fit", "Next Fit"],
+                    matches: [
+                        "Allocates the first available partition large enough",
+                        "Allocates the smallest available partition that fits",
+                        "Allocates the largest available partition",
+                        "Starts searching from the point of last allocation"
+                    ],
+                    correctMatches: {
+                        "Allocates the first available partition large enough": "First Fit",
+                        "Allocates the smallest available partition that fits": "Best Fit",
+                        "Allocates the largest available partition": "Worst Fit",
+                        "Starts searching from the point of last allocation": "Next Fit"
+                    },
+                    explanation: "These algorithms determine which free block to assign to a process.",
+                    hint: "Match based on the allocation strategy."
+                },
+                {
+                    type: "identification",
+                    question: "Which placement algorithm allocates the smallest available partition that fits the process?",
+                    correctAnswer: ["Best Fit", "best fit"],
+                    explanation: "Best Fit minimizes wasted space by choosing the smallest sufficient partition.",
+                    hint: "It finds the best match."
+                },
+                {
+                    type: "identification",
+                    question: "Which placement algorithm allocates the first available partition large enough to hold the process?",
+                    correctAnswer: ["First Fit", "first fit"],
+                    explanation: "First Fit quickly allocates the first suitable partition found.",
+                    hint: "It picks the first match."
+                },
+                {
+                    type: "identification",
+                    question: "Which placement algorithm allocates the largest available partition?",
+                    correctAnswer: ["Worst Fit", "worst fit"],
+                    explanation: "Worst Fit leaves the largest remaining space after allocation.",
+                    hint: "It picks the worst match size-wise."
+                },
+                {
+                    type: "identification",
+                    question: "Which placement algorithm is similar to First Fit but starts searching from the point of the last allocation?",
+                    correctAnswer: ["Next Fit", "next fit"],
+                    explanation: "Next Fit continues searching from where it left off.",
+                    hint: "It searches for the next suitable partition."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the three main components of the memory hierarchy mentioned in the lecture.",
+                    correctAnswer: [
+                        ["cache", "Cache"],
+                        ["MMU", "memory management unit", "Memory Management Unit"],
+                        ["RAM", "random access memory", "Random Access Memory", "memory"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "These components work together in the memory hierarchy.",
+                    hint: "Include cache, MMU, and RAM."
+                },
+                {
+                    type: "matching",
+                    question: "Match each memory management technique category with its characteristic.",
+                    items: [
+                        "Monoprogramming",
+                        "Multiprogramming with Fixed Partitions",
+                        "Contiguous Allocation",
+                        "Non-Contiguous Allocation"
+                    ],
+                    matches: [
+                        "Memory divided into two sections: OS and user program",
+                        "Fixed number of partitions for multiple processes",
+                        "Single continuous block per process",
+                        "Process broken into parts in different locations"
+                    ],
+                    correctMatches: {
+                        "Memory divided into two sections: OS and user program": "Monoprogramming",
+                        "Fixed number of partitions for multiple processes": "Multiprogramming with Fixed Partitions",
+                        "Single continuous block per process": "Contiguous Allocation",
+                        "Process broken into parts in different locations": "Non-Contiguous Allocation"
+                    },
+                    explanation: "Different techniques organize memory in various ways.",
+                    hint: "Match the approach with its memory organization."
+                },
+                {
+                    type: "identification",
+                    question: "What is the unit of work in a modern computing system?",
+                    correctAnswer: ["Process", "process"],
+                    explanation: "A process is the unit of work in a modern computing system and represents a program in execution."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the four main sections of a process's memory layout.",
+                    correctAnswer: [
+                        ["Text section", "text section", "Text", "text"],
+                        ["Data section", "data section", "Data", "data"],
+                        ["Heap section", "heap section", "Heap", "heap"],
+                        ["Stack section", "stack section", "Stack", "stack"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "The four sections are: Text (executable code), Data (global variables), Heap (dynamically allocated memory), and Stack (temporary data storage)."
+                },
+                {
+                    type: "identification",
+                    question: "What is a program by itself considered to be (active or passive)?",
+                    correctAnswer: ["Passive", "passive", "Passive entity", "passive entity"],
+                    explanation: "A program by itself is a passive entity, such as a file containing instructions stored on disk."
+                },
+                {
+                    type: "identification",
+                    question: "What is a process considered to be (active or passive)?",
+                    correctAnswer: ["Active", "active", "Active entity", "active entity"],
+                    explanation: "A process is an active entity with a program counter and associated resources."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the five states a process may be in.",
+                    correctAnswer: [
+                        ["New", "new"],
+                        ["Running", "running"],
+                        ["Waiting", "waiting"],
+                        ["Ready", "ready"],
+                        ["Terminated", "terminated"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "The five process states are: New, Running, Waiting, Ready, and Terminated."
+                },
+                {
+                    type: "identification",
+                    question: "What is another name for Process Control Block?",
+                    correctAnswer: ["Task control block", "task control block", "TCB"],
+                    explanation: "The Process Control Block (PCB) is also called a task control block."
+                },
+                {
+                    type: "enumeration",
+                    question: "List any four types of information contained in a Process Control Block.",
+                    correctAnswer: [
+                        ["Process state", "process state", "state"],
+                        ["Program counter", "program counter", "counter"],
+                        ["CPU registers", "cpu registers", "registers"],
+                        ["CPU-scheduling information", "cpu-scheduling information", "scheduling information"],
+                        ["Memory-management information", "memory-management information", "memory information"],
+                        ["Accounting information", "accounting information"],
+                        ["I/O status information", "i/o status information", "io status information"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "PCB contains: process state, program counter, CPU registers, CPU-scheduling info, memory-management info, accounting info, and I/O status info."
+                },
+                {
+                    type: "identification",
+                    question: "What allows a process to perform more than one task at a time?",
+                    correctAnswer: ["Threads", "threads", "Multiple threads", "multiple threads"],
+                    explanation: "Threads allow a process to have multiple threads of execution and perform more than one task at a time."
+                },
+                {
+                    type: "identification",
+                    question: "What is the objective of multiprogramming?",
+                    correctAnswer: ["Maximize CPU utilization", "maximize cpu utilization", "To maximize CPU utilization"],
+                    explanation: "The objective of multiprogramming is to have some process running at all times to maximize CPU utilization."
+                },
+                {
+                    type: "identification",
+                    question: "What is the objective of time sharing?",
+                    correctAnswer: ["Switch CPU among processes frequently", "switch cpu among processes frequently", "To switch CPU among processes frequently"],
+                    explanation: "Time sharing aims to switch a CPU core among processes frequently so users can interact with programs while running."
+                },
+                {
+                    type: "identification",
+                    question: "What is the number of processes currently in memory called?",
+                    correctAnswer: ["Degree of multiprogramming", "degree of multiprogramming"],
+                    explanation: "The degree of multiprogramming refers to the number of processes currently in memory."
+                },
+                {
+                    type: "identification",
+                    question: "What type of process spends more time doing I/O than computations?",
+                    correctAnswer: ["I/O-bound process", "i/o-bound process", "io-bound process", "I/O bound", "io bound"],
+                    explanation: "An I/O-bound process spends more of its time doing I/O than computations."
+                },
+                {
+                    type: "identification",
+                    question: "What type of process generates I/O requests infrequently and uses more time doing computations?",
+                    correctAnswer: ["CPU-bound process", "cpu-bound process", "CPU bound", "cpu bound"],
+                    explanation: "A CPU-bound process generates I/O requests infrequently and uses more time doing computations."
+                },
+                {
+                    type: "identification",
+                    question: "What queue are processes placed in when they are ready and waiting to execute on a CPU's core?",
+                    correctAnswer: ["Ready queue", "ready queue"],
+                    explanation: "Processes that are ready and waiting to execute are placed in the ready queue."
+                },
+                {
+                    type: "identification",
+                    question: "What queue are processes placed in when waiting for an event to occur, such as completion of I/O?",
+                    correctAnswer: ["Wait queue", "wait queue", "Waiting queue", "waiting queue"],
+                    explanation: "Processes waiting for certain events like I/O completion are placed in a wait queue."
+                },
+                {
+                    type: "identification",
+                    question: "What is the time at which a process arrives in the ready queue called?",
+                    correctAnswer: ["Arrival Time", "arrival time"],
+                    explanation: "Arrival Time is the time at which the process arrives in the ready queue."
+                },
+                {
+                    type: "identification",
+                    question: "What is the time at which a process completes its execution called?",
+                    correctAnswer: ["Completion Time", "completion time"],
+                    explanation: "Completion Time is the time at which the process completes its execution."
+                },
+                {
+                    type: "identification",
+                    question: "What is the time required by a process for CPU execution called?",
+                    correctAnswer: ["Burst Time", "burst time"],
+                    explanation: "Burst Time is the time required by a process for CPU execution."
+                },
+                {
+                    type: "identification",
+                    question: "What is the formula for Turn Around Time?",
+                    correctAnswer: ["Completion Time - Arrival Time", "completion time - arrival time", "Completion Time minus Arrival Time"],
+                    explanation: "Turn Around Time = Completion Time - Arrival Time"
+                },
+                {
+                    type: "identification",
+                    question: "What is the formula for Waiting Time?",
+                    correctAnswer: ["Turn Around Time - Burst Time", "turn around time - burst time", "Turnaround Time - Burst Time"],
+                    explanation: "Waiting Time = Turn Around Time - Burst Time"
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two main types of CPU scheduling.",
+                    correctAnswer: [
+                        ["Preemptive Scheduling", "preemptive scheduling", "Preemptive", "preemptive"],
+                        ["Non-Preemptive Scheduling", "non-preemptive scheduling", "Non-Preemptive", "non-preemptive"]
+                    ],
+                    explanation: "The two main types are Preemptive Scheduling and Non-Preemptive Scheduling."
+                },
+                {
+                    type: "identification",
+                    question: "In what type of scheduling can the operating system interrupt a running process to allocate the CPU to another process?",
+                    correctAnswer: ["Preemptive scheduling", "preemptive scheduling", "Preemptive", "preemptive"],
+                    explanation: "In preemptive scheduling, the OS can interrupt a running process due to priority rules or time-sharing policies."
+                },
+                {
+                    type: "identification",
+                    question: "In what type of scheduling does a process run until it finishes or moves to a waiting state once it starts using the CPU?",
+                    correctAnswer: ["Non-preemptive scheduling", "non-preemptive scheduling", "Non-preemptive", "non-preemptive"],
+                    explanation: "In non-preemptive scheduling, once a process starts, it runs until it finishes or waits."
+                },
+                {
+                    type: "enumeration",
+                    question: "List three examples of preemptive scheduling algorithms.",
+                    correctAnswer: [
+                        ["Round Robin", "round robin", "RR"],
+                        ["Shortest Remaining Time First", "shortest remaining time first", "SRTF"],
+                        ["Priority Scheduling", "priority scheduling", "Preemptive Priority", "preemptive priority"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "Preemptive algorithms include Round Robin, SRTF, and Preemptive Priority Scheduling."
+                },
+                {
+                    type: "enumeration",
+                    question: "List three examples of non-preemptive scheduling algorithms.",
+                    correctAnswer: [
+                        ["First Come First Serve", "first come first serve", "FCFS"],
+                        ["Shortest Job First", "shortest job first", "SJF"],
+                        ["Priority Scheduling", "priority scheduling", "Non-preemptive Priority", "non-preemptive priority"]
+                    ],
+                    questionOptions: {
+                        orderSensitive: false
+                    },
+                    explanation: "Non-preemptive algorithms include FCFS, SJF, and Non-preemptive Priority Scheduling."
+                },
+                {
+                    type: "identification",
+                    question: "What is the full name of the FCFS scheduling algorithm?",
+                    correctAnswer: ["First Come First Serve", "first come first serve"],
+                    explanation: "FCFS stands for First Come First Serve CPU Scheduling."
+                },
+                {
+                    type: "identification",
+                    question: "Is FCFS a preemptive or non-preemptive algorithm?",
+                    correctAnswer: ["Non-preemptive", "non-preemptive", "Non preemptive"],
+                    explanation: "FCFS is a non-preemptive algorithm - once a process starts, it cannot be stopped until completion."
+                },
+                {
+                    type: "identification",
+                    question: "What is the problem called when shorter processes are forced to wait behind longer processes in FCFS?",
+                    correctAnswer: ["Convoy effect", "convoy effect", "The convoy effect"],
+                    explanation: "The convoy effect occurs when shorter processes wait behind longer processes, leading to inefficient execution."
+                },
+                {
+                    type: "identification",
+                    question: "What is the full name of the SJF scheduling algorithm?",
+                    correctAnswer: ["Shortest Job First", "shortest job first", "Shortest Job Next"],
+                    explanation: "SJF stands for Shortest Job First or Shortest Job Next."
+                },
+                {
+                    type: "identification",
+                    question: "What scheduling algorithm selects the waiting process with the smallest execution time to execute next?",
+                    correctAnswer: ["Shortest Job First", "shortest job first", "SJF"],
+                    explanation: "Shortest Job First (SJF) selects the process with the smallest execution time."
+                },
+                {
+                    type: "identification",
+                    question: "What is the pre-emptive version of Shortest Job First called?",
+                    correctAnswer: ["Shortest Remaining Time First", "shortest remaining time first", "SRTF"],
+                    explanation: "The preemptive version of SJF is called Shortest Remaining Time First (SRTF)."
+                },
+                {
+                    type: "identification",
+                    question: "In SRTF scheduling, what criterion is used to select which process to run?",
+                    correctAnswer: ["Shortest remaining time", "shortest remaining time", "Least time left to finish", "least time left"],
+                    explanation: "SRTF selects the process with the least time left to finish."
+                },
+                {
+                    type: "identification",
+                    question: "What is the fixed time slice allocated to each process in Round Robin scheduling called?",
+                    correctAnswer: ["Quantum", "quantum", "Time quantum", "time quantum"],
+                    explanation: "In Round Robin, each process is given a fixed time slice called a quantum."
+                },
+                {
+                    type: "identification",
+                    question: "What scheduling algorithm rotates through all processes, allocating each a fixed time slice regardless of priority?",
+                    correctAnswer: ["Round Robin", "round robin", "RR"],
+                    explanation: "Round Robin scheduling rotates through processes, giving each an equal time quantum."
+                },
+                {
+                    type: "identification",
+                    question: "In Priority Scheduling, what approach is used when multiple processes share the same priority?",
+                    correctAnswer: ["First-Come, First-Served", "first-come, first-served", "FCFS"],
+                    explanation: "When processes have the same priority, they are scheduled using First-Come, First-Served."
+                },
+                {
+                    type: "enumeration",
+                    question: "List the two types of Priority Scheduling implementation.",
+                    correctAnswer: [
+                        ["Non-Preemptive Priority Scheduling", "non-preemptive priority scheduling", "Non-Preemptive"],
+                        ["Preemptive Priority Scheduling", "preemptive priority scheduling", "Preemptive"]
+                    ],
+                    explanation: "Priority Scheduling can be implemented as Non-Preemptive or Preemptive."
+                },
+                {
+                    type: "matching",
+                    question: "Match each CPU scheduling algorithm with its characteristic.",
+                    items: ["FCFS", "SJF", "SRTF", "Round Robin", "Priority Scheduling"],
+                    matches: [
+                        "Processes executed in order of arrival",
+                        "Selects process with smallest execution time",
+                        "Preemptive version of SJF",
+                        "Uses fixed time quantum",
+                        "Based on priority values"
+                    ],
+                    correctMatches: {
+                        "Processes executed in order of arrival": "FCFS",
+                        "Selects process with smallest execution time": "SJF",
+                        "Preemptive version of SJF": "SRTF",
+                        "Uses fixed time quantum": "Round Robin",
+                        "Based on priority values": "Priority Scheduling"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each scheduling term with its definition.",
+                    items: ["Arrival Time", "Burst Time", "Completion Time", "Turn Around Time", "Waiting Time"],
+                    matches: [
+                        "Time process arrives in ready queue",
+                        "Time required for CPU execution",
+                        "Time when process finishes execution",
+                        "Completion Time - Arrival Time",
+                        "Turn Around Time - Burst Time"
+                    ],
+                    correctMatches: {
+                        "Time process arrives in ready queue": "Arrival Time",
+                        "Time required for CPU execution": "Burst Time",
+                        "Time when process finishes execution": "Completion Time",
+                        "Completion Time - Arrival Time": "Turn Around Time",
+                        "Turn Around Time - Burst Time": "Waiting Time"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "matching",
+                    question: "Match each process memory section with its contents.",
+                    items: ["Text section", "Data section", "Heap section", "Stack section"],
+                    matches: [
+                        "Executable code",
+                        "Global variables",
+                        "Dynamically allocated memory",
+                        "Function parameters and local variables"
+                    ],
+                    correctMatches: {
+                        "Executable code": "Text section",
+                        "Global variables": "Data section",
+                        "Dynamically allocated memory": "Heap section",
+                        "Function parameters and local variables": "Stack section"
+                    },
+                    questionOptions: {
+                        shuffleChoices: true,
+                        shuffleMatches: true
+                    }
+                },
+                {
+                    type: "identification",
+                    question: "What problem occurs when longer processes may be delayed indefinitely if shorter processes keep arriving?",
+                    correctAnswer: ["Starvation", "starvation"],
+                    explanation: "Starvation occurs when a process is perpetually denied necessary resources."
+                },
+                {
+                    type: "identification",
+                    question: "Which scheduling algorithm is probably optimal in terms of average Turn Around Time?",
+                    correctAnswer: ["SJF", "Shortest Job First", "shortest job first"],
+                    explanation: "SJF is generally optimal in terms of average Turn Around Time."
+                },
+                {
+                    type: "identification",
+                    question: "What is pushed onto the stack each time a function is called?",
+                    correctAnswer: ["Activation record", "activation record", "An activation record"],
+                    explanation: "When a function is called, an activation record containing parameters, local variables, and return address is pushed onto the stack."
+                },
+                {
+                    type: "identification",
+                    question: "What data structure is generally used to store the ready queue?",
+                    correctAnswer: ["Linked list", "linked list", "A linked list"],
+                    explanation: "The ready queue is generally stored as a linked list with PCB pointers."
+                }
+            ]
+        };
+
+        // Initialize the quiz when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const quiz = new QuizEngine(quizData);
+        });
+    </script>
+</body>
+</html>
